@@ -3,8 +3,28 @@ from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey
+from django.utils.translation import ugettext_lazy as _
 
+class StaticPage(models.Model):
+    
+    url = models.CharField(_('URL'), max_length=200, db_index=True)
+    title = models.CharField(_('title'), max_length=256)
+    content = models.TextField(_('content'), blank=True)
+    seo_title = models.CharField(max_length=512, blank=True)
+    seo_keywords = models.CharField(max_length=512, blank=True)
+    seo_description = models.TextField('seo_description', blank=True)
 
+    class Meta:
+        verbose_name = _('static page')
+        verbose_name_plural = _('static pages')
+        ordering = ('url',)
+
+    def __unicode__(self):
+        return u"%s -- %s" % (self.url, self.title)
+
+    def get_absolute_url(self):
+        return self.url
+    
 class Sluggable(models.Model):
     slug = models.SlugField(unique=True, blank=True)#, editable=False)
     
