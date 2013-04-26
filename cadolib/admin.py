@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext, ugettext_lazy as _
-from models import StaticPage
+from models import StaticPage, Setting
 from django import forms
 from django.conf import settings
 
@@ -51,6 +51,29 @@ class CommonMedia:
       'all': ('/static/admin/editor.css',),
     }
     
+class SettingAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'description',)
+    list_display_links = ('__str__',)
+    fieldsets = (
+        (None, {
+            'fields': ('key', 'description', 'value')
+        }),
+    )
+    readonly_fields=('key', 'description',)
+    
+    def has_add_permission(self, request):
+        return False
+    
+    def get_actions(self, request):
+        actions = super(SettingAdmin, self).get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+    
 
 admin.site.register(StaticPage, StaticPageAdmin, Media = CommonMedia)
+admin.site.register(Setting, SettingAdmin, Media = CommonMedia)
 

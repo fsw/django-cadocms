@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey
 from django.utils.translation import ugettext_lazy as _
+from fields import ExtraFieldsDefinition, ExtraFieldsValues
 
 class StaticPage(models.Model):
     
@@ -18,12 +19,22 @@ class StaticPage(models.Model):
         verbose_name = _('static page')
         verbose_name_plural = _('static pages')
         ordering = ('url',)
-
+        
     def __unicode__(self):
         return u"%s -- %s" % (self.url, self.title)
 
     def get_absolute_url(self):
         return self.url
+    
+class Setting(models.Model):
+    
+    key = models.CharField(_('Key'), max_length=200, db_index=True)
+    value = models.TextField(_('Value'), blank=True)
+    description = models.TextField('description', blank=True)
+
+    def __unicode__(self):
+        return u"%s = %s" % (self.key, self.value)
+
     
 class Sluggable(models.Model):
     slug = models.SlugField(unique=True, blank=True)#, editable=False)
@@ -100,3 +111,78 @@ class Tree(MPTTModel):
         ordering = ['order', 'name']
     class MPTTMeta:
         order_insertion_by=['order']
+
+
+class ExtraFieldsProvider(Tree):
+
+    extra_fields = ExtraFieldsDefinition(null=True, blank=True)
+    
+    class Meta:
+        abstract = True
+        
+    def get_extra_fields(self):
+        all_cats = self.get_ancestors(include_self=True)
+        ret = {}
+        for cat in all_cats:
+            try:
+                for key, field in cat.extra_fields.items():
+                    methodToCall = getattr(models, field.get('class', 'CharField'), models.CharField)
+                    args = field.get('args', {}).copy()
+                    if 'choices' in args:
+                        new_options = []
+                        for k, v in args['choices'].items():
+                            new_options.append((k,v))
+                        args['choices'] = new_options
+                    f = methodToCall(**args)
+                    solr_key = key
+                    h_field = indexes.index_field_from_django_field(f)
+                    if h_field == indexes.CharField:
+                        solr_key = '%s_s' % key
+                    elif h_field == indexes.DateTimeField:
+                        solr_key = '%s_dt' % key
+                    elif h_field == indexes.BooleanField:
+                        solr_key = '%s_b' % key
+                    elif h_field == indexes.MultiValueField:
+                        solr_key = '%s_s' % key
+                    elif h_field == indexes.FloatField:
+                        solr_key = '%s_f' % key
+                    elif h_field == indexes.IntegerField:
+                        solr_key = '%s_i' % key
+                    else:
+                        raise Exception('unknown type')
+
+                    ret[key] = {'field' : f, 'solr_key' : solr_key}
+                    
+            except Exception:
+                pass
+        return ret
+    
+    
+class ExtraFieldsUser(models.Model):
+    
+    extra = ExtraFieldsValues(null=True, blank=True)
+    PROVIDER_FIELD = 'category'
+    class Meta:
+        abstract = True
+    
+    def get_provided_extra_fields(self):
+        path_bits = self.PROVIDER_FIELD.split('.')
+        current = self
+        for bit in path_bits:
+            current = getattr(current, bit)
+        return current.get_extra_fields()        
+    
+    def __init__(self, *args, **kwargs):
+        super(ExtraFieldsUser, self).__init__(*args, **kwargs)
+        
+        self.extra_fields = {}
+        try:
+            definition = self.get_provided_extra_fields()
+            for key, field in definition.items():
+                try:
+                    self.extra_fields[key] = field.to_python(self.extra[key])
+                except Exception:
+                    self.extra_fields[key] = field.get_default();
+        except Exception:
+            pass
+
