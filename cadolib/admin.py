@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext, ugettext_lazy as _
-from models import StaticPage, Setting
+from models import StaticPage, Setting, Moderated, MODERATION_STATUS
 from django import forms
 from django.conf import settings
 
@@ -42,7 +42,7 @@ class StaticPageAdmin(admin.ModelAdmin):
     list_display = ('url', 'title')
     search_fields = ('url', 'title')
 
-class CommonMedia:
+class CadoAdminMedia:
     js = (
       'https://ajax.googleapis.com/ajax/libs/dojo/1.6.0/dojo/dojo.xd.js',
       '/static/admin/editor.js',
@@ -74,6 +74,50 @@ class SettingAdmin(admin.ModelAdmin):
         return False
     
 
-admin.site.register(StaticPage, StaticPageAdmin, Media = CommonMedia)
-admin.site.register(Setting, SettingAdmin, Media = CommonMedia)
+def approve_moderated(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.moderation_status = MODERATION_STATUS['OK']
+        obj.save()
+
+approve_moderated.short_description = "Approve selected moderated objects"
+
+
+def reject_moderated(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.moderation_status = MODERATION_STATUS['REJECTED']
+        obj.save()
+
+reject_moderated.short_description = "Reject selected moderated objects"
+
+
+class ModeratedAdmin(admin.ModelAdmin):
+    actions = [reject_moderated, approve_moderated]
+    
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_actions(self, request):
+        actions = super(ModeratedAdmin, self).get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+    
+    def queryset(self, request):
+        return self.model.objects.filter(moderation_status__in=[MODERATION_STATUS['NEW'],MODERATION_STATUS['MODIFIED']])
+
+
+def add_moderated_admin(model, name = 'moderate'):
+    class  Meta:
+        proxy = True
+        app_label = model._meta.app_label
+
+    attrs = {'__module__': '', 'Meta': Meta}
+
+    newmodel = type(name, (model,), attrs)
+
+    admin.site.register(newmodel, ModeratedAdmin)
+    return ModeratedAdmin
 

@@ -5,6 +5,50 @@ from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey
 from django.utils.translation import ugettext_lazy as _
 from fields import ExtraFieldsDefinition, ExtraFieldsValues
+from django.contrib.auth.models import User
+
+MODERATION_STATUS = {
+    'NEW' : 0,
+    'MODIFIED' : 1,
+    'OK' : 2,
+    'REJECTED' : 3
+}
+                       
+MODERATION_STATUSES = (
+    (MODERATION_STATUS['NEW'], 'New'),
+    (MODERATION_STATUS['MODIFIED'], 'Modified'),
+    (MODERATION_STATUS['OK'], 'OK'),
+    (MODERATION_STATUS['REJECTED'], 'Rejected'),
+)
+
+MODERATION_REASONS = (
+    (0, 'Other'),
+)
+    
+class Moderated(models.Model):
+    
+    moderation_status = models.IntegerField(_('Moderation Status'), choices=MODERATION_STATUSES, db_index=True, default=MODERATION_STATUS['NEW'])
+    moderation_reason = models.IntegerField(_('Moderation Reason'), choices=MODERATION_REASONS, null=True, blank=True)
+    moderation_user = models.ForeignKey(User, related_name='moderation_user', null=True, blank=True)
+    moderation_comment = models.TextField(_('Moderator Comment'), blank=True)
+    
+    class Meta:
+        abstract = True
+        
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.moderation_status = MODERATION_STATUS['NEW']
+        else:
+            original = self.__class__._default_manager.get(pk=self.pk)
+        
+            for field in self.__class__._meta.get_all_field_names():
+                if field not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment']:
+                    original_data = getattr(original, field)
+                    new_data = getattr(self, field)
+                    if original_data != new_data:
+                        self.moderation_status = MODERATION_STATUS['MODIFIED']
+        
+        return super(Moderated, self).save(*args, **kwargs)
 
 class StaticPage(models.Model):
     
