@@ -6,6 +6,7 @@ from mptt.fields import TreeForeignKey
 from django.utils.translation import ugettext_lazy as _
 from fields import ExtraFieldsDefinition, ExtraFieldsValues
 from django.contrib.auth.models import User
+from haystack import indexes
 
 MODERATION_STATUS = {
     'NEW' : 0,
@@ -170,8 +171,10 @@ class ExtraFieldsProvider(Tree):
         for cat in all_cats:
             try:
                 for key, field in cat.extra_fields.items():
+                    #print key, field
                     methodToCall = getattr(models, field.get('class', 'CharField'), models.CharField)
-                    args = field.get('args', {}).copy()
+                    #print methodToCall
+                    args = field.get('kwargs', {}).copy()
                     if 'choices' in args:
                         new_options = []
                         for k, v in args['choices'].items():
@@ -197,8 +200,8 @@ class ExtraFieldsProvider(Tree):
 
                     ret[key] = {'field' : f, 'solr_key' : solr_key}
                     
-            except Exception:
-                pass
+            except Exception, err:
+                print err
         return ret
     
     
@@ -209,6 +212,17 @@ class ExtraFieldsUser(models.Model):
     class Meta:
         abstract = True
     
+    def get_provided_extra_fields_by_provider_id(self, provider_field_value):
+        path_bits = self.PROVIDER_FIELD.split('.')
+        field_class = self._meta.get_field(path_bits.pop(0))
+        current = field_class.rel.to.objects.get(id=provider_field_value)
+        for bit in path_bits:
+            if current is not None:
+                current = getattr(current, bit)
+        if current is None:
+            return {}
+        return current.get_extra_fields()  
+    
     def get_provided_extra_fields(self):
         path_bits = self.PROVIDER_FIELD.split('.')
         current = self
@@ -218,7 +232,7 @@ class ExtraFieldsUser(models.Model):
     
     def __init__(self, *args, **kwargs):
         super(ExtraFieldsUser, self).__init__(*args, **kwargs)
-        
+        self._meta.get_field('extra').PROVIDER_FIELD = self.PROVIDER_FIELD
         self.extra_fields = {}
         try:
             definition = self.get_provided_extra_fields()

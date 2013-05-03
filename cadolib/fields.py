@@ -16,6 +16,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django import forms
 from django.utils.text import capfirst
 
+from cadolib.widgets import ExtraFieldsValuesWidget
+
 import re
 import decimal
 import datetime
@@ -237,8 +239,10 @@ except ImportError:
 class ExtraFieldsDefinition(JSONField):
     pass
     
-class ExtraFieldsValues(JSONField): 
-    pass
+class ExtraFieldsValues(JSONField):
+    def formfield(self, **kwargs):
+        kwargs['widget'] = ExtraFieldsValuesWidget
+        return super(ExtraFieldsValues, self).formfield(**kwargs)
 
 
 from south.modelsinspector import add_introspection_rules

@@ -121,3 +121,7 @@ def add_moderated_admin(model, name = 'moderate'):
     admin.site.register(newmodel, ModeratedAdmin)
     return ModeratedAdmin
 
+
+class ExtraFieldsUserAdmin(admin.ModelAdmin):
+    pass
+
