@@ -2,7 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from mptt.models import MPTTModel
-from mptt.fields import TreeForeignKey
+from mptt.fields import TreeForeignKey, TreeManyToManyField
 from django.utils.translation import ugettext_lazy as _
 from fields import ExtraFieldsDefinition, ExtraFieldsValues
 from django.contrib.auth.models import User
