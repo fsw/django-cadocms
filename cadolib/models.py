@@ -42,14 +42,26 @@ class Moderated(models.Model):
         else:
             original = self.__class__._default_manager.get(pk=self.pk)
         
+        ret = super(Moderated, self).save(*args, **kwargs)
+        
+        if (self.moderation_status != MODERATION_STATUS['NEW']):
             for field in self.__class__._meta.get_all_field_names():
                 if field not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment']:
+                    field_class = self.__class__._meta.get_field(field)
                     original_data = getattr(original, field)
                     new_data = getattr(self, field)
-                    if original_data != new_data:
+                    if isinstance(field_class, models.ManyToManyField):
+                        pass
+                        #TODO
+                        #print original_data.all()
+                        #print new_data.all()
+                    elif original_data != new_data:
                         self.moderation_status = MODERATION_STATUS['MODIFIED']
+                        #print 'MODIFIED ' + field
+                        #print original_data
+                        #print new_data
         
-        return super(Moderated, self).save(*args, **kwargs)
+        return ret
 
 class StaticPage(models.Model):
     
