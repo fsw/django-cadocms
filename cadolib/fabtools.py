@@ -6,8 +6,15 @@ from django.conf import settings as django_settings
 env.use_ssh_config = True
     
 def push(message=None):
-    repos = ['../django-cadoshop', '../django-cadolib']
-    for path in repos:
+    git_sub_modules = 'submodules'
+    workspace_dir = '..'
+    for submodule in os.listdir(git_sub_modules):
+        path = os.path.abspath(os.path.join(git_sub_modules, submodule))
+        if os.path.isdir(os.path.abspath(os.path.join(workspace_dir, submodule))):
+            path = os.path.abspath(os.path.join(workspace_dir, submodule))
+            
+        print 'trying to push ' + path
+         
         with lcd(path):
             with settings(warn_only=True): 
                 local("git add -A")
