@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1>{{ staticpage.title }}</h1>
-
+<div id="staticpage">
 {{ staticpage.content|safe }}
-
+</div>
 {% endblock %}
 
 {% block title %}{{ staticpage.title }}{% endblock %}
