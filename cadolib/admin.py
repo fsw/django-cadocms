@@ -42,14 +42,6 @@ class StaticPageAdmin(admin.ModelAdmin):
     list_display = ('url', 'title')
     search_fields = ('url', 'title')
 
-class CadoAdminMedia:
-    js = (
-      'https://ajax.googleapis.com/ajax/libs/dojo/1.6.0/dojo/dojo.xd.js',
-      '/static/admin/editor.js',
-    )
-    css = {
-      'all': ('/static/admin/editor.css',),
-    }
     
 class SettingAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'description',)

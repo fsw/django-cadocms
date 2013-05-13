@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from fields import ExtraFieldsDefinition, ExtraFieldsValues
 from django.contrib.auth.models import User
 from haystack import indexes
+from tinymce.models import HTMLField
 
 MODERATION_STATUS = {
     'NEW' : 0,
@@ -67,7 +68,7 @@ class StaticPage(models.Model):
     
     url = models.CharField(_('URL'), max_length=200, db_index=True)
     title = models.CharField(_('title'), max_length=256)
-    content = models.TextField(_('content'), blank=True)
+    content = HTMLField()
     seo_title = models.CharField(max_length=512, blank=True)
     seo_keywords = models.CharField(max_length=512, blank=True)
     seo_description = models.TextField('seo_description', blank=True)
