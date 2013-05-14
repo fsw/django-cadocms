@@ -3,10 +3,16 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 
 EXTRAFIELDS_HTML_WIDGET = u"""
-<script type="text/javascript">(function($){
+<script type="text/javascript">
+if ($ != undefined) {
+    var django = {
+        'jQuery':$,
+    }
+}
+(function($){
 $(document).ready(function($) {
 document.registerExtraField('unravelling.Item', '%(name)s', '%(provider)s');
-});})(django.jQuery);</script>
+});})($);</script>
 """
 
 class ExtraFieldsValuesWidget(forms.Textarea):
