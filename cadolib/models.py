@@ -248,12 +248,14 @@ class ExtraFieldsUser(models.Model):
         self._meta.get_field('extra').PROVIDER_FIELD = self.PROVIDER_FIELD
         self.extra_fields = {}
         try:
-            definition = self.get_provided_extra_fields()
-            for key, field in definition.items():
+            self.extra_definition = self.get_provided_extra_fields()
+            #print 'DEFINITION', self.extra_definition;
+            #print 'VALUES', self.extra;
+            for key, field in self.extra_definition.items():
                 try:
-                    self.extra_fields[key] = field.to_python(self.extra[key])
+                    self.extra_fields[key] = field['field'].to_python(self.extra[key])
                 except Exception:
-                    self.extra_fields[key] = field.get_default();
+                    self.extra_fields[key] = field['field'].get_default();
         except Exception:
             pass
 

@@ -14,7 +14,7 @@ if (jQuery != undefined) {
 					var ekey = $(elem).attr('name').substring(6, $(elem).attr('name').length-1);
 					if ($(elem).is(':checkbox'))
 					{
-						extra[ekey] = $(elem).attr('checked');
+						extra[ekey] = $(elem).attr('checked') == 'checked';
 					}
 					else
 					{
@@ -31,10 +31,10 @@ if (jQuery != undefined) {
 			for (key in extra)
 			{
 				console.log(extra[key])
-				var elem = extraDiv.find("[name=extra\[" + key + "\]]");
+				var elem = extraDiv.find("[name=extra\\[" + key + "\\]]");
 				if (elem.is(':checkbox'))
 				{
-					elem.attr('checked', extra[key]);
+					elem.attr('checked', extra[key] ? 'checked' : false);
 				}
 				else
 				{

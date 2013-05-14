@@ -4,15 +4,15 @@ from django.utils.safestring import mark_safe
 
 EXTRAFIELDS_HTML_WIDGET = u"""
 <script type="text/javascript">
-if ($ != undefined) {
+if (jQuery != undefined) {
     var django = {
-        'jQuery':$,
+        'jQuery':jQuery,
     }
 }
 (function($){
 $(document).ready(function($) {
 document.registerExtraField('unravelling.Item', '%(name)s', '%(provider)s');
-});})($);</script>
+});})(django.jQuery);</script>
 """
 
 class ExtraFieldsValuesWidget(forms.Textarea):
