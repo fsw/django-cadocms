@@ -27,14 +27,13 @@ class Command(BaseCommand):
             run("git submodule update")
             run("%s/python manage.py syncdb" % virtpath)
             run("%s/python manage.py migrate" % virtpath)
-            """
             run("%s/python manage.py collectstatic --noinput" % virtpath)
             run("%s/python manage.py config_gen" % virtpath)
             run("%s/python manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
+            
             with settings(warn_only=True): 
                 run("kill -9 `cat ~/application.pid`")
             
             run("%s/python manage.py runfcgi method=prefork socket=~/application.sock pidfile=~/application.pid" % virtpath)
             run("sleep 5")
             run("chmod 766 ~/application.sock")
-            """
