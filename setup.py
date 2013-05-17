@@ -36,11 +36,11 @@ setup(
         'django-filebrowser',
         'django-geoposition',
         'django-haystack',
-        'django-versioning>=0.7.3',
+        'django-versioning>=0.7.4',
         'django-config-gen>=1.0.0',
     ],
     dependency_links = [
-        'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=django-versioning-0.7.3',
+        'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=django-versioning-0.7.4',
         'http://github.com/SeanHayes/django-config-gen/tarball/master#egg=django-config-gen-1.0.0',
     ],
 )
