@@ -13,6 +13,7 @@ setup(
     packages=['cadolib'],
     install_requires=[
         'PIL==1.1.7',
+        'django-configurations',
         'django-compressor==1.2',
         'django-imagekit==2.0.3',
         'django-mptt==0.5.5',
