@@ -13,6 +13,8 @@ setup(
     packages=['cadolib'],
     install_requires=[
         'PIL==1.1.7',
+        'South==0.7.6',
+        'Django==1.5.1',
         'django-configurations',
         'django-compressor==1.2',
         'django-imagekit==2.0.3',
@@ -36,11 +38,13 @@ setup(
         'django-filebrowser',
         'django-geoposition',
         'django-haystack',
-        'django-versioning>=0.7.4',
+        'django-versioning>=0.7.3',
         'django-config-gen>=1.0.0',
+        'cssselect',
+        'fabric',
     ],
     dependency_links = [
-        'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=django-versioning-0.7.4',
+        'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=django-versioning-0.7.3',
         'http://github.com/SeanHayes/django-config-gen/tarball/master#egg=django-config-gen-1.0.0',
     ],
 )

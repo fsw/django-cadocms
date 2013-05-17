@@ -58,11 +58,12 @@ class Settings(BaseSettings):
                                
         if 'test' in sys.argv:
             databases['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
+        
         return databases
     
     @property
     def DEBUG(self):
-        return (self.getCurrentEnvironmentType == 'DEV') or (self.getCurrentEnvironmentType == 'TEST') 
+        return (self.getCurrentEnvironmentType() == 'DEV') or (self.getCurrentEnvironmentType() == 'TEST') 
         
     @property
     def TEMPLATE_DEBUG(self):
@@ -70,7 +71,7 @@ class Settings(BaseSettings):
     
     @property
     def EMAIL_BACKEND(self):
-        if (self.getCurrentEnvironmentType == 'DEV'):
+        if (self.getCurrentEnvironmentType() == 'DEV'):
             return 'django.core.mail.backends.console.EmailBackend'
         return super(Settings, self).EMAIL_BACKEND
     
@@ -96,27 +97,46 @@ class Settings(BaseSettings):
     def STATIC_ROOT(self):
         return self.getCurrentEnvironmentRoot() + 'static/'
 
+    @property   
+    def TEMPLATE_CONTEXT_PROCESSORS(self):
+        return ("django.contrib.auth.context_processors.auth",
+            "django.core.context_processors.debug",
+            "django.core.context_processors.i18n",
+            "django.core.context_processors.media",
+            "django.core.context_processors.static",
+            "django.core.context_processors.tz",
+            "django.contrib.messages.context_processors.messages")
+
     STATICFILES_FINDERS = (
         'django.contrib.staticfiles.finders.FileSystemFinder',
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+        'compressor.finders.CompressorFinder',
     )
     
     TEMPLATE_LOADERS = (
+        'hamlpy.template.loaders.HamlPyFilesystemLoader',
+        'hamlpy.template.loaders.HamlPyAppDirectoriesLoader',
         'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
+        'django.template.loaders.app_directories.Loader',  
     )
-    
+
     MIDDLEWARE_CLASSES = (
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        'versioning.middleware.VersioningMiddleware',
     )
     
-    ROOT_URLCONF = 'yardgear.urls'
+    @property
+    def ROOT_URLCONF(self):
+        return self.CADO_PROJECT +'.urls'
     
-    WSGI_APPLICATION = 'yardgear.wsgi.application'
+    @property
+    def WSGI_APPLICATION(self):
+        return 'cadolib.wsgi.application'
     
     @property
     def INSTALLED_APPS(self):
@@ -124,6 +144,8 @@ class Settings(BaseSettings):
         return (
             self.CADO_PROJECT,
             'cadolib',
+            'grappelli',
+            'filebrowser',
         ) + super(Settings, self).INSTALLED_APPS + (
             'django.contrib.auth',
             'django.contrib.contenttypes',
@@ -131,9 +153,23 @@ class Settings(BaseSettings):
             'django.contrib.messages',
             'django.contrib.staticfiles',
             'django.contrib.admin',
+            'django_config_gen',
+            'haystack',
             'south',
+            'compressor',
+            'mptt',
+            'debug_toolbar',
+            'versioning',
+            'captcha',
+            'tinymce',
+            'geoposition',
         )
-        
+    CAPTCHA_FONT_SIZE = 25
+    CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_dots',)
+    CAPTCHA_FILTER_FUNCTIONS = ('captcha.helpers.post_smooth',)
+    CAPTCHA_LETTER_ROTATION = (-10,10)
+    CAPTCHA_LENGTH = 6
+
     INTERNAL_IPS = ('127.0.0.1',)
     
     HAYSTACK_CONNECTIONS = {
@@ -143,3 +179,53 @@ class Settings(BaseSettings):
         },
     }
     
+    SOLR_PATH = '/opt/solr/unravelling/'
+    
+    COMPRESS_PRECOMPILERS = (
+        ('text/coffeescript', 'coffee --compile --stdio'),
+        ('text/less', 'lessc {infile} {outfile}'),
+        ('text/x-sass', 'sass {infile} {outfile}'),
+        ('text/x-scss', 'sass --scss {infile} {outfile}'),
+        ('text/stylus', 'stylus < {infile} > {outfile}'),
+        ('text/foobar', 'path.to.MyPrecompilerFilter'),
+    )
+
+    COMPRESS_PARSER = 'compressor.parser.HtmlParser' 
+    
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+        'handlers': {
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            }
+        },
+        'loggers': {
+            'django.request': {
+                'handlers': ['mail_admins'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        }
+    }
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS' : False
+    } 
+    
+    TINYMCE_DEFAULT_CONFIG = {
+            'plugins': "table,paste,searchreplace,preview",
+            'theme': "advanced",
+            'cleanup_on_startup': True,
+            'custom_undo_redo_levels': 10,
+            'theme_advanced_resizing': True,
+            'content_css': STATIC_URL + 'content.css',
+            'body_class': 'content',
+            'height': 400,
+    }
