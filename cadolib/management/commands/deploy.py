@@ -7,7 +7,7 @@ from django.conf import settings as django_settings
 from fabric import colors
 
 env.use_ssh_config = True
-env.host_string = 'unravelling'
+env.host_string = django_settings.CADO_PROJECT
 
 class Command(BaseCommand):
     args = '<poll_id poll_id ...>'
@@ -23,8 +23,8 @@ class Command(BaseCommand):
         run("%s/pip install -r application/requirements.txt" % virtpath)
         
         with cd('application'):
-            run("git submodule init")
-            run("git submodule update")
+            #run("git submodule init")
+            #run("git submodule update")
             run("%s/python manage.py syncdb" % virtpath)
             run("%s/python manage.py migrate" % virtpath)
             run("%s/python manage.py collectstatic --noinput" % virtpath)
