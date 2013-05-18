@@ -13,25 +13,20 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        """
-        git_sub_modules = 'submodules'
+        libs_dir = '../libs'
         workspace_dir = '..'
-        for submodule in os.listdir(git_sub_modules):
-            path = os.path.abspath(os.path.join(git_sub_modules, submodule))
-            if os.path.isdir(os.path.abspath(os.path.join(workspace_dir, submodule))):
-                path = os.path.abspath(os.path.join(workspace_dir, submodule))
-                
+        for submodule in os.listdir(libs_dir):
+            path = os.path.abspath(os.path.join(libs_dir, submodule))
             print 'trying to push ' + path
-             
             with lcd(path):
                 with settings(warn_only=True): 
                     local("git add -A")
-                    if message is not None:
-                        local("git commit -m '%s'" % message)
-                    else:
-                        local("git commit")
+                    #if message is not None:
+                    #    local("git commit -m '%s'" % message)
+                    #else:
+                    local("git commit")
                     local("git push origin master")
-        """
+
         print 'REBUILDING CONFIGURATION'
         local("./manage.py build_solr_schema > config/solr_schema.xml")
         with settings(warn_only=True):

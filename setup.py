@@ -40,6 +40,7 @@ setup(
         'django-haystack',
         'fsw-django-versioning>=0.7.3',
         'django-config-gen>=1.0.0',
+        'django-simple-captcha',
         'cssselect',
         'fabric',
     ],
