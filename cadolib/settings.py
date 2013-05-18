@@ -3,6 +3,16 @@ from configurations import Settings as BaseSettings
 
 class Settings(BaseSettings):
     
+    
+    @property
+    def PROJECT_ROOT(self):
+        package = pkgutil.get_loader(self.__class__.__module__)
+        return os.path.dirname(os.path.dirname(package.filename))
+
+    @property
+    def CONFIG_GEN_GENERATED_DIR(self):
+        return os.path.join(self.PROJECT_ROOT, 'config')
+
     ADMINS = (
               ('Franciszek Szczepan Wawrzak', 'frank.wawrzak@cadosolutions.com'),
     )
