@@ -114,8 +114,8 @@ tinyMCE.init({
     media_strict: true,
     
     // Grappelli Settings
-    grappelli_adv_hidden: false,
-    grappelli_show_documentstructure: 'on'
+    grappelli_adv_hidden: true,
+    grappelli_show_documentstructure: 'off'
     
     // Elements
     // valid_elements: '@[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|'

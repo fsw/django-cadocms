@@ -251,3 +251,15 @@ add_introspection_rules([], ["^cadolib\.fields\.ExtraFieldsDefinition"])
 add_introspection_rules([], ["^cadolib\.fields\.ExtraFieldsValues"])
 
 
+class HTMLField(models.TextField):
+    
+    widget = forms.Textarea(attrs={'class':'special'})
+    
+    """
+    def formfield(self, **kwargs):
+        defaults = {'widget': forms.Textarea}
+        defaults.update(kwargs)
+        return super(HTMLField, self).formfield(**defaults)
+        """
+
+

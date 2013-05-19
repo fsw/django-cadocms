@@ -1,0 +1,19 @@
+div.wrapper {
+	width: 960px;
+	margin: 0 auto;
+}
+
+.grp-fixed-footer > ul {
+	width: 960px;
+	margin: 0 auto;
+}
+
+.g-d-12, .l-2cr-fluid.l-d-12 .c-1 {
+	width: 680px !important;
+}
+
+body.grp-change-list table {
+	border: none;
+    width: 100%;
+    margin: 0 !important;
+}

@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey, TreeManyToManyField
 from django.utils.translation import ugettext_lazy as _
-from fields import ExtraFieldsDefinition, ExtraFieldsValues
+from .fields import ExtraFieldsDefinition, ExtraFieldsValues, HTMLField
 from django.contrib.auth.models import User
 from haystack import indexes
 
@@ -67,7 +67,7 @@ class StaticPage(models.Model):
     
     url = models.CharField(_('URL'), max_length=200, db_index=True)
     title = models.CharField(_('Title'), max_length=256)
-    content = models.TextField('Content')
+    content = HTMLField('Content')
     seo_title = models.CharField(max_length=512, blank=True)
     seo_keywords = models.CharField(max_length=512, blank=True)
     seo_description = models.TextField('seo_description', blank=True)

@@ -22,21 +22,30 @@ class CustomIndexDashboard(Dashboard):
     def init_with_context(self, context):
         site_name = get_admin_site_name(context)
         
-        self.children.append(modules.AppList(
-            _('Shop Administration'),
+        self.children.append(modules.ModelList(
+            _('Shop Orders'),
             collapsible=False,
             column=1,
             #css_classes=('collapse closed',),
-            models=('cadoshop.*', 'plata.*'),
+            models=('plata.shop.models.Order', 'plata.shop.models.OrderPayment', 'plata.contact.*', ),
+        ))
+
+        self.children.append(modules.ModelList(
+            _('Shop Content'),
+            collapsible=False,
+            column=1,
+            #css_classes=('collapse closed',),
+            models=('cadoshop.*', ), #'plata.discount.*',
         ))
         
-        self.children.append(modules.AppList(
-            _('Site Administration'),
+        self.children.append(modules.ModelList(
+            _('Site Content'),
             collapsible=False,
             column=1,
             #css_classes=('collapse closed',),
             models=('cadolib.*', 'django.contrib.*', ),
         ))
+        
         """
         self.children.append(modules.AppList(
             _('Shop '),
@@ -90,23 +99,13 @@ class CustomIndexDashboard(Dashboard):
         
         # append another link list module for "support".
         self.children.append(modules.LinkList(
-            _('Support'),
+            _('Help'),
             column=2,
             collapsible=False,
             children=[
                 {
-                    'title': _('Django Documentation'),
-                    'url': 'http://docs.djangoproject.com/',
-                    'external': True,
-                },
-                {
-                    'title': _('Grappelli Documentation'),
-                    'url': 'http://packages.python.org/django-grappelli/',
-                    'external': True,
-                },
-                {
-                    'title': _('Grappelli Google-Code'),
-                    'url': 'http://code.google.com/p/django-grappelli/',
+                    'title': _('Admin Manual'),
+                    'url': '/admin/manual/',
                     'external': True,
                 },
             ]
@@ -120,7 +119,7 @@ class CustomIndexDashboard(Dashboard):
             column=2,
         ))
         
-        # append a feed module
+        """
         self.children.append(modules.Feed(
             _('Latest Django News'),
             column=2,
@@ -128,5 +127,6 @@ class CustomIndexDashboard(Dashboard):
             feed_url='http://www.djangoproject.com/rss/weblog/',
             limit=5
         ))
+        """
 
 
