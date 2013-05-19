@@ -3,6 +3,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from models import StaticPage, Setting, Moderated, MODERATION_STATUS
 from django import forms
 from django.conf import settings
+import reversion
 
 class StaticPageForm(forms.ModelForm):
     url = forms.RegexField(label=_("URL"), max_length=100, regex=r'^[-\w/\.~]+$',
@@ -34,11 +35,16 @@ class StaticPageForm(forms.ModelForm):
 
         return super(StaticPageForm, self).clean()
 
-class StaticPageAdmin(admin.ModelAdmin):
+class StaticPageAdmin(reversion.VersionAdmin):
     form = StaticPageForm
     fieldsets = (
                  (None, {'fields': ('url', 'title', 'content', 'seo_title', 'seo_keywords', 'seo_description')}),
     )
+    class Media:
+        js = [
+              '/static/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
+              '/static/js/tinymce_setup.js',
+        ]
     list_display = ('url', 'title')
     search_fields = ('url', 'title')
 

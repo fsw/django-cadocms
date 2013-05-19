@@ -16,7 +16,6 @@ urlpatterns = patterns('',
     url(r'^admin/filebrowser/', include(filebrowserSite.urls)),
 
     url(r'^captcha/', include('captcha.urls')),
-    url(r'^tinymce/', include('tinymce.urls')),
     url(r'^grappelli/', include('grappelli.urls')),
                       
 )

@@ -111,6 +111,7 @@ class Settings(BaseSettings):
     def TEMPLATE_CONTEXT_PROCESSORS(self):
         return ("django.contrib.auth.context_processors.auth",
             "django.core.context_processors.debug",
+            "django.core.context_processors.request",
             "django.core.context_processors.i18n",
             "django.core.context_processors.media",
             "django.core.context_processors.static",
@@ -137,7 +138,7 @@ class Settings(BaseSettings):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'debug_toolbar.middleware.DebugToolbarMiddleware',
-        'versioning.middleware.VersioningMiddleware',
+        #'versioning.middleware.VersioningMiddleware',
     )
     
     @property
@@ -154,6 +155,7 @@ class Settings(BaseSettings):
         return (
             self.CADO_PROJECT,
             'cadolib',
+            'grappelli.dashboard',
             'grappelli',
             'filebrowser',
         ) + super(Settings, self).INSTALLED_APPS + (
@@ -164,14 +166,14 @@ class Settings(BaseSettings):
             'django.contrib.staticfiles',
             'django.contrib.admin',
             'django_config_gen',
+            'reversion',
             'haystack',
             'south',
             'compressor',
             'mptt',
             'debug_toolbar',
-            'versioning',
+            #'versioning',
             'captcha',
-            'tinymce',
             'geoposition',
         )
     CAPTCHA_FONT_SIZE = 25
@@ -179,6 +181,8 @@ class Settings(BaseSettings):
     CAPTCHA_FILTER_FUNCTIONS = ('captcha.helpers.post_smooth',)
     CAPTCHA_LETTER_ROTATION = (-10,10)
     CAPTCHA_LENGTH = 6
+    
+    GRAPPELLI_INDEX_DASHBOARD = 'cadolib.dashboard.CustomIndexDashboard'
 
     INTERNAL_IPS = ('127.0.0.1',)
     
@@ -188,6 +192,8 @@ class Settings(BaseSettings):
             'URL': 'http://127.0.0.1:8080/solr/yardgear/',
         },
     }
+    
+    GRAPPELLI_ADMIN_TITLE = 'Cado Admin'
     
     SOLR_PATH = '/opt/solr/unravelling/'
     
@@ -228,7 +234,7 @@ class Settings(BaseSettings):
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS' : False
     } 
-    
+    """
     TINYMCE_DEFAULT_CONFIG = {
             'plugins': "table,paste,searchreplace,preview",
             'theme': "advanced",
@@ -239,3 +245,4 @@ class Settings(BaseSettings):
             'body_class': 'content',
             'height': 400,
     }
+    """
