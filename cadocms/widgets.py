@@ -34,7 +34,7 @@ class ExtraFieldsValuesWidget(forms.Textarea):
         #model = 'unravelling.Item';
         print 'RENDERING FIELD %s %s' % (self.model_name, self.provider_field)
         return rendered + mark_safe(EXTRAFIELDS_HTML_WIDGET % {
-                            'url': reverse('cadolib.views.extrafields', kwargs={'model':self.model_name, 'provider_id':0}),
+                            'url': reverse('cadocms.views.extrafields', kwargs={'model':self.model_name, 'provider_id':0}),
                             'value': value,
                             'name': name,
                             'provider': self.provider_field})

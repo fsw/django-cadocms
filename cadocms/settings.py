@@ -147,14 +147,14 @@ class Settings(BaseSettings):
     
     @property
     def WSGI_APPLICATION(self):
-        return 'cadolib.wsgi.application'
+        return 'cadocms.wsgi.application'
     
     @property
     def INSTALLED_APPS(self):
-        #print 'INSTALLED_APPS CadoLib'
+        #print 'INSTALLED_APPS cadocms'
         return (
             self.CADO_PROJECT,
-            'cadolib',
+            'cadocms',
             'grappelli.dashboard',
             'grappelli',
             'filebrowser',
@@ -182,7 +182,7 @@ class Settings(BaseSettings):
     CAPTCHA_LETTER_ROTATION = (-10,10)
     CAPTCHA_LENGTH = 6
     
-    GRAPPELLI_INDEX_DASHBOARD = 'cadolib.dashboard.CustomIndexDashboard'
+    GRAPPELLI_INDEX_DASHBOARD = 'cadocms.dashboard.CustomIndexDashboard'
 
     INTERNAL_IPS = ('127.0.0.1',)
     

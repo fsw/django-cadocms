@@ -43,7 +43,7 @@ class CustomIndexDashboard(Dashboard):
             collapsible=False,
             column=1,
             #css_classes=('collapse closed',),
-            models=('cadolib.*', 'django.contrib.*', ),
+            models=('cadocms.*', 'django.contrib.*', ),
         ))
         
         """

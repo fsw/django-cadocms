@@ -16,7 +16,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django import forms
 from django.utils.text import capfirst
 
-from cadolib.widgets import ExtraFieldsValuesWidget
+from cadocms.widgets import ExtraFieldsValuesWidget
 
 import re
 import decimal
@@ -266,12 +266,12 @@ class ExtraFieldsValues(JSONField):
 
 from south.modelsinspector import add_introspection_rules
 
-add_introspection_rules([], ["^cadolib\.fields\.ExtraFieldsDefinition"])
-add_introspection_rules([], ["^cadolib\.fields\.ExtraFieldsValues"])
+add_introspection_rules([], ["^cadocms\.fields\.ExtraFieldsDefinition"])
+add_introspection_rules([], ["^cadocms\.fields\.ExtraFieldsValues"])
 
 class HTMLField(models.TextField):
     
-    widget = forms.Textarea(attrs={'class':'special'})
+    widget = forms.Textarea(attrs={'class':'tinymce'})
     
     """
     def formfield(self, **kwargs):
@@ -280,4 +280,5 @@ class HTMLField(models.TextField):
         return super(HTMLField, self).formfield(**defaults)
         """
 
+add_introspection_rules([], ["^cadocms\.fields\.HTMLField"])
 
