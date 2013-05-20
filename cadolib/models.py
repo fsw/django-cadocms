@@ -5,6 +5,7 @@ from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey, TreeManyToManyField
 from django.utils.translation import ugettext_lazy as _
 from .fields import ExtraFieldsDefinition, ExtraFieldsValues, HTMLField
+from .widgets import ExtraFieldsValuesWidget
 from django.contrib.auth.models import User
 from haystack import indexes
 
@@ -219,7 +220,7 @@ class ExtraFieldsProvider(Tree):
     
 class ExtraFieldsUser(models.Model):
     
-    extra = ExtraFieldsValues(null=True, blank=True)
+    extra = ExtraFieldsValues(null=True, blank=True, help_text='Extra fields depends on category you select')
     PROVIDER_FIELD = 'category'
     class Meta:
         abstract = True
@@ -244,12 +245,14 @@ class ExtraFieldsUser(models.Model):
     
     def __init__(self, *args, **kwargs):
         super(ExtraFieldsUser, self).__init__(*args, **kwargs)
-        self._meta.get_field('extra').PROVIDER_FIELD = self.PROVIDER_FIELD
+        self._meta.get_field('extra').provider_field = self.PROVIDER_FIELD
+        self._meta.get_field('extra').model_name = self.__class__._meta.app_label + '.' + self.__class__._meta.object_name
         self.extra_fields = {}
         try:
             self.extra_definition = self.get_provided_extra_fields()
             #print 'DEFINITION', self.extra_definition;
             #print 'VALUES', self.extra;
+            #print self.extra_definition
             for key, field in self.extra_definition.items():
                 try:
                     self.extra_fields[key] = field['field'].to_python(self.extra[key])

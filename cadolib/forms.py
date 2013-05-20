@@ -46,3 +46,6 @@ class JSONFormField(fields.Field):
             raise util.ValidationError('%s (Caught "%s")' % (self.help_text, e))
 
         return value
+    
+class ExtraFieldsValuesFormField(JSONFormField):
+    pass

@@ -3,7 +3,7 @@ This is loosly based on Derek Schaefer's django-json-field:
 https://github.com/derek-schaefer/django-json-field
 '''
 
-from forms import JSONFormField
+from .forms import JSONFormField, ExtraFieldsValuesFormField
 from django.forms import fields
 
 from django.db import models
@@ -240,10 +240,29 @@ class ExtraFieldsDefinition(JSONField):
     pass
     
 class ExtraFieldsValues(JSONField):
-    def formfield(self, **kwargs):
-        kwargs['widget'] = ExtraFieldsValuesWidget
-        return super(ExtraFieldsValues, self).formfield(**kwargs)
+    
+    provider_field = 'unknown'
+    model_name = 'Unknown'
+    
+    def __init__(self, *args, **kwargs):
+        super(ExtraFieldsValues, self).__init__(*args, **kwargs)
 
+    def formfield(self, **kwargs):
+        #print "INIT FORM FIELD FORM %s %s" % (self.provider_field, self.model_name)
+        kwargs['form_class'] = ExtraFieldsValuesFormField
+        kwargs['widget'] = ExtraFieldsValuesWidget(model_name = self.model_name, provider_field = self.provider_field)
+        return super(ExtraFieldsValues, self).formfield(**kwargs)
+    """
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': kwargs.get('form_class', JSONFormField),
+            'evaluate': self.evaluate_formfield,
+            'encoder_kwargs': self.encoder_kwargs,
+            'decoder_kwargs': self.decoder_kwargs,
+        }
+        defaults.update(kwargs)
+        return super(JSONField, self).formfield(**defaults)
+    """
 
 from south.modelsinspector import add_introspection_rules
 

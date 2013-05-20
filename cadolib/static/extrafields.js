@@ -43,19 +43,19 @@ if (jQuery != undefined) {
 			}
 		}
 		
-    	document.registerExtraField = function(model, field_name, provider_name)
+    	document.registerExtraField = function(url, field_name, provider_name)
     	{
     		///cado/extrafields/unravelling.Item/4
     		field = $('#id_' + field_name);
 			var extraDiv = $('<div class="extraFieldsDiv"></div>');
 			//field.parents('.form-row').parent().children().first().hide();
-			field.parent().parent().append(extraDiv);
-			field.parent().hide();
+			field.after(extraDiv);
+			field.hide();
 			
     		provider = $('#id_' + provider_name);
 
 			provider.change(function(){
-				$.get('/cado/extrafields/' + model + '/' + $(this).val(), {}, function(data){
+				$.get(url.replace('0', $(this).val()), {}, function(data){
 					extraDiv.html(data);
 					extraDiv.find("[name^=extra]").change(function(){
 						saveExtra(extraDiv);
