@@ -24,8 +24,11 @@
 			<meta http-equiv="imagetoolbar" content="no">
 			<title>{% block seo_title %}{% endblock %}</title>
 			<meta name="viewport" content="width=device-width">
-			{% block html_styles %}
-			{% endblock %}
+			{% load compress %}
+			{% compress css %}
+				{% block html_styles %}
+				{% endblock %}
+			{% endcompress %}
 			<script src="{{ STATIC_URL }}js/modernizr.js"></script>
 		</head>
 		<body>
