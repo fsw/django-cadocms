@@ -269,7 +269,6 @@ from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^cadolib\.fields\.ExtraFieldsDefinition"])
 add_introspection_rules([], ["^cadolib\.fields\.ExtraFieldsValues"])
 
-
 class HTMLField(models.TextField):
     
     widget = forms.Textarea(attrs={'class':'special'})
