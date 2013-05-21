@@ -3,6 +3,7 @@ from configurations import Settings as BaseSettings
 
 class Settings(BaseSettings):
     
+    CADO_NAME = 'Cado CMS'
     
     @property
     def PROJECT_ROOT(self):
@@ -186,14 +187,20 @@ class Settings(BaseSettings):
 
     INTERNAL_IPS = ('127.0.0.1',)
     
-    HAYSTACK_CONNECTIONS = {
-        'default': {
-            'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-            'URL': 'http://127.0.0.1:8080/solr/yardgear/',
-        },
-    }
     
-    GRAPPELLI_ADMIN_TITLE = 'Cado Admin'
+    @property
+    def HAYSTACK_CONNECTIONS(self):
+        return {
+                'default': {
+                            'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+                            'URL': 'http://127.0.0.1:8080/solr/' + self.CADO_PROJECT + '/',
+                            },
+                }
+    
+    @property
+    def GRAPPELLI_ADMIN_TITLE(self):
+        return self.CADO_NAME + ' Admin'
+    
     
     SOLR_PATH = '/opt/solr/unravelling/'
     

@@ -120,6 +120,3 @@ def add_moderated_admin(model, name = 'moderate'):
     return ModeratedAdmin
 
 
-class ExtraFieldsUserAdmin(admin.ModelAdmin):
-    pass
-

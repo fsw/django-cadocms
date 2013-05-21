@@ -23,19 +23,11 @@ class CustomIndexDashboard(Dashboard):
         site_name = get_admin_site_name(context)
         
         self.children.append(modules.ModelList(
-            _('Shop Orders'),
+            _('Site Content'),
             collapsible=False,
             column=1,
             #css_classes=('collapse closed',),
-            models=('plata.shop.models.Order', 'plata.shop.models.OrderPayment', 'plata.contact.*', ),
-        ))
-
-        self.children.append(modules.ModelList(
-            _('Shop Content'),
-            collapsible=False,
-            column=1,
-            #css_classes=('collapse closed',),
-            models=('cadoshop.*', ), #'plata.discount.*',
+            exclude=('cadocms.*', 'django.contrib.*', ),
         ))
         
         self.children.append(modules.ModelList(
@@ -45,43 +37,6 @@ class CustomIndexDashboard(Dashboard):
             #css_classes=('collapse closed',),
             models=('cadocms.*', 'django.contrib.*', ),
         ))
-        
-        """
-        self.children.append(modules.AppList(
-            _('Shop '),
-            collapsible=True,
-            column=1,
-            css_classes=('collapse closed',),
-            exclude=('django.contrib.*',),
-        ))
-        
-        self.children.append(modules.ModelList(
-            _('ModelList: Administration'),
-            column=1,
-            collapsible=False,
-            models=('django.contrib.*',),
-        ))
-        
-        self.children.append(modules.Group(
-            _('Group: Administration & Applications'),
-            column=1,
-            collapsible=True,
-            children = [
-                modules.AppList(
-                    _('Administration'),
-                    column=1,
-                    collapsible=False,
-                    models=('django.contrib.*',),
-                ),
-                modules.AppList(
-                    _('Applications'),
-                    column=1,
-                    css_classes=('collapse closed',),
-                    exclude=('django.contrib.*',),
-                )
-            ]
-        ))
-        """
         
         # append another link list module for "support".
         self.children.append(modules.LinkList(
@@ -119,14 +74,5 @@ class CustomIndexDashboard(Dashboard):
             column=2,
         ))
         
-        """
-        self.children.append(modules.Feed(
-            _('Latest Django News'),
-            column=2,
-            collapsible=False,
-            feed_url='http://www.djangoproject.com/rss/weblog/',
-            limit=5
-        ))
-        """
 
 
