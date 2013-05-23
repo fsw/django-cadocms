@@ -88,7 +88,14 @@ class Settings(BaseSettings):
     
     TIME_ZONE = 'America/Chicago'
     
-    LANGUAGE_CODE = 'en-us'
+    LANGUAGE_CODE = 'en'
+    
+    LANGUAGES = (
+        ('en', 'English'),
+    )
+    
+    CADO_DEFAULT_LANGUAGE = 'en'
+    CADO_LANGUAGES = ('en')
     
     USE_I18N = True
     USE_L10N = True
@@ -126,6 +133,7 @@ class Settings(BaseSettings):
     )
     
     TEMPLATE_LOADERS = (
+        'cadocms.loaders.mobile.Loader',
         'hamlpy.template.loaders.HamlPyFilesystemLoader',
         'hamlpy.template.loaders.HamlPyAppDirectoriesLoader',
         'django.template.loaders.filesystem.Loader',
@@ -139,7 +147,7 @@ class Settings(BaseSettings):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'debug_toolbar.middleware.DebugToolbarMiddleware',
-        'cadocms.middleware.DetectMobileBrowser',
+        'cadocms.middleware.Middleware',
         #'versioning.middleware.VersioningMiddleware',
     )
     
@@ -177,6 +185,7 @@ class Settings(BaseSettings):
             #'versioning',
             'captcha',
             'geoposition',
+            'imagekit',
         )
     CAPTCHA_FONT_SIZE = 25
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_dots',)
