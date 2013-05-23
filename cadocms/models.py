@@ -83,7 +83,15 @@ class StaticPage(models.Model):
 
     def get_absolute_url(self):
         return self.url
-    
+
+
+class Chunk(models.Model):
+    key = models.CharField(max_length=256)
+    body = HTMLField(blank=True, null=True)
+
+    def __unicode__(self):
+        return self.key    
+        
 class Setting(models.Model):
     
     key = models.CharField(_('Key'), max_length=200, db_index=True)

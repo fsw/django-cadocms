@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext, ugettext_lazy as _
-from models import StaticPage, Setting, Moderated, MODERATION_STATUS
+from models import StaticPage, Setting, Moderated, MODERATION_STATUS, Chunk
 from django import forms
 from django.conf import settings
 import reversion
@@ -40,16 +40,11 @@ class StaticPageAdmin(reversion.VersionAdmin):
     fieldsets = (
                  (None, {'fields': ('url', 'title', 'content', 'seo_title', 'seo_keywords', 'seo_description')}),
     )
-    class Media:
-        js = [
-              '/static/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
-              '/static/js/tinymce_setup.js',
-        ]
     list_display = ('url', 'title')
     search_fields = ('url', 'title')
 
     
-class SettingAdmin(admin.ModelAdmin):
+class SettingAdmin(reversion.VersionAdmin):
     list_display = ('__str__', 'description',)
     list_display_links = ('__str__',)
     fieldsets = (
@@ -70,7 +65,29 @@ class SettingAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+class ChunkAdmin(reversion.VersionAdmin):
+    list_display = ('__str__',)
+    list_display_links = ('__str__',)
+    fieldsets = (
+        (None, {
+            'fields': ('key', 'body')
+        }),
+    )
+    readonly_fields=('key',)
     
+    def has_add_permission(self, request):
+        return False
+    
+    def get_actions(self, request):
+        actions = super(ChunkAdmin, self).get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 def approve_moderated(modeladmin, request, queryset):
     for obj in queryset:

@@ -27,9 +27,12 @@
 			{% load compress %}
 			{% compress css %}
 				{% block html_styles %}
+				<link rel="stylesheet" href="{{STATIC_URL}}reset.css" type="text/css" charset="utf-8">
+				<link rel="stylesheet" href="{{STATIC_URL}}style.scss" type="text/x-scss" charset="utf-8">
 				{% endblock %}
 			{% endcompress %}
 			<script src="{{ STATIC_URL }}js/modernizr.js"></script>
+			<link rel="shortcut icon" href="favicon.png" />
 		</head>
 		<body>
 			<!--[if lt IE 7]>
@@ -39,6 +42,8 @@
 			{% block html_body %}
 			{% endblock %}
 			{% block html_scripts %}
+			<script type='text/javascript' src="{{ STATIC_URL }}js/jquery-1.9.1.min.js"></script>
+			<script type='text/javascript' src="{{ STATIC_URL }}script.js"></script>
 			{% endblock %}
 		</body>
 	</html>

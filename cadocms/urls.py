@@ -14,7 +14,10 @@ urlpatterns = patterns('',
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT,}),
     url(r'^admin/manual/$', TemplateView.as_view(template_name='admin/manual.html')),
     url(r'^admin/', include(admin.site.urls)),
+    
     url(r'^extrafields/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<provider_id>\d+)$', 'cadocms.views.extrafields'),
+    url(r'^testsuite/$', 'cadocms.views.testsuite'),
+
     url(r'^admin/filebrowser/', include(filebrowserSite.urls)),
 
     url(r'^captcha/', include('captcha.urls')),

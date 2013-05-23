@@ -5,6 +5,9 @@ from django.shortcuts import get_object_or_404
 from django.db.models.loading import get_model
 from django.forms.forms import Form
 
+from django.test.utils import get_runner
+from django.conf import settings
+
 def staticpage(request, url):
     print url
     staticpage = get_object_or_404(StaticPage, url=url)
@@ -20,3 +23,10 @@ def extrafields(request, model, provider_id):
     for key, field in model.get_provided_extra_fields_by_provider_id(provider_id).items():
         form.fields['extra[%s]' % key] = field['field'].formfield()
     return HttpResponse(form.as_p())
+
+def testsuite(request):
+    #SQLITE
+    TestRunner = get_runner(settings)
+    test_runner = TestRunner()
+    failures = test_runner.run_tests([])
+    return HttpResponse("DUPA")

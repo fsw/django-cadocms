@@ -139,6 +139,7 @@ class Settings(BaseSettings):
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'debug_toolbar.middleware.DebugToolbarMiddleware',
+        'cadocms.middleware.DetectMobileBrowser',
         #'versioning.middleware.VersioningMiddleware',
     )
     

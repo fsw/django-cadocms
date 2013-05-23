@@ -16,7 +16,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django import forms
 from django.utils.text import capfirst
 
-from cadocms.widgets import ExtraFieldsValuesWidget
+from cadocms.widgets import ExtraFieldsValuesWidget, HTMLFieldWidget
 
 import re
 import decimal
@@ -270,15 +270,10 @@ add_introspection_rules([], ["^cadocms\.fields\.ExtraFieldsDefinition"])
 add_introspection_rules([], ["^cadocms\.fields\.ExtraFieldsValues"])
 
 class HTMLField(models.TextField):
-    
-    widget = forms.Textarea(attrs={'class':'tinymce'})
-    
-    """
+    #widget = HTMLFieldWidget
     def formfield(self, **kwargs):
-        defaults = {'widget': forms.Textarea}
-        defaults.update(kwargs)
-        return super(HTMLField, self).formfield(**defaults)
-        """
+        kwargs['widget'] = HTMLFieldWidget
+        return super(HTMLField, self).formfield(**kwargs)
 
 add_introspection_rules([], ["^cadocms\.fields\.HTMLField"])
 

@@ -28,6 +28,7 @@ tinyMCE.init({
     mode: 'textareas',
     theme: 'advanced',
     skin: 'grappelli',
+    editor_selector : 'mceEditor',
     
     // General
     accessibility_warnings: false,
