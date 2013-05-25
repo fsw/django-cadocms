@@ -85,7 +85,11 @@ class Settings(BaseSettings):
             return 'localhost:8000'
         else:
             return self.ENVIRONMENT_TYPE.lower() + '.' + self.CADO_DOMAIN
-            
+    
+    @property
+    def CADO_PROJECT_GROUP(self):
+        return self.CADO_PROJECT
+     
     CADO_FLAVOURS = [
         ('desktop', 'Desktop Version', ''),
         ('simple', 'Simplified Version', 's.'),

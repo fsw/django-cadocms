@@ -7,7 +7,7 @@ from django.conf import settings as django_settings
 from fabric import colors
 
 env.use_ssh_config = True
-env.host_string = django_settings.CADO_PROJECT
+env.host_string = django_settings.CADO_PROJECT_GROUP
 
 class Command(BaseCommand):
     args = '<poll_id poll_id ...>'
