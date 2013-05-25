@@ -30,8 +30,10 @@
 			{% load compress %}
 			{% compress css %}
 				{% block html_styles %}
-				<link rel="stylesheet" href="{{STATIC_URL}}css/main.{% get_current_flavour %}.scss" type="text/x-scss" charset="utf-8">
-				<link rel="stylesheet" href="{{STATIC_URL}}fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+					<link rel="stylesheet" href="{{STATIC_URL}}css/main.{% get_current_flavour %}.scss" type="text/x-scss" charset="utf-8">
+					<link rel="stylesheet" href="{{STATIC_URL}}fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+					{% block extra_html_styles %}
+					{% endblock %}
 				{% endblock %}
 			{% endcompress %}
 			<script src="{{ STATIC_URL }}js/modernizr.js"></script>
@@ -48,6 +50,8 @@
 				{% block html_scripts %}
 				<script type='text/javascript' src="{{ STATIC_URL }}js/jquery-1.9.1.min.js"></script>
 				<script type="text/javascript" src="{{ STATIC_URL }}fancybox/jquery.fancybox.pack.js"></script>
+				{% block extra_html_scripts %}
+				{% endblock %}
 				<script type='text/javascript' src="{{ STATIC_URL }}js/{% get_current_flavour %}.js"></script>
 				{% endblock %}
 			{% endcompress %}

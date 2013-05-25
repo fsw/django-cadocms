@@ -21,7 +21,7 @@ def get_current_request():
 class Middleware():
     def process_request(self, request):
         
-        if len(settings.LANGUAGES):
+        if len(settings.LANGUAGES) > 1:
             #this is a multilanguage site
             url_lang = None
             chunks = request.path_info.split('/')
