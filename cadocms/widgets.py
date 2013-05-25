@@ -18,7 +18,7 @@ document.registerExtraField('%(url)s', '%(name)s', '%(provider)s');
 
 class ExtraFieldsValuesWidget(forms.Textarea):
     class Media:
-        js = (settings.STATIC_URL + 'extrafields.js', )
+        js = (settings.STATIC_URL + 'cadocms/extrafields.js', )
 
     def __init__(self, language=None, attrs=None, provider_field='PROVIDER_FIELD', model_name = 'MODEL_NAME'):
         self.language = language or settings.LANGUAGE_CODE[:2]

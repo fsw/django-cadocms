@@ -29,7 +29,8 @@ tinyMCE.init({
     theme: 'advanced',
     skin: 'grappelli',
     editor_selector : 'mceEditor',
-    
+    content_css : "/static/css/tinymce.css",
+    body_class: "content",
     // General
     accessibility_warnings: false,
     browsers: 'gecko,msie,safari,opera',
@@ -47,15 +48,17 @@ tinyMCE.init({
     // Cleanup/Output
     element_format: 'xhtml',
     fix_list_elements: true,
-    forced_root_block: 'p',
+
+    force_br_newlines : true,
+    forced_root_block: '',
     // style formsts overrides theme_advanced_styles
     // see http://www.tinymce.com/wiki.php/Configuration:style_formats
-    style_formats: [
+    /*style_formats: [
         {title: 'Paragraph Small', block : 'p', classes: 'p_small'},
         {title: 'Paragraph ImageCaption', block : 'p', classes: 'p_caption'},
         {title: 'Clearfix', block : 'p', classes: 'clearfix'},
         {title: 'Code', block : 'p', classes: 'code'}
-    ],
+    ],*/
     verify_html: true,
 
     // URL
@@ -103,7 +106,7 @@ tinyMCE.init({
 
     // Image Plugin
     // see http://www.tinymce.com/wiki.php/Plugin:advimage
-    theme_advanced_styles: 'Image Left=img_left;Image Right=img_right;Image Block=img_block',
+    /*theme_advanced_styles: 'Image Left=img_left;Image Right=img_right;Image Block=img_block',*/
     advimage_update_dimensions_onchange: true,
     
     // Link Settings

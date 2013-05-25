@@ -1,0 +1,29 @@
+
+password = local("date | md5sum | head -c10", capture=True)
+
+	dbname = name
+	dbuser = name
+	dbpass = password
+	sql = "CREATE DATABASE %s; GRANT ALL ON %s.* TO %s@localhost IDENTIFIED BY '%s';" % (dbname, dbname, dbuser, dbpass)
+	print sql
+
+	local("adduser %s" % name)
+	local('echo "%s" | mysql --batch -u %s' % (sql, 'root'))
+
+	with lcd('/home/' + name):
+		#local("sudo -u %s mkdir git" % name)
+		local("sudo -u %s mkdir application" % name)
+		local("sudo -u %s mkdir media" % name)
+		local("sudo -u %s mkdir static" % name)
+		local("sudo -u %s virtualenv --no-site-packages virtualenv" % name)
+
+	#with lcd('/home/' + name + '/git'):
+	#	local("sudo -u %s git --bare init" % name)
+
+	with lcd('/home/' + name + '/application'):
+		#git init
+		local("sudo -u %s git init" % name)
+#		local("sudo -u %s git remote add origin ../git" % name)
+
+
+	print 'PROJECT ' + name + ' CREATED'

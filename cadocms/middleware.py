@@ -24,16 +24,11 @@ class Middleware():
         if len(settings.LANGUAGES):
             #this is a multilanguage site
             url_lang = None
-            
             chunks = request.path_info.split('/')
-            #print 'CHUNKS', chunks
             chunk0 = chunks.pop(1)
-            #print 'CHUNK', chunk0
             for code, name in settings.LANGUAGES:
-                print chunk0, code
                 if chunk0 == code:
                     url_lang = code
-                    #request.path_info = '/'.join(chunks)
                     translation.activate(url_lang)
                     request.LANGUAGE_CODE = translation.get_language()
             
@@ -43,11 +38,25 @@ class Middleware():
                 preffered_language = translation.get_language_from_request(request)
                 return HttpResponseRedirect("/" + preffered_language + request.path_info)
         
-        request.flavour = 'desktop'
-        if request.META.has_key('HTTP_USER_AGENT'):
-            user_agent = request.META['HTTP_USER_AGENT']
-            b = reg_b.search(user_agent)
-            v = reg_v.search(user_agent[0:4])
-            if b or v:
-                request.flavour = 'mobile'
+        request.flavour = None
+        for key, name, prefix in settings.CADO_FLAVOURS:
+            if request.get_host().startswith(prefix):
+                request.flavour = key
+        
+        #first time visitor
+        if not request.session.get('flavour', None):
+            flavour = 'desktop'
+            if request.META.has_key('HTTP_USER_AGENT'):
+                user_agent = request.META['HTTP_USER_AGENT']
+                b = reg_b.search(user_agent)
+                v = reg_v.search(user_agent[0:4])
+                if b or v:
+                    flavour = 'mobile'
+            request.session['flavour'] = flavour
+            if flavour != request.flavour:
+                for key, name, prefix in settings.CADO_FLAVOURS:
+                    if key == flavour:
+                        HttpResponseRedirect('http://' + prefix + settings.CADO_FULL_DOMAIN + request.path_info)
+        
         _thread_locals.request = request
+        

@@ -53,6 +53,10 @@ class Settings(BaseSettings):
         return self.getCurrentEnvironment()['home']
     
     @property
+    def ENVIRONMENT_TYPE(self):
+        return self.getCurrentEnvironmentType()
+    
+    @property
     def DATABASES(self):
         databases = {
             'default': {
@@ -71,6 +75,24 @@ class Settings(BaseSettings):
             databases['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
         
         return databases
+    
+    
+    CADO_DOMAIN = 'localhost' 
+    
+    @property
+    def CADO_FULL_DOMAIN(self):
+        if (self.ENVIRONMENT_TYPE == 'DEV'):
+            return 'localhost:8000'
+        else:
+            return self.ENVIRONMENT_TYPE.lower() + '.' + self.CADO_DOMAIN
+            
+    CADO_FLAVOURS = [
+        ('desktop', 'Desktop Version', ''),
+        ('simple', 'Simplified Version', 's.'),
+        ('mobile', 'Mobile Version', 'm.'),
+        ('touch', 'Smartphone Version', 'i.'),
+        ('accessible', 'Accessible Version', 'ac.'),
+    ]
     
     @property
     def DEBUG(self):
@@ -133,7 +155,7 @@ class Settings(BaseSettings):
     )
     
     TEMPLATE_LOADERS = (
-        'cadocms.loaders.mobile.Loader',
+        'cadocms.loaders.flavour.Loader',
         'hamlpy.template.loaders.HamlPyFilesystemLoader',
         'hamlpy.template.loaders.HamlPyAppDirectoriesLoader',
         'django.template.loaders.filesystem.Loader',
@@ -216,11 +238,11 @@ class Settings(BaseSettings):
     
     COMPRESS_PRECOMPILERS = (
         ('text/coffeescript', 'coffee --compile --stdio'),
-        ('text/less', 'lessc {infile} {outfile}'),
-        ('text/x-sass', 'sass {infile} {outfile}'),
-        ('text/x-scss', 'sass --scss {infile} {outfile}'),
-        ('text/stylus', 'stylus < {infile} > {outfile}'),
-        ('text/foobar', 'path.to.MyPrecompilerFilter'),
+        #('text/less', 'lessc {infile} {outfile}'),
+        #('text/x-sass', 'sass {infile} {outfile}'),
+        #('text/x-scss', 'sass --scss {infile} {outfile}'),
+        #('text/stylus', 'stylus < {infile} > {outfile}'),
+        ('text/x-scss', 'cadocms.filters.SassFilter'),
     )
 
     COMPRESS_PARSER = 'compressor.parser.HtmlParser' 

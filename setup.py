@@ -17,7 +17,7 @@ setup(
         'South==0.7.6',
         'Django==1.5.1',
         'django-configurations',
-        'django-compressor==1.2',
+        'django-compressor==1.3',
         'django-imagekit==2.0.3',
         'django-mptt==0.5.5',
         'pilkit==0.1.3',

@@ -10,21 +10,16 @@ class Loader(BaseLoader):
     def __init__(self, *args, **kwargs):
         loaders = []
         for loader_name in settings.TEMPLATE_LOADERS:
-            if loader_name != 'cadocms.loaders.mobile.Loader':
+            if loader_name != 'cadocms.loaders.flavour.Loader':
                 loader = find_template_loader(loader_name)
                 if loader is not None:
                     loaders.append(loader)
         self.loaders = tuple(loaders)
         super(BaseLoader, self).__init__(*args, **kwargs)
-        
-    def prepare_template_name(self, template_name):
-        return template_name + '_flavour'
-
     
     def load_template(self, template_name, template_dirs=None):
         request = get_current_request()
-        print request.flavour
-        template_name = self.prepare_template_name(template_name)
+        #print request.flavour
         for loader in self.loaders:
             try:
                 return loader(template_name, template_dirs)
