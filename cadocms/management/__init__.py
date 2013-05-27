@@ -10,7 +10,7 @@ import os, sys
 #from cadocms.settings import MultiAppSettings
 
 #if issubclass(settingsClass, MultiAppSettings):
-if os.environ.get("CADO_APPS", "").split(";"):
+if os.environ.get("CADO_SITES", "").split(";"):
     sites = []
     for name in os.listdir(os.getcwd()):
         if os.path.isdir(os.path.join(os.getcwd(), name)):

@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     
     @property
     def DATABASES(self):
-        print 'XXXX'
+        #print 'XXXX'
         databases = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql',
@@ -42,7 +42,7 @@ class Settings(BaseSettings):
                                
         if 'test' in sys.argv:
             databases['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
-        print databases
+        #print databases
         return databases
     
     
@@ -104,11 +104,17 @@ class Settings(BaseSettings):
     
     @property
     def MEDIA_ROOT(self):
-        return self.HOST.APPROOT + 'media/'
+        if self.MULTISITE:
+            return self.HOST.APPROOT + 'media/' + self.CADO_PROJECT
+        else:
+            return self.HOST.APPROOT + 'media/'
     
     @property
     def STATIC_ROOT(self):
-        return self.HOST.APPROOT + 'static/'
+        if self.MULTISITE:
+            return self.HOST.APPROOT + 'static/' + self.CADO_PROJECT
+        else:
+            return self.HOST.APPROOT + 'static/'
 
     @property   
     def TEMPLATE_CONTEXT_PROCESSORS(self):
@@ -273,8 +279,8 @@ class Settings(BaseSettings):
                 if HostSettingsClass.NAME == host_name and HostSettingsClass.SRCROOT == host_srcroot:
                     CurrentHostSettingsClass = HostSettingsClass
                     found = True
-            if not found:
-                print 'THIS SEEMS LIKE A DEV SERVER'
+            #if not found:
+                #print 'THIS SEEMS LIKE A DEV SERVER'
             self._HOST = CurrentHostSettingsClass
             
         return self._HOST
@@ -282,6 +288,10 @@ class Settings(BaseSettings):
 class MultiAppSettings(Settings):
     
     MULTISITE = True
+    @property
+    def SITES(self):
+        return []
+    
     """
     @property
     def DB_PREFIX(self):
@@ -289,7 +299,7 @@ class MultiAppSettings(Settings):
     """
 
 class HostSettings(object):
-    pass
+    PYTHON_PREFIX = "~/virtualenv/bin/"
 
 class DevHostSettings(HostSettings):
     CLASS = 'DEV'
