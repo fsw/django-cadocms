@@ -1,9 +1,8 @@
-from .settings import Settings
 from django.http import HttpResponse
 from django.template import RequestContext, Context, loader
 
 __version__ = '0.1.0'
-__all__ = ['Settings', 'renderTemplate']
+__all__ = ['renderTemplate',]
 
 def renderTemplate(request, name, context = {}):
     (request.flavour)

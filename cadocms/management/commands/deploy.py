@@ -16,24 +16,24 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         run("ls")
         #run("source virtualenv/bin/activate");
-        virtpath = "~/virtualenv/bin"
+        virtpath = "~/virtualenv/bin/"
         with cd('application'):
             run("git pull origin master")
         
-        run("%s/pip install -r application/requirements.txt" % virtpath)
+        run("%spip install -r application/requirements.txt" % virtpath)
         
         with cd('application'):
             #run("git submodule init")
             #run("git submodule update")
-            run("%s/python manage.py syncdb" % virtpath)
-            run("%s/python manage.py migrate" % virtpath)
-            run("%s/python manage.py collectstatic --noinput" % virtpath)
-            run("%s/python manage.py config_gen" % virtpath)
-            run("%s/python manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
+            run("%spython manage.py syncdb" % virtpath)
+            run("%spython manage.py migrate" % virtpath)
+            run("%spython manage.py collectstatic --noinput" % virtpath)
+            run("%spython manage.py config_gen" % virtpath)
+            run("%spython manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
             
             with settings(warn_only=True): 
                 run("kill -9 `cat ~/application.pid`")
             
-            run("%s/python manage.py runfcgi method=prefork socket=~/application.sock pidfile=~/application.pid" % virtpath)
+            run("%spython manage.py runfcgi method=prefork socket=~/application.sock pidfile=~/application.pid" % virtpath)
             run("sleep 5")
             run("chmod 766 ~/application.sock")

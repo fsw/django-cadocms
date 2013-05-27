@@ -8,6 +8,8 @@ from .fields import ExtraFieldsDefinition, ExtraFieldsValues, HTMLField
 from .widgets import ExtraFieldsValuesWidget
 from django.contrib.auth.models import User
 from haystack import indexes
+from django.conf import settings
+from django.db.models.signals import class_prepared
 
 MODERATION_STATUS = {
     'NEW' : 0,

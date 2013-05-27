@@ -4,6 +4,10 @@ from configurations import Settings as BaseSettings
 class Settings(BaseSettings):
     
     CADO_NAME = 'Cado CMS'
+    SECRET_KEY = 'OVERWRITE ME'
+    
+    SITE_ID = 1
+    MULTISITE = False
     
     @property
     def PROJECT_ROOT(self):
@@ -20,44 +24,9 @@ class Settings(BaseSettings):
 
     MANAGERS = ADMINS
     
-    def getCurrentEnvironment(self):
-        name = socket.gethostname().split('.', 1)[0].replace('-', '_')
-        package = pkgutil.get_loader(self.__class__.__module__)
-        home = os.path.dirname(os.path.dirname(package.filename))
-        for key, environments in self.CADO_ENVIRONMENTS.items():
-            for environment_name, environment_home, environment_root in environments:
-                if (name == environment_name) and (home == environment_home):
-                    return {
-                        'type' : key,
-                        'name' : environment_name,
-                        'home' : environment_home,
-                        'root' : environment_root,
-                    }
-        return {
-            'type' : 'DEV',
-            'name' : name,
-            'home' : home,
-            'root' : '',
-        }
-        
-    def getCurrentEnvironmentType(self):
-        return self.getCurrentEnvironment()['type']
-
-    def getCurrentEnvironmentRoot(self):
-        return self.getCurrentEnvironment()['root']
-    
-    def getCurrentEnvironmentName(self):
-        return self.getCurrentEnvironment()['name']
-    
-    def getCurrentEnvironmentHome(self):
-        return self.getCurrentEnvironment()['home']
-    
-    @property
-    def ENVIRONMENT_TYPE(self):
-        return self.getCurrentEnvironmentType()
-    
     @property
     def DATABASES(self):
+        print 'XXXX'
         databases = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql',
@@ -69,11 +38,11 @@ class Settings(BaseSettings):
             }
         }
         
-        databases['default'].update(self.CADO_DATABASES[self.getCurrentEnvironmentType()])
+        databases['default'].update(self.HOST.DATABASE)
                                
         if 'test' in sys.argv:
             databases['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
-        
+        print databases
         return databases
     
     
@@ -81,10 +50,10 @@ class Settings(BaseSettings):
     
     @property
     def CADO_FULL_DOMAIN(self):
-        if (self.ENVIRONMENT_TYPE == 'DEV'):
+        if (self.HOST.CLASS == 'DEV'):
             return 'localhost:8000'
         else:
-            return self.ENVIRONMENT_TYPE.lower() + '.' + self.CADO_DOMAIN
+            return self.HOST.CLASS.lower() + '.' + self.CADO_DOMAIN
     
     @property
     def CADO_PROJECT_GROUP(self):
@@ -100,7 +69,7 @@ class Settings(BaseSettings):
     
     @property
     def DEBUG(self):
-        return (self.getCurrentEnvironmentType() == 'DEV') or (self.getCurrentEnvironmentType() == 'TEST') 
+        return (self.HOST.CLASS == 'DEV') or (self.HOST.CLASS == 'TEST') 
         
     @property
     def TEMPLATE_DEBUG(self):
@@ -108,7 +77,7 @@ class Settings(BaseSettings):
     
     @property
     def EMAIL_BACKEND(self):
-        if (self.getCurrentEnvironmentType() == 'DEV'):
+        if (self.HOST.CLASS == 'DEV'):
             return 'django.core.mail.backends.console.EmailBackend'
         return super(Settings, self).EMAIL_BACKEND
     
@@ -135,11 +104,11 @@ class Settings(BaseSettings):
     
     @property
     def MEDIA_ROOT(self):
-        return self.getCurrentEnvironmentRoot() + 'media/'
+        return self.HOST.APPROOT + 'media/'
     
     @property
     def STATIC_ROOT(self):
-        return self.getCurrentEnvironmentRoot() + 'static/'
+        return self.HOST.APPROOT + 'static/'
 
     @property   
     def TEMPLATE_CONTEXT_PROCESSORS(self):
@@ -189,6 +158,7 @@ class Settings(BaseSettings):
     def INSTALLED_APPS(self):
         #print 'INSTALLED_APPS cadocms'
         return (
+            'cadocms.db_prefix',
             self.CADO_PROJECT,
             'cadocms',
             'grappelli.dashboard',
@@ -289,3 +259,45 @@ class Settings(BaseSettings):
             'height': 400,
     }
     """
+    
+    @property
+    def HOST(self):
+        if not hasattr(self, '_HOST'):
+            host_name = socket.gethostname()
+            host_srcroot = os.getcwd()
+            #package = pkgutil.get_loader(self.__class__.__module__)
+            #srcroot = os.path.dirname(os.path.dirname(package.filename))
+            CurrentHostSettingsClass = DevHostSettings
+            found = False
+            for HostSettingsClass in HostSettings.__subclasses__():
+                if HostSettingsClass.NAME == host_name and HostSettingsClass.SRCROOT == host_srcroot:
+                    CurrentHostSettingsClass = HostSettingsClass
+                    found = True
+            if not found:
+                print 'THIS SEEMS LIKE A DEV SERVER'
+            self._HOST = CurrentHostSettingsClass
+            
+        return self._HOST
+
+class MultiAppSettings(Settings):
+    
+    MULTISITE = True
+    """
+    @property
+    def DB_PREFIX(self):
+        return self.CADO_PROJECT + '_'
+    """
+
+class HostSettings(object):
+    pass
+
+class DevHostSettings(HostSettings):
+    CLASS = 'DEV'
+    NAME = 'localhost'
+    SRCROOT = ''
+    APPROOT = ''
+    DATABASE = {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME' : 'local.db3'
+                }
+
