@@ -52,8 +52,10 @@ class Settings(BaseSettings):
     def CADO_FULL_DOMAIN(self):
         if (self.HOST.CLASS == 'DEV'):
             return 'localhost:8000'
-        else:
+        elif (self.HOST.CLASS == 'TEST'):
             return self.HOST.CLASS.lower() + '.' + self.CADO_DOMAIN
+        else:
+            return self.CADO_DOMAIN
     
     @property
     def CADO_PROJECT_GROUP(self):
@@ -265,7 +267,7 @@ class Settings(BaseSettings):
             'height': 400,
     }
     """
-    
+
     @property
     def HOST(self):
         if not hasattr(self, '_HOST'):
@@ -290,7 +292,22 @@ class MultiAppSettings(Settings):
     MULTISITE = True
     @property
     def SITES(self):
-        return []
+        if not hasattr(self, '_SITES'):
+            sites = []
+            if os.environ.get("CADO_SITES", "").split(";"):
+                for name in os.listdir(os.getcwd()):
+                    if os.path.isdir(os.path.join(os.getcwd(), name)):
+                        if os.path.isfile(os.path.join(os.getcwd(), name, 'settings.py')):
+                            if not name + '.settings' == os.environ["DJANGO_SETTINGS_MODULE"]:
+                                sites.append(name)
+                self._SITES = []
+                for site in sites:
+                    _temp = __import__(site + '.settings', globals(), locals(), ['Settings'], -1) 
+                    self._SITES.append(_temp.Settings())
+            else:
+                self._SITES = [self]
+                
+        return self._SITES
     
     """
     @property
@@ -304,8 +321,8 @@ class HostSettings(object):
 class DevHostSettings(HostSettings):
     CLASS = 'DEV'
     NAME = 'localhost'
-    SRCROOT = ''
-    APPROOT = ''
+    SRCROOT = os.getcwd() + '/'
+    APPROOT = os.getcwd() + '/'
     DATABASE = {
                 'ENGINE': 'django.db.backends.sqlite3',
                 'NAME' : 'local.db3'

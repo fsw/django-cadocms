@@ -21,7 +21,7 @@ if os.environ.get("CADO_SITES", "").split(";"):
     scriptname = sys.argv.pop(0);
     command = sys.argv.pop(0);
             
-    commands_requiring_site = ['runserver', 'syncdb', 'migrate']
+    commands_requiring_site = ['runserver', 'syncdb', 'migrate', 'collectstatic', 'runfcgi']
     
     
     if command in commands_requiring_site:

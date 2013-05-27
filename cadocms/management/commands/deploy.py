@@ -53,7 +53,6 @@ class Command(BaseCommand):
         
         run("%spip install -r application/requirements.txt" % virtpath)
         
-        sites = os.environ.get("CADO_SITES", "").split(";")
         #print args, hosts, sites
         
         with cd('application'):
@@ -64,14 +63,12 @@ class Command(BaseCommand):
                 run("%spython manage.py syncdb %s" % (virtpath, site))
                 run("%spython manage.py migrate %s" % (virtpath, site))
                 run("%spython manage.py collectstatic %s --noinput" % (virtpath, site))
-                """
                 run("%spython manage.py config_gen" % virtpath)
                 run("%spython manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
+                for site in django_settings.SITES:
+                    with settings(warn_only=True): 
+                        run("kill -9 `cat ~/%s.pid`" % site.CADO_PROJECT)
                 
-                with settings(warn_only=True): 
-                    run("kill -9 `cat ~/application.pid`")
-                
-                run("%spython manage.py runfcgi method=prefork socket=~/application.sock pidfile=~/application.pid" % virtpath)
-                run("sleep 5")
-                run("chmod 766 ~/application.sock")
-                """
+                    run("%spython manage.py runfcgi %s method=prefork socket=~/%s.sock pidfile=~/%s.pid" % (virtpath, site.CADO_PROJECT, site.CADO_PROJECT, site.CADO_PROJECT) )
+                    run("sleep 5")
+                    run("chmod 766 ~/%s.sock" % site.CADO_PROJECT)
