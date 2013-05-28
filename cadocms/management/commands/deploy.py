@@ -65,6 +65,7 @@ class Command(BaseCommand):
                 run("%spython manage.py syncdb %s" % (virtpath, site.CADO_PROJECT))
                 run("%spython manage.py migrate %s" % (virtpath, site.CADO_PROJECT))
                 run("%spython manage.py collectstatic %s --noinput" % (virtpath, site.CADO_PROJECT))
+                run("%spython manage.py restyle_tinymce %s" % (virtpath, site.CADO_PROJECT))
                 
                 with settings(warn_only=True): 
                     run("kill -9 `cat ~/%s.pid`" % site.CADO_PROJECT)

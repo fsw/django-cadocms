@@ -194,6 +194,8 @@ class Settings(BaseSettings):
             'captcha',
             'geoposition',
             'imagekit',
+            'rosetta',
+            'modeltranslation',
         )
     CAPTCHA_FONT_SIZE = 25
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_dots',)

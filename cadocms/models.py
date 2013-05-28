@@ -66,7 +66,12 @@ class Moderated(models.Model):
         
         return ret
 
-class StaticPage(models.Model):
+class Translatable(models.Model):
+    translatable_fields = ()
+    class Meta:
+        abstract = True
+    
+class StaticPage(Translatable):
     
     url = models.CharField(_('URL'), max_length=200, db_index=True)
     title = models.CharField(_('Title'), max_length=256)
@@ -74,11 +79,13 @@ class StaticPage(models.Model):
     seo_title = models.CharField(max_length=512, blank=True)
     seo_keywords = models.CharField(max_length=512, blank=True)
     seo_description = models.TextField('seo_description', blank=True)
+    translatable_fields = ('url', 'title', 'content', 'seo_title', 'seo_keywords', 'seo_description',)
 
     class Meta:
         verbose_name = _('static page')
         verbose_name_plural = _('static pages')
         ordering = ('url',)
+        abstract = True
         
     def __unicode__(self):
         return u"%s -- %s" % (self.url, self.title)
@@ -87,13 +94,17 @@ class StaticPage(models.Model):
         return self.url
 
 
-class Chunk(models.Model):
+class Chunk(Translatable):
     key = models.CharField(max_length=256)
     body = HTMLField(blank=True, null=True)
+    translatable_fields = ('body',)
 
     def __unicode__(self):
         return self.key    
-        
+    class Meta:
+        abstract = True
+    
+    
 class Setting(models.Model):
     
     key = models.CharField(_('Key'), max_length=200, db_index=True)

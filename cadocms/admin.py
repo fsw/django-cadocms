@@ -3,6 +3,9 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from models import StaticPage, Setting, Moderated, MODERATION_STATUS, Chunk
 from django import forms
 from django.conf import settings
+
+from modeltranslation.admin import TranslationAdmin
+
 import reversion
 
 class StaticPageForm(forms.ModelForm):
@@ -35,7 +38,7 @@ class StaticPageForm(forms.ModelForm):
 
         return super(StaticPageForm, self).clean()
 
-class StaticPageAdmin(reversion.VersionAdmin):
+class StaticPageAdmin(reversion.VersionAdmin, TranslationAdmin):
     form = StaticPageForm
     fieldsets = (
                  (None, {'fields': ('url', 'title', 'content', 'seo_title', 'seo_keywords', 'seo_description')}),
@@ -66,7 +69,7 @@ class SettingAdmin(reversion.VersionAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-class ChunkAdmin(reversion.VersionAdmin):
+class ChunkAdmin(reversion.VersionAdmin, TranslationAdmin):
     list_display = ('__str__',)
     list_display_links = ('__str__',)
     fieldsets = (
