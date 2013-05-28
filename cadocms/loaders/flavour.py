@@ -1,3 +1,4 @@
+import os
 from django.template import TemplateDoesNotExist
 from django.template.loader import find_template_loader, BaseLoader
 from django.conf import settings
@@ -19,12 +20,13 @@ class Loader(BaseLoader):
     
     def load_template(self, template_name, template_dirs=None):
         request = get_current_request()
-        #print request.flavour
         for loader in self.loaders:
-            try:
-                return loader(template_name, template_dirs)
-            except TemplateDoesNotExist:
-                pass
+            for suffix in ['.' + request.flavour, '']:
+                try:
+                    name, extension = os.path.splitext(template_name)
+                    return loader(name + suffix + extension, template_dirs)
+                except TemplateDoesNotExist:
+                    pass
         raise TemplateDoesNotExist("Tried %s" % template_name)
     """
     def load_template_source(self, template_name, template_dirs=None):

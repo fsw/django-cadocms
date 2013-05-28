@@ -210,12 +210,20 @@ class Settings(BaseSettings):
     
     @property
     def HAYSTACK_CONNECTIONS(self):
-        return {
+        if self.HOST.SOLR_PATH:
+            return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-                            'URL': 'http://127.0.0.1:8080/solr/' + self.CADO_PROJECT + '/',
+                            'URL': self.HOST.SOLR_PATH + self.CADO_PROJECT + '/',
                             },
                 }
+        else:
+            return {
+                'default': {
+                            'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+                    },
+                }
+        
     
     @property
     def GRAPPELLI_ADMIN_TITLE(self):
@@ -323,8 +331,10 @@ class MultiAppSettings(Settings):
 
 class HostSettings(object):
     PYTHON_PREFIX = "~/virtualenv/bin/"
+    SOLR_PATH = 'http://127.0.0.1:8080/solr/'
 
 class DevHostSettings(HostSettings):
+    SOLR_PATH = None
     CLASS = 'DEV'
     NAME = 'localhost'
     SRCROOT = os.getcwd() + '/'

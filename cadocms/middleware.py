@@ -39,9 +39,12 @@ class Middleware():
                 return HttpResponseRedirect("/" + preffered_language + request.path_info)
         
         request.flavour = None
-        for key, name, prefix in settings.CADO_FLAVOURS:
-            if request.get_host().startswith(prefix):
-                request.flavour = key
+        if request.is_ajax():
+            request.flavour = 'ajax'
+        else:
+            for key, name, prefix in settings.CADO_FLAVOURS:
+                if request.get_host().startswith(prefix):
+                    request.flavour = key
         
         #first time visitor
         if not request.session.get('flavour', None):
@@ -53,7 +56,7 @@ class Middleware():
                 if b or v:
                     flavour = 'mobile'
             request.session['flavour'] = flavour
-            if flavour != request.flavour:
+            if (flavour != request.flavour) and (flavour != 'ajax'):
                 for key, name, prefix in settings.CADO_FLAVOURS:
                     if key == flavour:
                         HttpResponseRedirect('http://' + prefix + settings.CADO_FULL_DOMAIN + request.path_info)
