@@ -56,19 +56,19 @@ class Command(BaseCommand):
         #print args, hosts, sites
         
         with cd('application'):
+            run("%spython manage.py config_gen" % virtpath)
+            run("%spython manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
             for site in django_settings.SITES:
-                print "INSTALLING %s" % site
+                print "INSTALLING %s" % site.CADO_PROJECT
                 #run("git submodule init")
                 #run("git submodule update")
-                run("%spython manage.py syncdb %s" % (virtpath, site))
-                run("%spython manage.py migrate %s" % (virtpath, site))
-                run("%spython manage.py collectstatic %s --noinput" % (virtpath, site))
-                run("%spython manage.py config_gen" % virtpath)
-                run("%spython manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
-                for site in django_settings.SITES:
-                    with settings(warn_only=True): 
-                        run("kill -9 `cat ~/%s.pid`" % site.CADO_PROJECT)
+                run("%spython manage.py syncdb %s" % (virtpath, site.CADO_PROJECT))
+                run("%spython manage.py migrate %s" % (virtpath, site.CADO_PROJECT))
+                run("%spython manage.py collectstatic %s --noinput" % (virtpath, site.CADO_PROJECT))
                 
-                    run("%spython manage.py runfcgi %s method=prefork socket=~/%s.sock pidfile=~/%s.pid" % (virtpath, site.CADO_PROJECT, site.CADO_PROJECT, site.CADO_PROJECT) )
-                    run("sleep 5")
-                    run("chmod 766 ~/%s.sock" % site.CADO_PROJECT)
+                with settings(warn_only=True): 
+                    run("kill -9 `cat ~/%s.pid`" % site.CADO_PROJECT)
+                
+                run("%spython manage.py runfcgi %s method=prefork socket=~/%s.sock pidfile=~/%s.pid" % (virtpath, site.CADO_PROJECT, site.CADO_PROJECT, site.CADO_PROJECT) )
+                run("sleep 5")
+                run("chmod 766 ~/%s.sock" % site.CADO_PROJECT)
