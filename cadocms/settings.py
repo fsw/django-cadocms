@@ -111,14 +111,14 @@ class Settings(BaseSettings):
     @property
     def MEDIA_ROOT(self):
         if self.MULTISITE:
-            return self.HOST.APPROOT + 'media/' + self.CADO_PROJECT
+            return self.HOST.APPROOT + 'media/' + self.CADO_PROJECT + '/'
         else:
             return self.HOST.APPROOT + 'media/'
     
     @property
     def STATIC_ROOT(self):
         if self.MULTISITE:
-            return self.HOST.APPROOT + 'static/' + self.CADO_PROJECT
+            return self.HOST.APPROOT + 'static/' + self.CADO_PROJECT + '/'
         else:
             return self.HOST.APPROOT + 'static/'
 
