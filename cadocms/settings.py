@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     def CONFIG_GEN_GENERATED_DIR(self):
         return os.path.join(self.PROJECT_ROOT, 'config')
 
+    @property
+    def CONFIG_GEN_TEMPLATES_DIR(self):
+        return os.path.join(self.PROJECT_ROOT, 'config_templates')
+
     ADMINS = (
               ('Franciszek Szczepan Wawrzak', 'frank.wawrzak@cadosolutions.com'),
     )
