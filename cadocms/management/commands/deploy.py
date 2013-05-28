@@ -56,7 +56,7 @@ class Command(BaseCommand):
         #print args, hosts, sites
         
         with cd('application'):
-            for site in sites:
+            for site in django_settings.SITES:
                 print "INSTALLING %s" % site
                 #run("git submodule init")
                 #run("git submodule update")
