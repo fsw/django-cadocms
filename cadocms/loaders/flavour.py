@@ -21,7 +21,11 @@ class Loader(BaseLoader):
     def load_template(self, template_name, template_dirs=None):
         request = get_current_request()
         for loader in self.loaders:
-            for suffix in ['.' + request.flavour, '']:
+            if request:
+                suffixes = ['.' + request.flavour, '']
+            else:
+                suffixes = ['',]
+            for suffix in suffixes:
                 try:
                     name, extension = os.path.splitext(template_name)
                     return loader(name + suffix + extension, template_dirs)
