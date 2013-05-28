@@ -28,8 +28,8 @@ class Command(BaseCommand):
                     local("git push origin master")
 
         print 'REBUILDING CONFIGURATION'
-        local("./manage.py build_solr_schema > config/solr_schema.xml")
-        local("./manage.py config_gen")
+        #local("./manage.py build_solr_schema > config/solr_schema.xml")
+        #local("./manage.py config_gen")
         with settings(warn_only=True):
             #local("git submodule foreach git pull") 
             local("git add -A")
