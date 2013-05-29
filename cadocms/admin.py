@@ -29,20 +29,21 @@ class StaticPageForm(forms.ModelForm):
 
     def clean(self):
         url = self.cleaned_data.get('url', None)
-        same_url = StaticPage.objects.filter(url=url)
-        if self.instance.pk:
-            same_url = same_url.exclude(pk=self.instance.pk)
+        for StaticPageClass in StaticPage.__subclasses__():
+            same_url = StaticPageClass.objects.filter(url=url)
+            if self.instance.pk:
+                same_url = same_url.exclude(pk=self.instance.pk)
 
-        if same_url.all().exists():
-            raise forms.ValidationError('Flatpage with url %(url)s already exists' % {'url': url})
-
+            if same_url.all().exists():
+                raise forms.ValidationError('Flatpage with url %(url)s already exists' % {'url': url})
+        
         return super(StaticPageForm, self).clean()
 
 class StaticPageAdmin(reversion.VersionAdmin, TranslationAdmin):
     form = StaticPageForm
-    fieldsets = (
-                 (None, {'fields': ('url', 'title', 'content', 'seo_title', 'seo_keywords', 'seo_description')}),
-    )
+    #fieldsets = (
+    #             (None, {'fields': ('url', 'title', 'content', 'seo_title', 'seo_keywords', 'seo_description')}),
+    #)
     list_display = ('url', 'title')
     search_fields = ('url', 'title')
 

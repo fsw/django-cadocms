@@ -1,0 +1,23 @@
+@mixin border-radius($radius) {
+
+	-moz-border-radius: $radius;
+	-webkit-border-radius: $radius;
+  	-o-border-radius: $radius;
+  	-khtml-border-radius: $radius;
+  	-ms-border-radius: $radius;
+	border-radius: $radius;
+	behavior: url(/static/PIE.htc);
+	
+}
+
+@mixin box-shadow($shadow) {
+
+	-moz-box-shadow: $shadow;
+	-webkit-box-shadow: $shadow;
+  	-o-box-shadow: $shadow;
+  	-khtml-box-shadow: $shadow;
+  	-ms-box-shadow: $shadow;
+	box-shadow: $shadow;
+	behavior: url(/static/PIE.htc);
+	
+}

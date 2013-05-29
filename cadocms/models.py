@@ -79,7 +79,7 @@ class StaticPage(Translatable):
     seo_title = models.CharField(max_length=512, blank=True)
     seo_keywords = models.CharField(max_length=512, blank=True)
     seo_description = models.TextField('seo_description', blank=True)
-    translatable_fields = ('url', 'title', 'content', 'seo_title', 'seo_keywords', 'seo_description',)
+    translatable_fields = ('title', 'content', 'seo_title', 'seo_keywords', 'seo_description',)
 
     class Meta:
         verbose_name = _('static page')

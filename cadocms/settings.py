@@ -170,7 +170,7 @@ class Settings(BaseSettings):
     def INSTALLED_APPS(self):
         #print 'INSTALLED_APPS cadocms'
         return (
-            'cadocms.db_prefix',
+            #'cadocms.db_prefix',
             self.CADO_PROJECT,
             'cadocms',
             'grappelli.dashboard',

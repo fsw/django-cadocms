@@ -10,7 +10,8 @@ from django.conf import settings
 
 def staticpage(request, url):
     print url
-    staticpage = get_object_or_404(StaticPage, url=url)
+    for StaticPageClass in StaticPage.__subclasses__():
+        staticpage = get_object_or_404(StaticPageClass, url=url)
     context = RequestContext(request, {'staticpage': staticpage})
     return HttpResponse(loader.get_template('staticpage.html').render(context))
 
