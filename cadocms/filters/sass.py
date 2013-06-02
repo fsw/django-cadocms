@@ -20,7 +20,7 @@ class SassFilter(CompilerFilter):
         imports = re.findall(import_pattern, content)
         for file in imports:
             if file.startswith('/'):
-                filepath = file
+                filepath = file[1:]
             else:
                 filepath = parentpath.replace(os.path.basename(parentpath), '') + file
             if finders.find(filepath):

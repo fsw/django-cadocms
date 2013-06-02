@@ -191,8 +191,16 @@ class Tree(MPTTModel):
     class MPTTMeta:
         order_insertion_by=['order']
 
-
-class ExtraFieldsProvider(Tree):
+class RootedTree(MPTTModel):
+    parent = TreeForeignKey('self', blank=False, related_name='children', default=0)
+    order = models.IntegerField(default=0)
+    class Meta:
+        abstract = True
+        ordering = ['order', 'name']
+    class MPTTMeta:
+        order_insertion_by=['order']
+        
+class ExtraFieldsProvider(models.Model):
 
     extra_fields = ExtraFieldsDefinition(null=True, blank=True)
     

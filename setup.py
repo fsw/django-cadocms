@@ -38,6 +38,7 @@ setup(
         'django-filebrowser',
         'django-geoposition',
         'django-haystack',
+        'redis',
         'django-reversion',
         #'fsw-django-versioning>=0.7.3',
         'django-config-gen>=1.0.0',

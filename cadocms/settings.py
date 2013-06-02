@@ -73,9 +73,11 @@ class Settings(BaseSettings):
         ('accessible', 'Accessible Version', 'ac.'),
     ]
     
+    CRON_TASKS = []
+    
     @property
     def DEBUG(self):
-        return (self.HOST.CLASS == 'DEV') or (self.HOST.CLASS == 'TEST') 
+        return (self.HOST.CLASS == 'DEV') or (self.HOST.CLASS == 'TEST')
         
     @property
     def TEMPLATE_DEBUG(self):
@@ -214,7 +216,7 @@ class Settings(BaseSettings):
             return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-                            'URL': self.HOST.SOLR_PATH + self.CADO_PROJECT + '/',
+                            'URL': self.HOST.SOLR_PATH + self.CADO_PROJECT,
                             },
                 }
         else:
