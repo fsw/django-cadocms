@@ -198,6 +198,7 @@ class Settings(BaseSettings):
             'imagekit',
             'rosetta',
             'modeltranslation',
+            'celery_haystack',
         )
     CAPTCHA_FONT_SIZE = 25
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_dots',)
@@ -209,6 +210,8 @@ class Settings(BaseSettings):
 
     INTERNAL_IPS = ('127.0.0.1',)
     
+    
+    HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
     
     @property
     def HAYSTACK_CONNECTIONS(self):

@@ -192,13 +192,19 @@ class Tree(MPTTModel):
         order_insertion_by=['order']
 
 class RootedTree(MPTTModel):
-    parent = TreeForeignKey('self', blank=False, related_name='children', default=0)
+    parent = TreeForeignKey('self', null=True, blank=False, related_name='children', default=0)
     order = models.IntegerField(default=0)
     class Meta:
         abstract = True
         ordering = ['order', 'name']
     class MPTTMeta:
         order_insertion_by=['order']
+        
+    def clean(self):
+        super(RootedTree, self).clean()
+        from django.core.exceptions import ValidationError
+        if self.tree_id > 1:
+            raise ValidationError("Cant create new category here")
         
 class ExtraFieldsProvider(models.Model):
 
