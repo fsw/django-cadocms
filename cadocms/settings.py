@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     
     @property
     def DEBUG(self):
-        return (self.HOST.CLASS == 'DEV') or (self.HOST.CLASS == 'TEST')
+        return self.HOST.DEBUG
         
     @property
     def TEMPLATE_DEBUG(self):
@@ -342,6 +342,10 @@ class MultiAppSettings(Settings):
 class HostSettings(object):
     PYTHON_PREFIX = "~/virtualenv/bin/"
     SOLR_PATH = 'http://127.0.0.1:8080/solr/'
+    
+    @property
+    def DEBUG(self):
+        return (self.CLASS == 'DEV') or (self.CLASS == 'TEST')
 
 class DevHostSettings(HostSettings):
     SOLR_PATH = None
