@@ -305,6 +305,11 @@ class Settings(BaseSettings):
             self._HOST = CurrentHostSettingsClass
             
         return self._HOST
+    
+    MULTISITE = False
+    @property
+    def SITES(self):
+        return [self]
 
 class MultiAppSettings(Settings):
     
