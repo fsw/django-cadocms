@@ -67,9 +67,7 @@ class Settings(BaseSettings):
      
     CADO_FLAVOURS = [
         ('desktop', 'Desktop Version', ''),
-        ('simple', 'Simplified Version', 's.'),
         ('mobile', 'Mobile Version', 'm.'),
-        ('touch', 'Smartphone Version', 'i.'),
         ('accessible', 'Accessible Version', 'ac.'),
     ]
     

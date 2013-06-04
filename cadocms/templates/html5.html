@@ -9,27 +9,29 @@
 			{% get_current_language as lang %}
 			<meta charset="utf-8">
 			<meta http-equiv="Content-Language" content="{{lang}}">
+			
 			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+			<meta name="viewport" content="width=device-width">
+			
 			<meta name="description" content="{% block seo_description %}{% endblock %}">
 			<meta name="keywords" content="{% block seo_keywords %}{% endblock %}">
+			<title>{% block seo_title %}{% endblock %}</title>
+			
 			<meta name="robots" content="index,follow">
 			<meta name="GOOGLEBOT" content="index,follow">
 			<meta name="revisit-after" content="14 days">
-			<meta http-equiv="imagetoolbar" content="no">
-			<title>{% block seo_title %}{% endblock %}</title>
-			<meta name="viewport" content="width=device-width">
+			
 			{% load compress %}
 			{% compress css %}
 				{% block html_styles %}
-					<link rel="stylesheet" href="{{STATIC_URL}}bootstrap/css/bootstrap.css" type="text/css" />
-					<link rel="stylesheet" href="{{STATIC_URL}}bootstrap/css/bootstrap-responsive.css" type="text/css" />
-					<link rel="stylesheet" href="{{STATIC_URL}}fancybox/jquery.fancybox.css" type="text/css" media="screen" />
-					<link rel="stylesheet" href="{{STATIC_URL}}css/main.{% get_current_flavour %}.scss" type="text/x-scss" charset="utf-8">
+					<link rel="stylesheet" href="{{STATIC_URL}}main.{% get_current_flavour %}.scss" type="text/x-scss" charset="utf-8">
 					{% block extra_html_styles %}
 					{% endblock %}
 				{% endblock %}
 			{% endcompress %}
+			
 			<script src="{{ STATIC_URL }}js/modernizr.js"></script>
+			
 			<link rel="shortcut icon" href="{{STATIC_URL}}favicon.png" />
 		</head>
 		<body>
@@ -41,13 +43,12 @@
 			{% endblock %}
 			{% compress js %}
 				{% block html_scripts %}
-				<script type='text/javascript' src="{{ STATIC_URL }}js/jquery-1.9.1.min.js"></script>
+				<script type='text/javascript' src="{{ STATIC_URL }}js/jquery-1.10.1.js"></script>
 				<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
-				<script type="text/javascript" src="{{ STATIC_URL }}fancybox/jquery.fancybox.pack.js"></script>
 				<script type='text/javascript' src="{{ STATIC_URL }}js/cado.js"></script>
 				{% block extra_html_scripts %}
 				{% endblock %}
-				<script type='text/javascript' src="{{ STATIC_URL }}js/{% get_current_flavour %}.js"></script>
+				<script type='text/javascript' src="{{ STATIC_URL }}{% get_current_flavour %}.js"></script>
 				{% endblock %}
 			{% endcompress %}
 		</body>
