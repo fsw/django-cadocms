@@ -39,6 +39,17 @@
 			<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or
 			<a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a>to improve your experience.</p>
 			<![endif]-->
+			{% if messages %}
+				{% for message in messages %}
+		    	<div class="navbar-fixed-top alert {% if message.tags %} alert-{{ message.tags }}{% endif %}" data-dismiss="alert">
+					<div class="container">
+		        		<a class="close" data-dismiss="alert" href="#">&times;</a>
+		        		{{ message }}
+		        	</div>
+		    	</div>
+				{% endfor %}
+			{% endif %}
+			
 			{% block html_body %}
 			{% endblock %}
 			{% compress js %}

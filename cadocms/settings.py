@@ -72,6 +72,14 @@ class Settings(BaseSettings):
     ]
     
     CRON_TASKS = []
+    """
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake'
+        }
+    }
+    """
     
     @property
     def DEBUG(self):
