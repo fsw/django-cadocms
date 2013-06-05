@@ -163,6 +163,7 @@ class Settings(BaseSettings):
         'django.contrib.messages.middleware.MessageMiddleware',
         'debug_toolbar.middleware.DebugToolbarMiddleware',
         'cadocms.middleware.Middleware',
+        #'cadocms.middleware.Profiler',
         #'versioning.middleware.VersioningMiddleware',
     )
     
@@ -254,6 +255,10 @@ class Settings(BaseSettings):
 
     COMPRESS_PARSER = 'compressor.parser.HtmlParser' 
     
+    @property
+    def COMPRESS_ENABLED(self):
+        return (self.HOST.CLASS != 'DEV')
+    
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -279,8 +284,13 @@ class Settings(BaseSettings):
     }
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS' : False
-    } 
+    }
     """
+    DEBUG_TOOLBAR_PANELS = (
+      'debug_toolbar.panels.version.VersionDebugPanel',
+      'debug_toolbar.panels.timer.TimerDebugPanel',
+      'debug_toolbar.panels.profiling.ProfilingDebugPanel',
+    )
     TINYMCE_DEFAULT_CONFIG = {
             'plugins': "table,paste,searchreplace,preview",
             'theme': "advanced",
