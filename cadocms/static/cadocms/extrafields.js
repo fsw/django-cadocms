@@ -43,15 +43,37 @@ if (jQuery != undefined) {
 			}
 		}
 		
+		document.TemplateExtraAppended = false;
+		
     	document.registerExtraField = function(url, field_name, provider_name)
     	{
     		///cado/extrafields/unravelling.Item/4
-    		field = $('#id_' + field_name);
+    		//productoption_set-0-extra
+    		var field;
+    		if (field_name.indexOf('__prefix__') > 0) {
+    			if(document.TemplateExtraAppended) {
+    				s_start = 'id_' + field_name.substring(0, field_name.indexOf('__prefix__'));
+    				s_end = field_name.substring(field_name.indexOf('__prefix__')+10);
+    				//alert(s_start);alert(s_end);alert($('#' + s_start + '*' + s_end).length)
+    				field = $('[id^="' + s_start + '"][id$="' + s_end + '"]').not(':last').last();
+    				//alert(field.attr('id'));
+    	    		//id_productoption_set-1-extra
+    	    		
+    			} else {
+    				document.TemplateExtraAppended = true;
+    				return 0;
+    			}
+    		} else {
+    			field = $('#id_' + field_name);
+    		}
 			var extraDiv = $('<div class="extraFieldsDiv"></div>');
 			//field.parents('.form-row').parent().children().first().hide();
 			field.after(extraDiv);
 			field.hide();
-			
+			if (provider_name.indexOf('.') > 0) {
+				provider_name = provider_name.substring(provider_name.indexOf('.')+1);
+			}
+			//alert(provider_name);
     		provider = $('#id_' + provider_name);
 
 			provider.change(function(){

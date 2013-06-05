@@ -257,11 +257,17 @@ class ExtraFieldsUser(models.Model):
     
     extra = ExtraFieldsValues(null=True, blank=True, help_text='Extra fields depends on category you select')
     PROVIDER_FIELD = 'category'
+    EXTRA_PARENT = ''
     class Meta:
         abstract = True
     
     def get_provided_extra_fields_by_provider_id(self, provider_field_value):
         path_bits = self.PROVIDER_FIELD.split('.')
+        current_class = self
+        for bit in path_bits:
+            current_class = current_class._meta.get_field(bit).rel.to
+        return current_class.objects.get(id=provider_field_value).get_extra_fields()
+        
         field_class = self._meta.get_field(path_bits.pop(0))
         current = field_class.rel.to.objects.get(id=provider_field_value)
         for bit in path_bits:
@@ -280,19 +286,34 @@ class ExtraFieldsUser(models.Model):
     
     def __init__(self, *args, **kwargs):
         super(ExtraFieldsUser, self).__init__(*args, **kwargs)
+        """
+        parent_path_bits = self.EXTRA_PARENT.split('.')
+        current = self
+        for bit in parent_path_bits:
+            if bit:
+                parrent = getattr(current, bit)
+                self.extra = dict(parrent.extra.items() + self.extra.items())
+                current = parrent
+        """     
         self._meta.get_field('extra').provider_field = self.PROVIDER_FIELD
         self._meta.get_field('extra').model_name = self.__class__._meta.app_label + '.' + self.__class__._meta.object_name
         self.extra_fields = {}
         try:
             self.extra_definition = self.get_provided_extra_fields()
-            #print 'DEFINITION', self.extra_definition;
+            #print self.__class__.__name__, 'DEFINITION', self.extra_definition, self.extra;
             #print 'VALUES', self.extra;
             #print self.extra_definition
             for key, field in self.extra_definition.items():
                 try:
                     self.extra_fields[key] = field['field'].to_python(self.extra[key])
+                    if not self.extra_fields[key] and self.EXTRA_PARENT:
+                        self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
                 except Exception:
-                    self.extra_fields[key] = field['field'].get_default();
+                    try:
+                        #print 'GGGGGGGGGGGG', getattr(self, self.EXTRA_PARENT).extra_fields[key]
+                        self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
+                    except Exception:
+                        self.extra_fields[key] = field['field'].get_default();
         except Exception:
             pass
-
+        #print self.extra_fields, 'FIELDS'
