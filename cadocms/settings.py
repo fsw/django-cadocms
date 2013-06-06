@@ -342,7 +342,7 @@ class Settings(BaseSettings):
 class MultiAppSettings(Settings):
     
     MULTISITE = True
-    """
+    
     @property
     def SITES(self):
         if not hasattr(self, '_SITES'):
@@ -362,7 +362,7 @@ class MultiAppSettings(Settings):
             #    self._SITES = [self]
                 
         return self._SITES
-    
+    """
     @property
     def DB_PREFIX(self):
         return self.CADO_PROJECT + '_'
