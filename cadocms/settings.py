@@ -1,6 +1,9 @@
 import socket, sys, pkgutil, os
 from configurations import Settings as BaseSettings
 
+import djcelery
+djcelery.setup_loader()
+
 class Settings(BaseSettings):
     
     CADO_NAME = 'Cado CMS'
@@ -205,8 +208,14 @@ class Settings(BaseSettings):
             'imagekit',
             'rosetta',
             'modeltranslation',
+            'djcelery',
             'celery_haystack',
+            #'kombu.transport.django', ## DEV ONLY
         )
+        
+    #BROKER_URL = 'django://'
+    BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+    
     CAPTCHA_FONT_SIZE = 25
     CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_dots',)
     CAPTCHA_FILTER_FUNCTIONS = ('captcha.helpers.post_smooth',)
@@ -221,12 +230,16 @@ class Settings(BaseSettings):
     HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
     
     @property
+    def SOLR_CORE_NAME(self):
+        return self.CADO_PROJECT
+        
+    @property
     def HAYSTACK_CONNECTIONS(self):
         if self.HOST.SOLR_PATH:
             return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-                            'URL': self.HOST.SOLR_PATH + self.CADO_PROJECT,
+                            'URL': self.HOST.SOLR_PATH + self.SOLR_CORE_NAME,
                             },
                 }
         else:
@@ -334,18 +347,19 @@ class MultiAppSettings(Settings):
     def SITES(self):
         if not hasattr(self, '_SITES'):
             sites = []
-            if os.environ.get("CADO_SITES", "").split(";"):
-                for name in os.listdir(os.getcwd()):
-                    if os.path.isdir(os.path.join(os.getcwd(), name)):
-                        if os.path.isfile(os.path.join(os.getcwd(), name, 'settings.py')):
-                            if not name + '.settings' == os.environ["DJANGO_SETTINGS_MODULE"]:
-                                sites.append(name)
-                self._SITES = []
-                for site in sites:
-                    _temp = __import__(site + '.settings', globals(), locals(), ['Settings'], -1) 
-                    self._SITES.append(_temp.Settings())
-            else:
-                self._SITES = [self]
+            #if os.environ.get("CADO_SITES", "").split(";"):
+            for name in os.listdir(os.getcwd()):
+                if os.path.isdir(os.path.join(os.getcwd(), name)):
+                    if os.path.isfile(os.path.join(os.getcwd(), name, 'settings.py')):
+                        if not name + '.settings' == os.environ["DJANGO_SETTINGS_MODULE"]:
+                            sites.append(name)
+            self._SITES = []
+            for site in sites:
+                _temp = __import__(site + '.settings', globals(), locals(), ['Settings'], -1) 
+                self._SITES.append(_temp.Settings())
+                
+            #else:
+            #    self._SITES = [self]
                 
         return self._SITES
     

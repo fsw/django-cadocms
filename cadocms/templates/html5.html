@@ -41,7 +41,7 @@
 			<![endif]-->
 			{% if messages %}
 				{% for message in messages %}
-		    	<div class="navbar-fixed-top alert {% if message.tags %} alert-{{ message.tags }}{% endif %}" data-dismiss="alert">
+		    	<div class="navbar-fixed-top alert alert-block {% if message.tags %} alert-{{ message.tags }}{% endif %}" data-dismiss="alert">
 					<div class="container">
 		        		<a class="close" data-dismiss="alert" href="#">&times;</a>
 		        		{{ message }}

@@ -49,6 +49,7 @@ setup(
         'django-modeltranslation',
         'Celery',
         'celery-haystack',
+        'django-celery',
         
     ],
     dependency_links = [
