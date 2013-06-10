@@ -195,7 +195,6 @@ class Settings(BaseSettings):
             'django.contrib.messages',
             'django.contrib.staticfiles',
             'django.contrib.admin',
-            'django_config_gen',
             'reversion',
             'haystack',
             'south',
@@ -222,6 +221,8 @@ class Settings(BaseSettings):
     CAPTCHA_LETTER_ROTATION = (-10,10)
     CAPTCHA_LENGTH = 6
     
+    CONFIG_TEMPLATES_DIR = 'config'
+    
     GRAPPELLI_INDEX_DASHBOARD = 'cadocms.dashboard.CustomIndexDashboard'
 
     INTERNAL_IPS = ('127.0.0.1',)
@@ -232,14 +233,14 @@ class Settings(BaseSettings):
     @property
     def SOLR_CORE_NAME(self):
         return self.CADO_PROJECT
-        
+    
     @property
     def HAYSTACK_CONNECTIONS(self):
-        if self.HOST.SOLR_PATH:
+        if self.HOST.SOLR_URL:
             return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-                            'URL': self.HOST.SOLR_PATH + self.SOLR_CORE_NAME,
+                            'URL': self.HOST.SOLR_URL + self.SOLR_CORE_NAME,
                             },
                 }
         else:
@@ -253,9 +254,6 @@ class Settings(BaseSettings):
     @property
     def GRAPPELLI_ADMIN_TITLE(self):
         return self.CADO_NAME + ' Admin'
-    
-    
-    SOLR_PATH = '/opt/solr/unravelling/'
     
     COMPRESS_PRECOMPILERS = (
         ('text/coffeescript', 'coffee --compile --stdio'),
@@ -370,14 +368,15 @@ class MultiAppSettings(Settings):
 
 class HostSettings(object):
     PYTHON_PREFIX = "~/virtualenv/bin/"
-    SOLR_PATH = 'http://127.0.0.1:8080/solr/'
-    
+    SOLR_URL = 'http://127.0.0.1:8080/solr/'
+    SOLR_PATH = '/opt/solr/'
     @property
     def DEBUG(self):
         return (self.CLASS == 'DEV') or (self.CLASS == 'TEST')
 
 class DevHostSettings(HostSettings):
-    SOLR_PATH = None
+    #SOLR_PATH = None
+    #SOLR_URL = None
     CLASS = 'DEV'
     NAME = 'localhost'
     SRCROOT = os.getcwd() + '/'

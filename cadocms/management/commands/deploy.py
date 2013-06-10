@@ -56,7 +56,7 @@ class Command(BaseCommand):
         #print args, hosts, sites
         
         with cd('application'):
-            run("%spython manage.py config_gen" % virtpath)
+            run("%spython manage.py regenerate_config" % virtpath)
             run("%spython manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
             for site in django_settings.SITES:
                 print "INSTALLING %s" % site.CADO_PROJECT

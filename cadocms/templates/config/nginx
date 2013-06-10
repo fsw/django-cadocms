@@ -1,0 +1,28 @@
+{% for SITE in SITES %}
+
+server {
+    listen 80;
+    server_name .{{SITE.CADO_FULL_DOMAIN}};
+
+    access_log {{HOST.APPROOT}}logs/nginx.access.log;
+    error_log {{HOST.APPROOT}}logs/nginx.error.log;
+    
+    client_max_body_size 10M;
+    
+    location {{SITE.STATIC_URL}} {
+        alias {{SITE.STATIC_ROOT}};
+        expires 30d;
+    }
+
+    location {{SITE.MEDIA_URL}} {
+        alias {{SITE.MEDIA_ROOT}};
+        expires 30d;
+    }
+
+    location / {
+        include fastcgi_params;
+        fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+    }
+}
+
+{% endfor %}
