@@ -245,7 +245,7 @@ class Settings(BaseSettings):
             return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-                            'URL': self.HOST.SOLR_URL + self.SOLR_CORE_NAME,
+                            'URL': self.HOST.SOLR_URL + self.HOST.SOLR_CORE_NAME,
                             },
                 }
         else:
@@ -375,6 +375,7 @@ class HostSettings(object):
     PYTHON_PREFIX = "~/virtualenv/bin/"
     SOLR_URL = 'http://127.0.0.1:8080/solr/'
     SOLR_PATH = '/opt/solr/'
+    SOLR_CORE_NAME = 'undefined'
     
     @property
     def DEBUG(self):
