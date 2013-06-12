@@ -60,10 +60,14 @@ class Settings(BaseSettings):
     def CADO_FULL_DOMAIN(self):
         if (self.HOST.CLASS == 'DEV'):
             return 'localhost:8000'
+        else:
+            return self.HOST.DOMAIN
+        """
         elif (self.HOST.CLASS == 'TEST'):
             return self.HOST.CLASS.lower() + '.' + self.CADO_DOMAIN
         else:
             return self.CADO_DOMAIN
+        """
     
     @property
     def CADO_PROJECT_GROUP(self):
