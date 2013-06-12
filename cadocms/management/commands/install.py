@@ -2,7 +2,7 @@ import fileinput, os, sys
 
 from django.core.management.base import BaseCommand, CommandError
 from fabric.api import local, run, env, cd, hosts, prompt, lcd, settings, sudo
-from fabric.contrib import files, console
+from fabric.contrib import files
 from django.conf import settings as django_settings
 from fabric import colors
 
@@ -11,23 +11,12 @@ env.use_ssh_config = True
 
 class Command(BaseCommand):
     args = '<host>'
-    help = 'Deploys to specified host'
-    
-    """
-    if HostSettingsClass.NAME == host_name and HostSettingsClass.SRCROOT == host_srcroot:
-                CurrentHostSettingsClass = HostSettingsClass
-                found = True
-        if not found:
-            print 'THIS SEEMS LIKE A DEV SERVER'
-        self._HOST = CurrentHostSettingsClass
-        
-    return self._HOST
-    """
+    help = 'Installs on specified host'
     
     def handle(self, *args, **options):
         
         host = None
-        hostname = 'unknown'
+        hostname = 'dev'
         hosts = []
         if len(args):
             hostname = args[0]
@@ -43,33 +32,25 @@ class Command(BaseCommand):
             raise Exception("Unknown host %s" % (hostname,))
         #if 
         env.host_string = host.HOST_STRING
-        print colors.red("TEST COMMAND:", bold=True)
-        run("ls")
+        if (host.HOST_STRING == 'localhost'):
+            runner = local
+        else:
+            runner = run
+        
+        runner("ls")
+        return
         #run("source virtualenv/bin/activate");
         virtpath = host.PYTHON_PREFIX
         
-        with cd('application'):
-            print colors.red("UPDATING CODEBASE:", bold=True)
-            run("git pull origin master")
-
-
-        print colors.red("INSTALLING REQUIREMENTS:", bold=True)
-        run("%spip install -q -r application/requirements.txt" % virtpath)
+        run("%spip install -r application/requirements.txt" % virtpath)
         
         #print args, hosts, sites
         
         with cd('application'):
-            print colors.red("REGENERATIN CONFIG FILES:", bold=True)
             run("%spython manage.py regenerate_config" % virtpath)
             run("%spython manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
-            
-            current = run("crontab -l", warn_only = True)
-            new = run("cat config/crontab")
-            print current, new
-            #if fabric.contrib.console.confirm(""):   
-            return
             for site in django_settings.SITES:
-                print colors.red("INSTALLING SITE %s:" % site.CADO_PROJECT, bold=True)
+                print "INSTALLING %s" % site.CADO_PROJECT
                 arguments = ''
                 if django_settings.MULTISITE:
                     arguments = site.CADO_PROJECT
@@ -79,8 +60,6 @@ class Command(BaseCommand):
                 run("%spython manage.py migrate %s" % (virtpath, arguments))
                 run("%spython manage.py collectstatic %s --noinput" % (virtpath, arguments))
                 run("%spython manage.py restyle_tinymce %s" % (virtpath, arguments))
-                
-                print colors.yellow("RESTARTING FASTCGI:", bold=True)
                 
                 with settings(warn_only=True): 
                     run("kill -9 `cat ~/%s.pid`" % site.CADO_PROJECT)

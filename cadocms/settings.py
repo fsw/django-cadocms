@@ -379,6 +379,7 @@ class DevHostSettings(HostSettings):
     #SOLR_URL = None
     CLASS = 'DEV'
     NAME = 'localhost'
+    HOST_STRING = 'localhost'
     SRCROOT = os.getcwd() + '/'
     APPROOT = os.getcwd() + '/'
     DATABASE = {
