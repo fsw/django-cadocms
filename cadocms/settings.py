@@ -319,7 +319,7 @@ class Settings(BaseSettings):
     def HOST(self):
         if not hasattr(self, '_HOST'):
             host_name = socket.gethostname()
-            host_srcroot = os.getcwd() 
+            host_srcroot = os.getcwd() + '/'
             #package = pkgutil.get_loader(self.__class__.__module__)
             #srcroot = os.path.dirname(os.path.dirname(package.filename))
             CurrentHostSettingsClass = DevHostSettings
