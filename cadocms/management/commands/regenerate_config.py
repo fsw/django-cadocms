@@ -14,12 +14,16 @@ class Command(BaseCommand):
         for dir in app_template_dirs:
             #print dir + '/config'
             if os.path.isdir(dir + '/config'):
-                templates = templates + os.listdir(dir + '/config')
-                
+                for root, subFolders, files in os.walk(dir + '/config'):
+                    print root
+                    base = root.replace(dir + '/config', '')
+                    for file in files:
+                        templates = templates + [base + '/' + file]
         for config in templates:
-            
-            output_path = 'config/' + config
-            print 'rendering templates/config/%s => %s' % (config, output_path)
-            ctx = Context(settings._wrapped.__dict__)    
-            open(output_path, "w").write(render_to_string('config/' + config, ctx))
+            output_path = 'config' + config
+            print 'rendering templates/config%s => %s' % (config, output_path)
+            if not os.path.isdir(os.path.dirname(output_path)):
+                os.makedirs(os.path.dirname(output_path))
+            ctx = Context(settings._wrapped.__dict__)
+            open(output_path, "w").write(render_to_string('config' + config, ctx))
     

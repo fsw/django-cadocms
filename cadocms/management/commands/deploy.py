@@ -60,21 +60,8 @@ class Command(BaseCommand):
         
             print colors.red("REGENERATIN CONFIG FILES:", bold=True)
             run("%spython manage.py regenerate_config" % virtpath)
-            run("%spython manage.py build_solr_schema > config/solr_schema.xml" % virtpath)
+            run("%spython manage.py build_solr_schema > config/solr/schema.xml" % virtpath)
             
-            """
-            config_files = [
-                     ("crontab", 
-                      "crontab -l", 
-                      "crontab config/crontab"),
-                     ("nginx", 
-                      "cat /etc/nginx/conf.d/dev.yardgear.com.au.conf", 
-                      "cp config/nginx /etc/nginx/conf.d/dev.yardgear.com.au.conf"),
-                     ("solr_schema.xml", 
-                      "cat /opt/solr/yardgear/conf/schema.xml", 
-                      "cp config/solr_schema.xml /opt/solr/yardgear/conf/schema.xml"),
-                     ]
-            """
             for name, getter, setter, combined in host.CONFIGS:
                 diff = False
                 current = run(getter, quiet = True, warn_only = True).splitlines()
@@ -105,7 +92,7 @@ class Command(BaseCommand):
                     tf = tempfile.NamedTemporaryFile()
                     tfName = tf.name
                     tf.seek(0)
-                    print current, new, combined
+                    #print current, new, combined
                     for line in combined:
                         tf.write(line)
                     tf.flush()
@@ -124,10 +111,7 @@ class Command(BaseCommand):
                                 sys.stdout.write(line)
                         if (choice == 'r'):
                             run("cat config/" + name + " " + setter)
-            """
-            #if current != new and console.confirm("Do you want to replace crontab?"):
-            return
-        
+                    
             for site in django_settings.SITES:
                 print colors.red("INSTALLING SITE %s:" % site.CADO_PROJECT, bold=True)
                 arguments = ''
@@ -143,8 +127,8 @@ class Command(BaseCommand):
                 print colors.yellow("RESTARTING FASTCGI:", bold=True)
                 
                 with settings(warn_only=True): 
-                    run("kill -9 `cat ~/%s.pid`" % site.CADO_PROJECT)
+                    run("kill -9 `cat %s/%s.pid`" % (site.APPROOT, site.CADO_PROJECT))
                 
-                run("%spython manage.py runfcgi %s method=prefork socket=~/%s.sock pidfile=~/%s.pid" % (virtpath, site.CADO_PROJECT, site.CADO_PROJECT, site.CADO_PROJECT) )
+                run("%spython manage.py runfcgi %s method=prefork socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, site.APPROOT, site.CADO_PROJECT, site.APPROOT, site.CADO_PROJECT) )
                 run("sleep 5")
-                run("chmod 766 ~/%s.sock" % site.CADO_PROJECT)
+                run("chmod 766 %s/%s.sock" % (site.APPROOT, site.CADO_PROJECT))
