@@ -370,6 +370,7 @@ class HostSettings(object):
     PYTHON_PREFIX = "~/virtualenv/bin/"
     SOLR_URL = 'http://127.0.0.1:8080/solr/'
     SOLR_PATH = '/opt/solr/'
+    
     @property
     def DEBUG(self):
         return (self.CLASS == 'DEV') or (self.CLASS == 'TEST')
@@ -379,6 +380,7 @@ class DevHostSettings(HostSettings):
     #SOLR_URL = None
     CLASS = 'DEV'
     NAME = 'localhost'
+    DOMAIN = 'localhost:8000'
     HOST_STRING = 'localhost'
     SRCROOT = os.getcwd() + '/'
     APPROOT = os.getcwd() + '/'
