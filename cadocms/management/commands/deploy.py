@@ -127,8 +127,8 @@ class Command(BaseCommand):
                 print colors.yellow("RESTARTING FASTCGI:", bold=True)
                 
                 with settings(warn_only=True): 
-                    run("kill -9 `cat %s/%s.pid`" % (site.APPROOT, site.CADO_PROJECT))
+                    run("kill -9 `cat %s/%s.pid`" % (host.APPROOT, site.CADO_PROJECT))
                 
-                run("%spython manage.py runfcgi %s method=prefork socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, site.APPROOT, site.CADO_PROJECT, site.APPROOT, site.CADO_PROJECT) )
+                run("%spython manage.py runfcgi %s method=prefork socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT) )
                 run("sleep 5")
-                run("chmod 766 %s/%s.sock" % (site.APPROOT, site.CADO_PROJECT))
+                run("chmod 766 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
