@@ -257,7 +257,7 @@ class Settings(BaseSettings):
     
     @property
     def HAYSTACK_CONNECTIONS(self):
-        if self.HOST.SOLR_URL:
+        if self.SOLR_CORE_URL:
             return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
@@ -398,8 +398,9 @@ class HostSettings(object):
         return (self.CLASS == 'DEV') or (self.CLASS == 'TEST')
 
 class DevHostSettings(HostSettings):
-    #SOLR_PATH = None
-    #SOLR_URL = None
+    SOLR_PATH = ''
+    SOLR_URL = ''
+    SOLR_CORE_NAME = ''
     CLASS = 'DEV'
     NAME = 'localhost'
     DOMAIN = 'localhost:8000'
