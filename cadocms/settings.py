@@ -238,6 +238,14 @@ class Settings(BaseSettings):
     @property
     def SOLR_CORE_NAME(self):
         return self.CADO_PROJECT
+        
+    @property
+    def SOLR_CORE_URL(self):
+        return self.HOST.SOLR_URL + self.HOST.SOLR_CORE_NAME
+        
+    @property
+    def SOLR_CORE_PATH(self):
+        return self.HOST.SOLR_PATH + self.HOST.SOLR_CORE_NAME
     
     @property
     def HAYSTACK_CONNECTIONS(self):

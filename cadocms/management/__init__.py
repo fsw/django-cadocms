@@ -22,7 +22,7 @@ for name in os.listdir(os.getcwd()):
 scriptname = sys.argv.pop(0);
 command = sys.argv.pop(0);
         
-commands_requiring_site = ['runserver', 'restyle_tinymce', 'rebuild_index', 'syncdb', 'schemamigration', 'migrate', 'collectstatic', 'runfcgi', 'loaddata', 'dumpdata']
+commands_requiring_site = ['solr_install', 'runserver', 'restyle_tinymce', 'rebuild_index', 'syncdb', 'schemamigration', 'migrate', 'collectstatic', 'runfcgi', 'loaddata', 'dumpdata']
 
 
 if sites and command in commands_requiring_site:
