@@ -237,15 +237,23 @@ class Settings(BaseSettings):
     
     @property
     def SOLR_CORE_NAME(self):
-        return self.CADO_PROJECT
+        return self.HOST.SOLR_CORE_NAME
         
     @property
+    def SOLR_URL(self):
+        return self.HOST.SOLR_URL
+    
+    @property
+    def SOLR_PATH(self):
+        return self.HOST.SOLR_PATH
+    
+    @property
     def SOLR_CORE_URL(self):
-        return self.HOST.SOLR_URL + self.HOST.SOLR_CORE_NAME
+        return self.SOLR_URL + self.SOLR_CORE_NAME
         
     @property
     def SOLR_CORE_PATH(self):
-        return self.HOST.SOLR_PATH + self.HOST.SOLR_CORE_NAME
+        return self.SOLR_PATH + self.SOLR_CORE_NAME
     
     @property
     def HAYSTACK_CONNECTIONS(self):
@@ -253,7 +261,7 @@ class Settings(BaseSettings):
             return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-                            'URL': self.HOST.SOLR_URL + self.HOST.SOLR_CORE_NAME,
+                            'URL': self.SOLR_CORE_URL,
                             },
                 }
         else:

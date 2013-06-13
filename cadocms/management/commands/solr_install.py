@@ -14,11 +14,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print colors.red('trying to install solr core to %s' % django_settings.SOLR_CORE_PATH)
-        return
-        local("./manage.py build_solr_schema > config/solr/schema.xml")
                 
-        #curl -v 'http://127.0.0.1:8080/solr/admin/cores?action=CREATE&name=yardgear&instanceDir=yardgear&config=solrconfig.xml&schema=schema.xml&dataDir=data'
+        #run("%spython manage.py regenerate_config" % virtpath)
+        #run("%spython manage.py build_solr_schema > config/solr/schema.xml" % virtpath)
+        print colors.yellow('copying configs')
+        if not os.path.isdir(django_settings.SOLR_CORE_PATH + "/conf/"):
+            os.makedirs(django_settings.SOLR_CORE_PATH + "/conf/")
+        local("cp -r config/solr/* " + django_settings.SOLR_CORE_PATH + "/conf/")
+        
+        print colors.yellow('creating core via solr admin')
+        local("curl -v '%sadmin/cores?action=CREATE&name=%s&instanceDir=%s&config=solrconfig.xml&schema=schema.xml&dataDir=data'"
+              % (django_settings.SOLR_URL, django_settings.SOLR_CORE_NAME, django_settings.SOLR_CORE_NAME )
+              )
+        
                 
-        local("sudo cp config/solr/schema.xml " + django_settings.SOLR_PATH + "/conf/schema.xml")
-        local("sudo /etc/init.d/tomcat6 restart")
+        
+        #local("sudo /etc/init.d/tomcat6 restart")
         
