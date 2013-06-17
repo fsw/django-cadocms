@@ -20,7 +20,10 @@ def keyvalue(dict, key, default=None):
 @register.simple_tag(name="chunk")
 def get_chunk(key):
     for ChunkClass in Chunk.__subclasses__():
-        return '<div class="content">' + ChunkClass.objects.get(key=key).body + '</div>';
+        if ChunkClass.objects.get(key=key).body:
+            return '<div class="content">' + ChunkClass.objects.get(key=key).body + '</div>';
+        else:
+            return '<div class="content"></div>';
 
 
 class FlavoursNode(template.Node):

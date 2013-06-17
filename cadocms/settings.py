@@ -390,9 +390,11 @@ class HostSettings(object):
         return (self.CLASS == 'DEV') or (self.CLASS == 'TEST')
 
 class DevHostSettings(HostSettings):
+    """
     SOLR_PATH = ''
     SOLR_URL = ''
     SOLR_CORE_NAME = ''
+    """
     CLASS = 'DEV'
     NAME = 'localhost'
     DOMAIN = 'localhost:8000'

@@ -8,7 +8,7 @@
 
 {% block title %}{{ staticpage.title }}{% endblock %}
 
-{% block seo_title %}{{ staticpage.seo_title }}{% endblock %}
+{% block seo_title %}{{ staticpage.seo_title }} | {{ block.super }}{% endblock %}
 
 {% block seo_description %}{{ staticpage.seo_description }}{% endblock %}
 
