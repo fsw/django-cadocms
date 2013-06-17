@@ -342,7 +342,7 @@ class Settings(BaseSettings):
                     found = True
             #if not found:
                 #print 'THIS SEEMS LIKE A DEV SERVER'
-            self._HOST = CurrentHostSettingsClass
+            self._HOST = CurrentHostSettingsClass(self)
             
         return self._HOST
     
@@ -380,10 +380,15 @@ class MultiAppSettings(Settings):
     """
 
 class HostSettings(object):
+    def __init__(self, parent):
+        self.SETTINGS = parent
+        
     PYTHON_PREFIX = "~/virtualenv/bin/"
     SOLR_URL = 'http://127.0.0.1:8080/solr/'
     SOLR_PATH = '/opt/solr/'
-    SOLR_CORE_NAME = 'undefined'
+    @property
+    def SOLR_CORE_NAME(self):
+        return self.SETTINGS.CADO_PROJECT
     
     @property
     def DEBUG(self):

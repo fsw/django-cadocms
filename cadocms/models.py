@@ -315,5 +315,5 @@ class ExtraFieldsUser(models.Model):
                     except Exception:
                         self.extra_fields[key] = field['field'].get_default();
         except Exception:
-            pass
+            self.extra_definition = {}
         #print self.extra_fields, 'FIELDS'

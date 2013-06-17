@@ -63,5 +63,7 @@
 				<script type='text/javascript' src="{{ STATIC_URL }}{% get_current_flavour %}.js"></script>
 				{% endblock %}
 			{% endcompress %}
+			{% block html_very_last %}
+			{% endblock %}
 		</body>
 	</html>
