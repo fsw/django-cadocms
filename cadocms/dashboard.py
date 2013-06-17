@@ -30,6 +30,7 @@ class CustomIndexDashboard(Dashboard):
             exclude=('cadocms.*', 'django.contrib.*', 'djcelery.*'),
         ))
         
+        """
         self.children.append(modules.ModelList(
             _('Tasks'),
             collapsible=False,
@@ -37,6 +38,7 @@ class CustomIndexDashboard(Dashboard):
             #css_classes=('collapse closed',),
             models=('djcelery.*', ),
         ))
+        """
         
         
         self.children.append(modules.ModelList(

@@ -7,7 +7,11 @@ from cadocms.models import Setting, Chunk
 
 @register.simple_tag(name="setting")
 def get_setting(key):
-    return Setting.objects.get(key=key).value;
+    try: 
+        row = Setting.objects.get(key=key)
+        return row.value;
+    except Setting.DoesNotExist:
+        return getattr(settings, key)
 
 @register.filter
 def keyvalue(dict, key, default=None):    

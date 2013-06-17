@@ -6,24 +6,16 @@ djcelery.setup_loader()
 
 class Settings(BaseSettings):
     
+    @property
+    def CADO_PROJECT(self):
+        return os.path.basename(os.getcwd())
+        #return os.path.basename((os.path.dirname(os.path.realpath(__file__))))
+    
     CADO_NAME = 'Cado CMS'
     SECRET_KEY = 'OVERWRITE ME'
     
     SITE_ID = 1
     MULTISITE = False
-    
-    @property
-    def PROJECT_ROOT(self):
-        package = pkgutil.get_loader(self.__class__.__module__)
-        return os.path.dirname(os.path.dirname(package.filename))
-
-    @property
-    def CONFIG_GEN_GENERATED_DIR(self):
-        return os.path.join(self.PROJECT_ROOT, 'config')
-
-    @property
-    def CONFIG_GEN_TEMPLATES_DIR(self):
-        return os.path.join(self.PROJECT_ROOT, 'config_templates')
 
     ADMINS = (
               ('Franciszek Szczepan Wawrzak', 'frank.wawrzak@cadosolutions.com'),
@@ -406,9 +398,9 @@ class DevHostSettings(HostSettings):
     DOMAIN = 'localhost:8000'
     HOST_STRING = 'localhost'
     SRCROOT = os.getcwd() + '/'
-    APPROOT = os.getcwd() + '/'
+    APPROOT = os.getcwd() + '/data/'
     DATABASE = {
                 'ENGINE': 'django.db.backends.sqlite3',
-                'NAME' : 'local.db3'
+                'NAME' : 'data/local.db3'
                 }
 
