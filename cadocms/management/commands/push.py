@@ -13,7 +13,7 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        libs_dir = '../libs'
+        libs_dir = os.environ.get("DJANGO_LIBS", "../libs")
         workspace_dir = '..'
         for submodule in os.listdir(libs_dir):
             path = os.path.abspath(os.path.join(libs_dir, submodule))
