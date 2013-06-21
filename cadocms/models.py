@@ -185,7 +185,7 @@ class Sluggable(models.Model):
         
 class Tree(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    order = models.IntegerField(default=0)
+    order = models.FloatField(default=0)
     class Meta:
         abstract = True
         ordering = ['order', 'name']
@@ -194,7 +194,7 @@ class Tree(MPTTModel):
 
 class RootedTree(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=False, related_name='children', default=0)
-    order = models.IntegerField(default=0)
+    order = models.FloatField(default=0)
     class Meta:
         abstract = True
         ordering = ['order', 'name']
