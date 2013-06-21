@@ -249,7 +249,7 @@ class Settings(BaseSettings):
     
     @property
     def HAYSTACK_CONNECTIONS(self):
-        if self.SOLR_CORE_URL:
+        if self.HOST.CLASS != 'DEV':
             return {
                 'default': {
                             'ENGINE': 'haystack.backends.solr_backend.SolrEngine',

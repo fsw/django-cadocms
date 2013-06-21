@@ -48,6 +48,7 @@ class Moderated(models.Model):
         ret = super(Moderated, self).save(*args, **kwargs)
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
+            #print self.__class__._meta.get_all_field_names()
             for field in self.__class__._meta.get_all_field_names():
                 if field not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment']:
                     field_class = self.__class__._meta.get_field(field)

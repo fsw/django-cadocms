@@ -49,6 +49,7 @@ setup(
         'Celery',
         'celery-haystack',
         'django-celery',
+        'dnspython',
         
     ],
     dependency_links = [
