@@ -42,6 +42,11 @@ class EmailValidator(EmailValidator):
             raise ValidationError(_('Nonexistent domain.'))
         except dns.resolver.NoAnswer:
             raise ValidationError(_('Nonexistent email address.'))
+        except smtplib.SMTPException: # Didn't make an instance.
+            raise ValidationError(_('SMTP Error'))
+        except smtplib.socket.error:
+            pass
+            #raise ValidationError(_('Cant connect to server'))
 
 
 validate_email = EmailValidator(

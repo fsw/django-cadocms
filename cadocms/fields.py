@@ -245,12 +245,23 @@ class ExtraFieldsValues(JSONField):
     model_name = 'Unknown'
     
     def __init__(self, *args, **kwargs):
+        #print "INIT FIELD %s %s" % (self.provider_field, self.model_name)
+        self.provider_field = kwargs.pop('provider_field' , 'unknown') 
+        self.model_name = kwargs.pop('model_name' , 'Unknown') 
         super(ExtraFieldsValues, self).__init__(*args, **kwargs)
 
+    def set_model_and_provider(self, provider_field, model_name):
+        self.provider_field = provider_field 
+        self.model_name = model_name
+        if self.widget:
+            self.widget.provider_field = provider_field 
+            self.widget.model_name = model_name
+        
     def formfield(self, **kwargs):
-        #print "INIT FORM FIELD FORM %s %s" % (self.provider_field, self.model_name)
+        #print "INIT WIDGET %s %s" % (self.provider_field, self.model_name)
         kwargs['form_class'] = ExtraFieldsValuesFormField
         kwargs['widget'] = ExtraFieldsValuesWidget(model_name = self.model_name, provider_field = self.provider_field)
+        self.widget = kwargs['widget'] 
         return super(ExtraFieldsValues, self).formfield(**kwargs)
     """
     def formfield(self, **kwargs):

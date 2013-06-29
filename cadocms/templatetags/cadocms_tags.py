@@ -84,3 +84,7 @@ class CaptureasNode(template.Node):
         output = self.nodelist.render(context)  
         context[self.varname] = output  
         return ''  
+
+@register.filter
+def get_range( value ):
+  return range( value )

@@ -48,13 +48,14 @@ class Moderated(models.Model):
         ret = super(Moderated, self).save(*args, **kwargs)
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
-            #print self.__class__._meta.get_all_field_names()
-            for field in self.__class__._meta.get_all_field_names():
-                if field not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment']:
-                    field_class = self.__class__._meta.get_field(field)
-                    original_data = getattr(original, field)
-                    new_data = getattr(self, field)
-                    if isinstance(field_class, models.ManyToManyField):
+            print self.__class__._meta.get_all_field_names()
+            print self.__class__._meta.fields
+            for field in self.__class__._meta.fields + self.__class__._meta.many_to_many: #self.__class__._meta.get_all_field_names():
+                if field.name not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment']:
+                    #field_class = self.__class__._meta.get_field(field)
+                    original_data = getattr(original, field.name)
+                    new_data = getattr(self, field.name)
+                    if isinstance(field, models.ManyToManyField):
                         pass
                         #TODO
                         #print original_data.all()
@@ -256,9 +257,11 @@ class ExtraFieldsProvider(models.Model):
     
 class ExtraFieldsUser(models.Model):
     
-    extra = ExtraFieldsValues(null=True, blank=True, help_text='Extra fields depends on category you select')
     PROVIDER_FIELD = 'category'
     EXTRA_PARENT = ''
+    extra = ExtraFieldsValues(null=True, blank=True, help_text='Extra fields depends on category you select', 
+                              provider_field = PROVIDER_FIELD)
+                              #model_name = _meta.app_label + '.' + _meta.object_name)
     class Meta:
         abstract = True
     
@@ -295,9 +298,9 @@ class ExtraFieldsUser(models.Model):
                 parrent = getattr(current, bit)
                 self.extra = dict(parrent.extra.items() + self.extra.items())
                 current = parrent
-        """     
-        self._meta.get_field('extra').provider_field = self.PROVIDER_FIELD
-        self._meta.get_field('extra').model_name = self.__class__._meta.app_label + '.' + self.__class__._meta.object_name
+        """
+        #print 'EXTRA = ' + self.__class__._meta.app_label + '.' + self.__class__._meta.object_name
+        self._meta.get_field('extra').set_model_and_provider(self.PROVIDER_FIELD, self.__class__._meta.app_label + '.' + self.__class__._meta.object_name); 
         self.extra_fields = {}
         try:
             self.extra_definition = self.get_provided_extra_fields()
@@ -305,8 +308,10 @@ class ExtraFieldsUser(models.Model):
             #print 'VALUES', self.extra;
             #print self.extra_definition
             for key, field in self.extra_definition.items():
+                #print key
                 try:
                     self.extra_fields[key] = field['field'].to_python(self.extra[key])
+                    #print 'set'
                     if not self.extra_fields[key] and self.EXTRA_PARENT:
                         self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
                 except Exception:
@@ -315,6 +320,8 @@ class ExtraFieldsUser(models.Model):
                         self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
                     except Exception:
                         self.extra_fields[key] = field['field'].get_default();
+                        #print 'default'
+                #print self.extra_fields
         except Exception:
             self.extra_definition = {}
         #print self.extra_fields, 'FIELDS'

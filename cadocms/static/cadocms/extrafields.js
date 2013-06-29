@@ -7,14 +7,15 @@ if (jQuery != undefined) {
     $(document).ready(function($) {
     	
     	function saveExtra(extraDiv){
+    		//console.log('save');
 			var extra = {};
 			extraDiv.find("[name^=extra]").each(function(i, elem){
 				if($(elem).attr('name') != 'extra')
 				{
 					var ekey = $(elem).attr('name').substring(6, $(elem).attr('name').length-1);
-					if ($(elem).is(':checkbox'))
+					if ($(elem).attr('type') == 'checkbox')
 					{
-						extra[ekey] = $(elem).attr('checked') == 'checked';
+						extra[ekey] = $(elem).is(":checked");
 					}
 					else
 					{
@@ -22,15 +23,16 @@ if (jQuery != undefined) {
 					}
 				}
 			});
+			//console.log(extra);
 			extraDiv.parent().find('textarea').first().val(JSON.stringify(extra));
 		}
 		
 		function loadExtra(extraDiv){
 			var extra = JSON.parse(extraDiv.parent().find('textarea').first().val());
-			console.log(extra);
+			//console.log(extra);
 			for (key in extra)
 			{
-				console.log(extra[key])
+				//console.log(extra[key])
 				var elem = extraDiv.find("[name=extra\\[" + key + "\\]]");
 				if (elem.is(':checkbox'))
 				{
@@ -47,6 +49,7 @@ if (jQuery != undefined) {
 		
     	document.registerExtraField = function(url, field_name, provider_name)
     	{
+    	   	//console.log(url, field_name, provider_name);
     		///cado/extrafields/unravelling.Item/4
     		//productoption_set-0-extra
     		var field;
@@ -71,9 +74,8 @@ if (jQuery != undefined) {
 			field.after(extraDiv);
 			field.hide();
 			if (provider_name.indexOf('.') > 0) {
-				provider_name = provider_name.substring(provider_name.indexOf('.')+1);
+				provider_name = provider_name.substring(0, provider_name.indexOf('.'));
 			}
-			//alert(provider_name);
     		provider = $('#id_' + provider_name);
 
 			provider.change(function(){
@@ -88,5 +90,15 @@ if (jQuery != undefined) {
 			
 			provider.change();
     	}
+    	
+    	
+    	if (typeof document.extraFieldsQueue !== 'undefined')
+    	{
+    	    for (key in document.extraFieldsQueue)
+    	    {
+    	    	document.registerExtraField(document.extraFieldsQueue[key][0], document.extraFieldsQueue[key][1], document.extraFieldsQueue[key][2]);
+    	    }
+    	}
+    	
     });
 })(django.jQuery);

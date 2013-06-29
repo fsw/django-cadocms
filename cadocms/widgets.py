@@ -5,15 +5,11 @@ from django.core.urlresolvers import reverse
 
 EXTRAFIELDS_HTML_WIDGET = u"""
 <script type="text/javascript">
-if (jQuery != undefined) {
-    var grp = {
-        'jQuery':jQuery,
-    }
+if (typeof document.extraFieldsQueue === 'undefined') {
+    document.extraFieldsQueue = new Array();
 }
-(function($){
-$(document).ready(function($) {
-document.registerExtraField('%(url)s', '%(name)s', '%(provider)s');
-});})(grp.jQuery);</script>
+document.extraFieldsQueue.push(['%(url)s', '%(name)s', '%(provider)s']);
+</script>
 """
 
 class ExtraFieldsValuesWidget(forms.Textarea):
@@ -24,6 +20,7 @@ class ExtraFieldsValuesWidget(forms.Textarea):
         self.language = language or settings.LANGUAGE_CODE[:2]
         self.provider_field = provider_field
         self.model_name = model_name
+        #print '__INIT WIDGET %s %s' % (self.model_name, self.provider_field)
         super(ExtraFieldsValuesWidget, self).__init__(attrs=attrs)
 
     def render(self, name, value, attrs=None):
@@ -32,7 +29,7 @@ class ExtraFieldsValuesWidget(forms.Textarea):
         #TODO:
         #provider = 'category';
         #model = 'unravelling.Item';
-        print 'RENDERING FIELD %s %s' % (self.model_name, self.provider_field)
+        print 'RENDERING WIDGET %s %s' % (self.model_name, self.provider_field)
         return rendered + mark_safe(EXTRAFIELDS_HTML_WIDGET % {
                             'url': reverse('cadocms.views.extrafields', kwargs={'model':self.model_name, 'provider_id':0}),
                             'value': value,
