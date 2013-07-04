@@ -1,2 +1,6 @@
 
 /* this file exists only to disable grappelli default tinymce content styles */
+
+#tinymce {
+	background-color: white;	
+}
