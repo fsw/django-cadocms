@@ -221,34 +221,37 @@ class ExtraFieldsProvider(models.Model):
         for cat in all_cats:
             try:
                 for key, field in cat.extra_fields.items():
-                    #print key, field
-                    methodToCall = getattr(models, field.get('class', 'CharField'), models.CharField)
-                    #print methodToCall
-                    args = field.get('kwargs', {}).copy()
-                    if 'choices' in args:
-                        new_options = []
-                        for k, v in args['choices'].items():
-                            new_options.append((k,v))
-                        args['choices'] = new_options
-                    f = methodToCall(**args)
-                    solr_key = key
-                    h_field = indexes.index_field_from_django_field(f)
-                    if h_field == indexes.CharField:
-                        solr_key = '%s_s' % key
-                    elif h_field == indexes.DateTimeField:
-                        solr_key = '%s_dt' % key
-                    elif h_field == indexes.BooleanField:
-                        solr_key = '%s_b' % key
-                    elif h_field == indexes.MultiValueField:
-                        solr_key = '%s_s' % key
-                    elif h_field == indexes.FloatField:
-                        solr_key = '%s_f' % key
-                    elif h_field == indexes.IntegerField:
-                        solr_key = '%s_i' % key
+                    if not field:
+                        ret.pop(key, None)
                     else:
-                        raise Exception('unknown type')
-
-                    ret[key] = {'field' : f, 'solr_key' : solr_key}
+                        #print key, field
+                        methodToCall = getattr(models, field.get('class', 'CharField'), models.CharField)
+                        #print methodToCall
+                        args = field.get('kwargs', {}).copy()
+                        if 'choices' in args:
+                            new_options = []
+                            for k, v in args['choices'].items():
+                                new_options.append((k,v))
+                            args['choices'] = new_options
+                        f = methodToCall(**args)
+                        solr_key = key
+                        h_field = indexes.index_field_from_django_field(f)
+                        if h_field == indexes.CharField:
+                            solr_key = '%s_s' % key
+                        elif h_field == indexes.DateTimeField:
+                            solr_key = '%s_dt' % key
+                        elif h_field == indexes.BooleanField:
+                            solr_key = '%s_b' % key
+                        elif h_field == indexes.MultiValueField:
+                            solr_key = '%s_s' % key
+                        elif h_field == indexes.FloatField:
+                            solr_key = '%s_f' % key
+                        elif h_field == indexes.IntegerField:
+                            solr_key = '%s_i' % key
+                        else:
+                            raise Exception('unknown type')
+    
+                        ret[key] = {'field' : f, 'solr_key' : solr_key}
                     
             except Exception, err:
                 print err
