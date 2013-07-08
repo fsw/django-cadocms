@@ -1,12 +1,15 @@
 from django.contrib import admin
 from django.utils.translation import ugettext, ugettext_lazy as _
-from models import StaticPage, Setting, Moderated, MODERATION_STATUS, Chunk
+from models import StaticPage, Setting, Moderated, MODERATION_STATUS, Chunk, ModerationReason
 from django import forms
 from django.conf import settings
 
 from modeltranslation.admin import TranslationAdmin
 
 import reversion
+
+class ModeratedAdmin(reversion.VersionAdmin):
+    pass
 
 class StaticPageForm(forms.ModelForm):
     url = forms.RegexField(label=_("URL"), max_length=100, regex=r'^[-\w/\.~]+$',
@@ -92,6 +95,7 @@ class ChunkAdmin(reversion.VersionAdmin, TranslationAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+"""
 
 def approve_moderated(modeladmin, request, queryset):
     for obj in queryset:
@@ -140,4 +144,4 @@ def add_moderated_admin(model, name = 'moderate'):
     admin.site.register(newmodel, ModeratedAdmin)
     return ModeratedAdmin
 
-
+"""

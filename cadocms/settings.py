@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     
     CADO_NAME = 'Cado CMS'
     SECRET_KEY = 'OVERWRITE ME'
-    
+    SPAM_EMAIL = '' 
     SITE_ID = 1
     MULTISITE = False
 

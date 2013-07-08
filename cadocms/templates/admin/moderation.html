@@ -1,0 +1,131 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_list %}
+
+{% block extrahead %}
+<link href="{{STATIC_URL}}fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css" media="screen" />
+<script src="{{STATIC_URL}}js/jquery-1.10.1.js"></script>
+<script src="{{STATIC_URL}}js/diff_match_patch.js"></script>
+<script src="{{STATIC_URL}}fancybox/jquery.fancybox.js"></script>
+<style type="text/css">
+	.diff .change {
+		background : #fbb;
+		border: 1px solid #f66;
+	}
+</style>
+
+<script type="text/javascript">
+//<!--
+$(function(){
+	$('.fancybox').fancybox();
+	var dmp = new diff_match_patch();
+	
+	$('.diffRow').each(function(i,elem){
+		if($(elem).find(".diff").length == 2)
+		{
+			first = $(elem).find(".diff").first().html();
+			second = $(elem).find(".diff").last().html();
+			diff = dmp.diff_main(first, second);
+			//console.log(diff);
+			if (diff.length < 2) {
+				$(elem).remove();
+			} else {
+				newFirst = "";
+				newSecond = "";
+				for (piece in diff) {
+					console.log(diff[piece])
+					if (diff[piece][0] == 0) {
+						newFirst += diff[piece][1];
+						newSecond += diff[piece][1]; 
+					}
+					if (diff[piece][0] == 1) {
+						newFirst += "<span class='change'>" + diff[piece][1] + "</span>"; 
+					}
+					if (diff[piece][0] == -1) {
+						newSecond += "<span class='change'>" + diff[piece][1] + "</span>";
+					}
+				}
+				$(elem).find(".diff").first().html(newFirst);
+				$(elem).find(".diff").last().html(newSecond);	
+			}
+		}
+	});
+});
+//-->
+</script>
+{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+<ul class="grp-horizontal-list">
+	<li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
+	<li>Moderation</li>
+</ul>
+{% endblock %}
+{% endif %}
+
+
+{% block content %}
+<table cellspacing="0" style="width:100%;">
+	<thead>
+		<tr>
+			<th class="">Item</th>
+			<th class="">Status</th>
+			<th class="">Actions</th>
+		</tr>
+	</thead>
+    <tbody>
+		{% for item in items %}
+		<tr class="grp-row grp-row-even">
+			<th>
+				<a href="{{admin_url_prefix}}{{item.id}}/">{{item}}</a>
+				(<a class="fancybox fancybox.ajax" href="{{item.get_absolute_url}}">preview</a>)
+			</th>
+			<td>
+				{{item.moderation_status_code}}
+			</td>
+			<td style="width:310px; padding:0;">
+			<div class="grp-submit-row" style="width:300px; overflow: auto;">
+				<ul style="margin:5px; overflow:auto;">
+					<li>
+						<form action="" method="post">
+							{% csrf_token %}
+							<input type="hidden" name="accept" value="{{item.id}}"/>
+							<button class="grp-button" style="background-color: #30bf30; background-image: none;" type="submit">ACCEPT</button>
+						</form>
+					</li>
+					<li>
+						<form action="" method="post">
+							{% csrf_token %}
+							<input type="hidden" name="reject" value="{{item.id}}"/>
+							<select name="reason">
+								{% for reason in reasons %}
+								<option value="{{reason.id}}">{{reason.name}}</option>
+								{% endfor %}
+							</select>
+							<button class="grp-button" style="background-color: #bf3030; background-image: none;" type="submit">REJECT</button>
+						</form>
+					</li>
+				</ul>
+			</div>
+			</td>
+		</tr>
+		<tr class="grp-row grp-row-odd">
+			<td colspan="3">
+			<table style="width:100%;">
+			<tbody>
+				{% for key, values in item.show_diff.items %}
+				<tr class="diffRow">
+					<th>{{key}}</th>
+					{% for value in values %}
+						<td class="diff">{{value}}</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</tbody>
+			</table>
+			</td>
+		</tr>
+		{% endfor%}
+	</tbody>
+</table>
+{% endblock %}

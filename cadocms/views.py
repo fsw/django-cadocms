@@ -8,6 +8,12 @@ from django.forms.forms import Form
 from django.test.utils import get_runner
 from django.conf import settings
 
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render_to_response
+from django.db.models import get_app, get_models
+
+from cadocms.models import Moderated, MODERATION_STATUS, ModerationReason
+
 def staticpage(request, url):
     print url
     for StaticPageClass in StaticPage.__subclasses__():
@@ -31,3 +37,26 @@ def testsuite(request):
     test_runner = TestRunner()
     failures = test_runner.run_tests([])
     return HttpResponse("DUPA")
+
+
+@staff_member_required
+def admin_moderation(request): 
+    context = {}
+    
+    #TODO support of multiple moderated models (TABS?)
+    for model in get_models():
+        if issubclass(model, Moderated):
+            
+            if request.POST.get('accept', 0):
+                model.objects.get(id=request.POST.get('accept', 0)).moderate_accept(request.user);
+        
+            if request.POST.get('reject', 0):
+                model.objects.get(id=request.POST.get('reject', 0)).moderate_reject(request.user, ModerationReason.objects.get(id=request.POST.get('reason', 0)));
+    
+            context['items'] = model.objects.filter(moderation_status__in=[MODERATION_STATUS['NEW'],MODERATION_STATUS['MODIFIED']])
+            context['admin_url_prefix'] = '/admin/' + model._meta.app_label + '/' + model._meta.object_name.lower() + '/';
+    
+    context['reasons'] = ModerationReason.objects.all();
+
+    r = render_to_response('admin/moderation.html', context, RequestContext(request))
+    return HttpResponse(r)

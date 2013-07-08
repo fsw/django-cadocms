@@ -51,10 +51,15 @@ class CustomIndexDashboard(Dashboard):
         
         # append another link list module for "support".
         self.children.append(modules.LinkList(
-            _('Media Management'),
+            _('Actions'),
             column=2,
             collapsible=False,
             children=[
+                {
+                    'title': _('Moderation'),
+                    'url': '/admin/moderation/',
+                    'external': False,
+                },
                 {
                     'title': _('FileBrowser'),
                     'url': '/admin/filebrowser/browse/',

@@ -5,6 +5,7 @@ import smtplib
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import EmailValidator, email_re
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 import dns.resolver
 
@@ -14,6 +15,9 @@ class EmailValidator(EmailValidator):
 
     def __call__(self, value):
         super(EmailValidator, self).__call__(value)
+        if (settings.HOST.CLASS == 'DEV'):
+            return
+        
         try:
             hostname = value.split('@')[-1]
         except KeyError:

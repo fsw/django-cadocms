@@ -10,6 +10,10 @@ from django.contrib.auth.models import User
 from haystack import indexes
 from django.conf import settings
 from django.db.models.signals import class_prepared
+from django.forms.models import model_to_dict
+from django.core.mail import send_mail
+
+import reversion
 
 MODERATION_STATUS = {
     'NEW' : 0,
@@ -25,27 +29,77 @@ MODERATION_STATUSES = (
     (MODERATION_STATUS['REJECTED'], 'Rejected'),
 )
 
+MODERATION_STATUSES_CODES = {
+    MODERATION_STATUS['NEW'] : 'new',
+    MODERATION_STATUS['MODIFIED'] : 'modified',
+    MODERATION_STATUS['OK'] : 'ok',
+    MODERATION_STATUS['REJECTED'] : 'rejected',
+}
+
 MODERATION_REASONS = (
     (0, 'Other'),
 )
     
+class ModerationReason(models.Model):
+    name = models.CharField(_('Name'), max_length=200)
+    email_body = models.TextField(_('Email Body'), blank=True)
+        
+    def __unicode__(self):
+        return u"%s" % (self.name)
+    
 class Moderated(models.Model):
     
     moderation_status = models.IntegerField(_('Moderation Status'), choices=MODERATION_STATUSES, db_index=True, default=MODERATION_STATUS['NEW'])
-    moderation_reason = models.IntegerField(_('Moderation Reason'), choices=MODERATION_REASONS, null=True, blank=True)
+    moderation_reason = models.ForeignKey(ModerationReason, related_name='moderation_reason', null=True, blank=True)
     moderation_user = models.ForeignKey(User, related_name='moderation_user', null=True, blank=True)
     moderation_comment = models.TextField(_('Moderator Comment'), blank=True)
     
+    owner = models.ForeignKey(User, related_name='owner')
+    
     class Meta:
         abstract = True
+        
+    def moderation_status_code(self):
+        return MODERATION_STATUSES_CODES[self.moderation_status]
+    
+    
+    def moderate_accept(self, user):
+        self.moderation_status = MODERATION_STATUS['OK']
+        self.moderation_user = user
+        super(Moderated, self).save()
+
+    def moderate_reject(self, user, reason):
+        self.moderation_status = MODERATION_STATUS['REJECTED']
+        self.moderation_user = user
+        self.moderation_reason = reason
+        
+        send_mail('[' + settings.CADO_NAME + '] ' + str(self) + ' has been rejected by moderation',
+                  'Dear ' + str(self.owner) + "!\n\n" + reason.email_body,
+                  settings.SPAM_EMAIL,
+                  [self.owner.email])
+        
+        super(Moderated, self).save()
+
+    def show_diff(self):
+        if (self.moderation_status == MODERATION_STATUS['NEW']):
+            d = model_to_dict(self, fields=[field.name for field in self._meta.fields])
+            return dict([(x,[y]) for x,y in d.items()])
+        if (self.moderation_status == MODERATION_STATUS['MODIFIED']):
+            version_list = reversion.get_for_object(self)
+            ret = {}
+            for version in version_list[0:2]:
+                for key,value in version.field_dict.items():
+                    ret[key] = ret.get(key,[])
+                    ret[key].append(value)
+            return ret
+        #model_to_dict(self, fields=[field.name for field in self._meta.fields])
+        #model_to_dict(self, fields=[field.name for field in self._meta.fields])
         
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.moderation_status = MODERATION_STATUS['NEW']
         else:
             original = self.__class__._default_manager.get(pk=self.pk)
-        
-        ret = super(Moderated, self).save(*args, **kwargs)
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
             print self.__class__._meta.get_all_field_names()
@@ -66,7 +120,11 @@ class Moderated(models.Model):
                         #print original_data
                         #print new_data
         
+        with reversion.create_revision():
+            ret = super(Moderated, self).save(*args, **kwargs)
+        
         return ret
+    
 
 class Translatable(models.Model):
     translatable_fields = ()
