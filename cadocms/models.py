@@ -62,22 +62,29 @@ class Moderated(models.Model):
     def moderation_status_code(self):
         return MODERATION_STATUSES_CODES[self.moderation_status]
     
-    
+    def on_moderate_accept(self):
+        send_mail('[' + settings.CADO_NAME + '] ' + str(self) + ' has been accepted by moderation',
+                  'Dear ' + str(self.owner) + "!\n\n" + 'Your item has been accepted and is now publicly visible on ' + settings.CADO_NAME,
+                  settings.SPAM_EMAIL,
+                  [self.owner.email])
+        
+    def on_moderate_reject(self, reason):
+        send_mail('[' + settings.CADO_NAME + '] ' + str(self) + ' has been rejected by moderation',
+                  'Dear ' + str(self.owner) + "!\n\n" + reason.email_body,
+                  settings.SPAM_EMAIL,
+                  [self.owner.email])
+
     def moderate_accept(self, user):
         self.moderation_status = MODERATION_STATUS['OK']
         self.moderation_user = user
+        self.on_moderate_accept()
         super(Moderated, self).save()
 
     def moderate_reject(self, user, reason):
         self.moderation_status = MODERATION_STATUS['REJECTED']
         self.moderation_user = user
         self.moderation_reason = reason
-        
-        send_mail('[' + settings.CADO_NAME + '] ' + str(self) + ' has been rejected by moderation',
-                  'Dear ' + str(self.owner) + "!\n\n" + reason.email_body,
-                  settings.SPAM_EMAIL,
-                  [self.owner.email])
-        
+        self.on_moderate_reject(reason)
         super(Moderated, self).save()
 
     def show_diff(self):
