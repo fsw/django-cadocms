@@ -112,7 +112,7 @@ class Moderated(models.Model):
         else:
             original = self.__class__._default_manager.get(pk=self.pk)
         
-        self.modified = datetime.today()
+        self.modified = datetim.today()
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
             print self.__class__._meta.get_all_field_names()
@@ -341,10 +341,10 @@ class ExtraFieldsUser(models.Model):
     
     def get_provided_extra_fields_by_provider_id(self, provider_field_value):
         path_bits = self.PROVIDER_FIELD.split('.')
-        current_class = self
-        for bit in path_bits:
-            current_class = current_class._meta.get_field(bit).rel.to
-        return current_class.objects.get(id=provider_field_value).get_extra_fields()
+        #current_class = self
+        #for bit in path_bits:
+        #    current_class = current_class._meta.get_field(bit).rel.to
+        #return current_class.objects.get(id=provider_field_value).get_extra_fields()
         
         field_class = self._meta.get_field(path_bits.pop(0))
         current = field_class.rel.to.objects.get(id=provider_field_value)
