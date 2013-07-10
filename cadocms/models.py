@@ -12,6 +12,7 @@ from django.conf import settings
 from django.db.models.signals import class_prepared
 from django.forms.models import model_to_dict
 from django.core.mail import send_mail
+from datetime import datetime    
 
 import reversion
 
@@ -53,6 +54,8 @@ class Moderated(models.Model):
     moderation_reason = models.ForeignKey(ModerationReason, related_name='moderation_reason', null=True, blank=True)
     moderation_user = models.ForeignKey(User, related_name='moderation_user', null=True, blank=True)
     moderation_comment = models.TextField(_('Moderator Comment'), blank=True)
+    created     = models.DateTimeField(editable=False, default=datetime.now)
+    modified    = models.DateTimeField(editable=False, default=datetime.now)
     
     owner = models.ForeignKey(User, related_name='owner')
     
@@ -105,14 +108,17 @@ class Moderated(models.Model):
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.moderation_status = MODERATION_STATUS['NEW']
+            self.created = datetime.datetime.today()
         else:
             original = self.__class__._default_manager.get(pk=self.pk)
+        
+        self.modified = datetime.datetime.today()
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
             print self.__class__._meta.get_all_field_names()
             print self.__class__._meta.fields
             for field in self.__class__._meta.fields + self.__class__._meta.many_to_many: #self.__class__._meta.get_all_field_names():
-                if field.name not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment']:
+                if field.name not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment', 'created', 'modified']:
                     #field_class = self.__class__._meta.get_field(field)
                     original_data = getattr(original, field.name)
                     new_data = getattr(self, field.name)

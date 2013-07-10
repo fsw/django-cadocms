@@ -192,6 +192,7 @@ class Settings(BaseSettings):
             'django.contrib.messages',
             'django.contrib.staticfiles',
             'django.contrib.admin',
+            'django.contrib.humanize',
             'reversion',
             'haystack',
             'south',
