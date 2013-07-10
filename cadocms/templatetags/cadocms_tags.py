@@ -1,5 +1,6 @@
 from django import template
 from django.conf import settings
+
 import urllib
 register = template.Library()
 
