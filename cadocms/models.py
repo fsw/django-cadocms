@@ -112,7 +112,7 @@ class Moderated(models.Model):
         else:
             original = self.__class__._default_manager.get(pk=self.pk)
         
-        self.modified = datetim.today()
+        self.modified = datetime.today()
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
             print self.__class__._meta.get_all_field_names()
