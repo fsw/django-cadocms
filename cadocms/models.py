@@ -108,11 +108,11 @@ class Moderated(models.Model):
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.moderation_status = MODERATION_STATUS['NEW']
-            self.created = datetime.datetime.today()
+            self.created = datetime.today()
         else:
             original = self.__class__._default_manager.get(pk=self.pk)
         
-        self.modified = datetime.datetime.today()
+        self.modified = datetime.today()
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
             print self.__class__._meta.get_all_field_names()
