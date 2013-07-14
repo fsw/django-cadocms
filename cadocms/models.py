@@ -401,5 +401,5 @@ class ExtraFieldsUser(models.Model):
                     self.extra_fields[key] = field['field'].get_default();
                     #print 'default'
         
-        print self.extra_fields
+        #print self.extra_fields
         #print self.extra_fields, 'FIELDS'

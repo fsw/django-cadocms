@@ -62,6 +62,11 @@ class Settings(BaseSettings):
         """
     
     @property
+    def CADO_FULL_URL(self):
+        return 'http://' + self.CADO_FULL_DOMAIN;
+    
+    
+    @property
     def CADO_PROJECT_GROUP(self):
         return self.CADO_PROJECT
      
