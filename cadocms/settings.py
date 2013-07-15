@@ -300,7 +300,7 @@ class Settings(BaseSettings):
         'handlers': {
             'mail_admins': {
                 'level': 'ERROR',
-                'filters': ['require_debug_false'],
+                'filters': [],#'require_debug_false'],
                 'class': 'django.utils.log.AdminEmailHandler'
             }
         },
