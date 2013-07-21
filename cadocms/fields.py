@@ -253,7 +253,7 @@ class ExtraFieldsValues(JSONField):
     def set_model_and_provider(self, provider_field, model_name):
         self.provider_field = provider_field 
         self.model_name = model_name
-        if self.widget:
+        if hasattr(self, 'widget'):
             self.widget.provider_field = provider_field 
             self.widget.model_name = model_name
         
