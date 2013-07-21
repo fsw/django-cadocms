@@ -6,6 +6,10 @@ register = template.Library()
 
 from cadocms.models import Setting, Chunk
 
+@register.filter()
+def field_type(field):
+    return field.field.__class__.__name__
+
 @register.simple_tag(name="setting")
 def get_setting(key):
     try: 
