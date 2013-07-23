@@ -50,6 +50,7 @@ setup(
         'celery-haystack',
         'django-celery',
         'dnspython',
+        'cssselect',
         
     ],
     dependency_links = [
