@@ -91,14 +91,15 @@ if (jQuery != undefined) {
 			provider.change();
     	}
     	
-    	
-    	if (typeof document.extraFieldsQueue !== 'undefined')
-    	{
-    	    for (key in document.extraFieldsQueue)
-    	    {
-    	    	document.registerExtraField(document.extraFieldsQueue[key][0], document.extraFieldsQueue[key][1], document.extraFieldsQueue[key][2]);
-    	    }
-    	}
-    	
+    	document.registerExtraFieldsQueue = function() {
+            if (typeof document.extraFieldsQueue !== 'undefined')
+            {
+                while ((extraParams = document.extraFieldsQueue.pop()) != null)
+                {
+                    document.registerExtraField(extraParams[0], extraParams[1], extraParams[2]);
+                }
+            }
+        }
+        document.registerExtraFieldsQueue();
     });
 })(django.jQuery);
