@@ -2,6 +2,12 @@ from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
+from django.forms.widgets import ClearableFileInput
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+import urllib2, os
 
 EXTRAFIELDS_HTML_WIDGET = u"""
 <script type="text/javascript">
@@ -49,3 +55,28 @@ class HTMLFieldWidget(forms.Textarea):
             attrs = {}
         attrs['class'] = 'mceEditor'
         return super(HTMLFieldWidget, self).render(name, value, attrs)
+
+class UrlOrFileInput(ClearableFileInput):
+
+    def render(self, name, value, attrs=None):
+        parent = super(UrlOrFileInput, self).render(name, value, attrs)
+        return parent + mark_safe('or paste URL: <input type="text" value="" name="%s_url"/>' % name)
+
+    def value_from_datadict(self, data, files, name):
+        upload = super(UrlOrFileInput, self).value_from_datadict(data, files, name)
+        url = data.get('%s_url' % name, None)
+        if url:
+            #TODO support for non-jpgs (via PIL?)
+            img_temp = NamedTemporaryFile(delete=True)
+            try:
+                img_temp.write(urllib2.urlopen(url).read())
+            except:
+                return upload
+            img_temp.flush()
+            img_temp.file.seek(0)
+            size = os.fstat(img_temp.file.fileno()).st_size
+            return InMemoryUploadedFile(img_temp, None, img_temp.name + '.jpg' , 'image/jpeg', size, None)
+        #print url
+        #print upload
+        #print type(upload)
+        return upload
