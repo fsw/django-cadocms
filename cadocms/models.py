@@ -50,14 +50,14 @@ class ModerationReason(models.Model):
     
 class Moderated(models.Model):
     
-    moderation_status = models.IntegerField(_('Moderation Status'), choices=MODERATION_STATUSES, db_index=True, default=MODERATION_STATUS['NEW'])
+    moderation_status = models.IntegerField(_('Moderation Status'), choices=MODERATION_STATUSES, db_index=True, default=MODERATION_STATUS['NEW'], blank=True)
     moderation_reason = models.ForeignKey(ModerationReason, related_name='moderation_reason', null=True, blank=True)
     moderation_user = models.ForeignKey(User, related_name='moderation_user', null=True, blank=True)
     moderation_comment = models.TextField(_('Moderator Comment'), blank=True)
     created     = models.DateTimeField(editable=False, default=datetime.now)
     modified    = models.DateTimeField(editable=False, default=datetime.now)
     
-    owner = models.ForeignKey(User, related_name='owner')
+    owner = models.ForeignKey(User, related_name='owner', null=True, blank=True)
     
     class Meta:
         abstract = True
