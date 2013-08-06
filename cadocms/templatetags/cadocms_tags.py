@@ -18,6 +18,16 @@ def get_setting(key):
     except Setting.DoesNotExist:
         return getattr(settings, key)
 
+
+@register.filter(name="setting")
+def filter_setting(key):
+    try:
+        row = Setting.objects.get(key=key)
+        return row.value;
+    except Setting.DoesNotExist:
+        return getattr(settings, key)
+
+
 @register.filter
 def keyvalue(dict, key, default=None):    
     return dict.get(key, default)
