@@ -1,4 +1,4 @@
-import socket, sys, pkgutil, os
+import socket, sys, pkgutil, os, inspect
 from configurations import Settings as BaseSettings
 
 import djcelery
@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     
     @property
     def CADO_PROJECT(self):
-        return os.path.basename(os.getcwd())
+        return os.path.basename(os.path.dirname(os.path.realpath(inspect.getfile(self.__class__))))
+        #return os.path.basename(os.getcwd())
         #return os.path.basename((os.path.dirname(os.path.realpath(__file__))))
     
     CADO_NAME = 'Cado CMS'
