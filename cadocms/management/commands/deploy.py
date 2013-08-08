@@ -12,7 +12,7 @@ from cadocms.settings import HostSettings
 env.use_ssh_config = True
 
 class Command(BaseCommand):
-    args = '<host>'
+    args = '<host> [initial]'
     help = 'Deploys to specified host'
     
     """
@@ -29,10 +29,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         host = None
+        initial = False
         hostname = 'unknown'
         hosts = []
         if len(args):
             hostname = args[0]
+        if len(args) > 1 and args[1] == 'initial':
+            initial = True
             
         for HostSettingsClass in HostSettings.__subclasses__():
             name = HostSettingsClass.__name__.replace('HostSettings', '').lower()
@@ -49,6 +52,19 @@ class Command(BaseCommand):
         run("ls")
         #run("source virtualenv/bin/activate");
         virtpath = host.PYTHON_PREFIX
+
+        if initial and not files.exists(host.SRCROOT) and not files.exists(host.APPROOT):
+            print colors.red("initial=true and SRCROOT/APPROOT does not exist. will install now");
+            run('mkdir %s' % host.SRCROOT)
+            run('mkdir %s' % host.APPROOT)
+            with cd(host.SRCROOT):
+                run("git init")
+                run("git remote add origin %s" % host.GIT_REMOTE)
+                run("git pull origin master")
+                run(host.PYTHON_INSTALL)
+                run("%spip install -q -r requirements.txt" % virtpath)
+                run("%spython manage.py install" % virtpath)
+            return
         
         with cd(host.SRCROOT):
             print colors.red("UPDATING CODEBASE:", bold=True)
