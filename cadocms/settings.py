@@ -407,6 +407,7 @@ class DevHostSettings(HostSettings):
     SOLR_URL = ''
     SOLR_CORE_NAME = ''
     """
+    PYTHON_PREFIX = ''
     CLASS = 'DEV'
     NAME = 'localhost'
     DOMAIN = 'localhost:8000'

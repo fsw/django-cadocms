@@ -32,9 +32,11 @@ class Command(BaseCommand):
             os.makedirs(settings.STATIC_ROOT)
             
         
+        virtpath = settings.HOST.PYTHON_PREFIX
+        
         print colors.green("creating database");
-        local("./manage.py syncdb")
-        local("./manage.py migrate")
+        local("%spython manage.py syncdb" % virtpath)
+        local("%spython manage.py migrate" % virtpath)
         print colors.green("installing install_* fixtures");
         
         fixtures = []
@@ -49,7 +51,7 @@ class Command(BaseCommand):
             
         for fixture in fixtures:
             if fixture.startswith('install_'):
-                local("./manage.py loaddata %s" % fixture)
+                local("%spython manage.py loaddata %s" % (virtpath, fixture))
                 
         print colors.green("DONE");
         
