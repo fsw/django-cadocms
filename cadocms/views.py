@@ -27,7 +27,7 @@ def extrafields(request, model, provider_id):
     #path_bits = model.PROVIDER_FIELD.split('.')
     #setattr(model, path_bits.pop(0), provider_id)
     form = Form()
-    for key, field in model.get_provided_extra_fields_by_provider_id(provider_id).items():
+    for key, field in model.get_provided_extra_fields_by_provider_id(provider_id):
         form.fields['extra[%s]' % key] = field['field'].formfield()
     return HttpResponse(form.as_p())
 

@@ -288,18 +288,24 @@ class ExtraFieldsProvider(models.Model):
         
     def get_extra_fields(self):
         all_cats = self.get_ancestors(include_self=True)
-        ret = {}
+        #ret = {}
+        ret = []
         for cat in all_cats:
             try:
-                for key, field in cat.extra_fields.items():
+                if type(cat.extra_fields) is list:
+                    loop = cat.extra_fields
+                else:
+                    loop = cat.extra_fields.items()
+                for key, field in loop:
                     if not field:
-                        ret.pop(key, None)
+                        #ret.pop(key, None)
+                        ret = [(k, v) for k, v in ret if k != key]
                     else:
                         #print key, field
                         methodToCall = getattr(models, field.get('class', 'CharField'), models.CharField)
                         #print methodToCall
                         args = field.get('kwargs', {}).copy()
-                        if 'choices' in args:
+                        if ('choices' in args) and (type(args['choices']) is dict):
                             new_options = []
                             for k, v in args['choices'].items():
                                 new_options.append((k,v))
@@ -322,7 +328,8 @@ class ExtraFieldsProvider(models.Model):
                         else:
                             raise Exception('unknown type')
     
-                        ret[key] = {'field' : f, 'solr_key' : solr_key}
+                        #ret[key] = {'field' : f, 'solr_key' : solr_key}
+                        ret.append((key, {'field' : f, 'solr_key' : solr_key}))
                     
             except Exception, err:
                 print err
@@ -386,20 +393,21 @@ class ExtraFieldsUser(models.Model):
         #print self.__class__.__name__, 'DEFINITION', self.extra_definition, self.extra;
         #print 'VALUES', self.extra;
         #print self.extra_definition
-        for key, field in self.extra_definition.items():
-            #print key
+        for key, field in self.extra_definition:
             try:
                 self.extra_fields[key] = field['field'].to_python(self.extra[key])
                 #print 'set'
                 if not self.extra_fields[key] and self.EXTRA_PARENT:
                     self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
-            except Exception:
+            except Exception as e:
+                #print 'EEE1', e
                 try:
                     #print 'GGGGGGGGGGGG', getattr(self, self.EXTRA_PARENT).extra_fields[key]
                     self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
-                except Exception:
+                except Exception as e:
+                    #print 'EEE2', e
                     self.extra_fields[key] = field['field'].get_default();
                     #print 'default'
-        
+            #print key, self.extra_fields[key], self.extra.get(key, None)
         #print self.extra_fields
         #print self.extra_fields, 'FIELDS'
