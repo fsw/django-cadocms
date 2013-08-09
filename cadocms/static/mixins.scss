@@ -21,3 +21,14 @@
 	behavior: url(/PIE.htc);
 	
 }
+
+@mixin linear-gradient($direction, $from, $to) {
+
+	background-image: linear-gradient($direction, $from, $to);
+	background-image: -o-linear-gradient($direction, $from, $to);
+	background-image: -moz-linear-gradient($direction, $from, $to);
+	background-image: -webkit-linear-gradient($direction, $from, $to);
+	background-image: -ms-linear-gradient($direction, $from, $to);
+	behavior: url(/PIE.htc);
+	
+}
