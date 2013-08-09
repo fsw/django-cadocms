@@ -11,11 +11,11 @@ from cadocms.filters.sass import SassFilter
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        path = finders.find('content.scss')
+        path = finders.find('tinymce/content.scss')
         if (path):
             print 'Generating CSS out of ' + path
             content = open(path, 'r').read()
-            output_css = SassFilter(content, {'href' : '/content.scss'}, 'css', filename=path).input()
+            output_css = SassFilter(content, {'href' : 'tinymce/content.scss'}, 'css', filename=path).input()
             output_path = os.path.abspath(django_settings.STATIC_ROOT + '/css/tinymce.css') 
             print 'Saving %d bytes to %s' % (len(output_css), output_path)
             if not os.path.exists(os.path.dirname(output_path)):
