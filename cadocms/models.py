@@ -395,6 +395,7 @@ class ExtraFieldsUser(models.Model):
         #print self.extra_definition
         for key, field in self.extra_definition:
             try:
+                #import ipdb; ipdb.set_trace() 
                 self.extra_fields[key] = field['field'].to_python(self.extra[key])
                 #print 'set'
                 if not self.extra_fields[key] and self.EXTRA_PARENT:
