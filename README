@@ -1,4 +1,14 @@
-cadolib
+cadoCMS
 
-Set of tiny re-usable bits we use at CadoSolutions across our projects.
-Nothing superb is here but feel free to reuse if you find anything interesting.
+cadocms is a simple CMS and set of reusable bits we use at CadoSolutions across our projects.
+
+It is non-stable and under construction.
+
+nothing superb is here but feel free to reuse if you find anything interesting.
+
+
+sources:
+https://bitbucket.org/cadosolutions/cadocms
+mirror:
+https://github.com/fsw/django-cadocms
+
