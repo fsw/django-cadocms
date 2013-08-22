@@ -387,8 +387,16 @@ class ExtraFieldsUser(models.Model):
     
     def get_provided_extra_fields(self):
         path_bits = self.PROVIDER_FIELD.split('.')
-        
-        return self.get_provided_extra_fields_by_provider_id(getattr(self, path_bits.pop(0)).id)
+        #print self
+        try:
+            provider_id = getattr(self, path_bits.pop(0) + '_id', 0)
+        except:
+            provider_id = None
+            
+        if provider_id is None:
+            return {}
+        else:
+            return self.get_provided_extra_fields_by_provider_id(provider_id)
         """
         current = self
         for bit in path_bits:
@@ -405,7 +413,7 @@ class ExtraFieldsUser(models.Model):
         
         super(ExtraFieldsUser, self).__init__(*args, **kwargs)
         
-        print self.id, time.time()
+        #print self.id, time.time()
         """
         parent_path_bits = self.EXTRA_PARENT.split('.')
         current = self
