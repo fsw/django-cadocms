@@ -255,8 +255,8 @@ class Sluggable(models.Model):
 
     def save(self, *args, **kwargs):
         #print 'CHUJ'
-        #if self.slug is None or self.slug == '':
-        #    self.slug = self._generate_slug()
+        if self.slug is None or self.slug == '':
+            self.slug = self._generate_slug()
         
         return super(Sluggable, self).save(*args, **kwargs)
     
