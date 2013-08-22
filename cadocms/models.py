@@ -436,7 +436,7 @@ class ExtraFieldsUser(models.Model):
                 #import ipdb; ipdb.set_trace() 
                 self.extra_fields[key] = field['field'].to_python(self.extra[key])
                 #print 'set'
-                if not self.extra_fields[key] and self.EXTRA_PARENT:
+                if not self.extra_fields[key] :
                     self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
             except Exception as e:
                 #print 'EEE1', e
