@@ -246,19 +246,30 @@ class Sluggable(models.Model):
         """
         return slugify(u'%s' % self)
     
-    def save(self, *args, **kwargs):
-        print 'CHUJ'
+    def full_clean(self, *args, **kwargs):
+        #print 'CHUJ'
         if self.slug is None or self.slug == '':
             self.slug = self._generate_slug()
+        
+        return super(Sluggable, self).full_clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        #print 'CHUJ'
+        #if self.slug is None or self.slug == '':
+        #    self.slug = self._generate_slug()
         
         return super(Sluggable, self).save(*args, **kwargs)
     
     class Meta:
         abstract = True
-        
+      
+class MemCachedManager(models.Manager):
+    pass
+      
 class Tree(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     order = models.FloatField(default=0)
+    manager = MemCachedManager()
     class Meta:
         abstract = True
         ordering = ['order', 'name']
@@ -268,6 +279,7 @@ class Tree(MPTTModel):
 class RootedTree(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=False, related_name='children', default=0)
     order = models.FloatField(default=0)
+    manager = MemCachedManager()
     class Meta:
         abstract = True
         ordering = ['order', 'name']
@@ -336,6 +348,7 @@ class ExtraFieldsProvider(models.Model):
                 print err
         return ret
     
+import time
     
 class ExtraFieldsUser(models.Model):
     
@@ -344,27 +357,39 @@ class ExtraFieldsUser(models.Model):
     extra = ExtraFieldsValues(null=True, blank=True, help_text='Extra fields depends on category you select', 
                               provider_field = PROVIDER_FIELD)
                               #model_name = _meta.app_label + '.' + _meta.object_name)
+    definitions_cache = dict()
+    
     class Meta:
         abstract = True
     
     def get_provided_extra_fields_by_provider_id(self, provider_field_value):
-        path_bits = self.PROVIDER_FIELD.split('.')
-        #current_class = self
-        #for bit in path_bits:
-        #    current_class = current_class._meta.get_field(bit).rel.to
-        #return current_class.objects.get(id=provider_field_value).get_extra_fields()
+        # TODO: late static binding ?
+        if int(provider_field_value) not in ExtraFieldsUser.definitions_cache:
+            
+            path_bits = self.PROVIDER_FIELD.split('.')
+            #current_class = self
+            #for bit in path_bits:
+            #    current_class = current_class._meta.get_field(bit).rel.to
+            #return current_class.objects.get(id=provider_field_value).get_extra_fields()
+            
+            field_class = self._meta.get_field(path_bits.pop(0))
+            current = field_class.rel.to.objects.get(id=provider_field_value)
+            for bit in path_bits:
+                if current is not None:
+                    current = getattr(current, bit)
+            
+            if current is None:
+                ExtraFieldsUser.definitions_cache[int(provider_field_value)] = {}
+            else:
+                ExtraFieldsUser.definitions_cache[int(provider_field_value)] = current.get_extra_fields()
         
-        field_class = self._meta.get_field(path_bits.pop(0))
-        current = field_class.rel.to.objects.get(id=provider_field_value)
-        for bit in path_bits:
-            if current is not None:
-                current = getattr(current, bit)
-        if current is None:
-            return {}
-        return current.get_extra_fields()  
+        return ExtraFieldsUser.definitions_cache[int(provider_field_value)]
     
     def get_provided_extra_fields(self):
         path_bits = self.PROVIDER_FIELD.split('.')
+        
+        return self.get_provided_extra_fields_by_provider_id(getattr(self, path_bits.pop(0)).id)
+        """
         current = self
         for bit in path_bits:
             if hasattr(current, bit):
@@ -373,10 +398,14 @@ class ExtraFieldsUser(models.Model):
                 current = None
         if current is None:
             return {}
-        return current.get_extra_fields()        
+        return current.get_extra_fields()
+        """        
     
     def __init__(self, *args, **kwargs):
+        
         super(ExtraFieldsUser, self).__init__(*args, **kwargs)
+        
+        print self.id, time.time()
         """
         parent_path_bits = self.EXTRA_PARENT.split('.')
         current = self
