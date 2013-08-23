@@ -282,8 +282,15 @@ add_introspection_rules([], ["^cadocms\.fields\.ExtraFieldsValues"])
 
 class HTMLField(models.TextField):
     #widget = HTMLFieldWidget
+    def __init__(self, *args, **kwargs): 
+        self.widget = kwargs.pop('widget' , HTMLFieldWidget);
+        #print "ASDASD", self.widget
+        super(HTMLField, self).__init__(*args, **kwargs)
+
+        
     def formfield(self, **kwargs):
-        kwargs['widget'] = HTMLFieldWidget
+        kwargs['widget'] = self.widget
+        #print "ASDASD", kwargs['widget']
         return super(HTMLField, self).formfield(**kwargs)
 
 add_introspection_rules([], ["^cadocms\.fields\.HTMLField"])

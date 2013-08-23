@@ -56,6 +56,21 @@ class HTMLFieldWidget(forms.Textarea):
         attrs['class'] = 'mceEditor'
         return super(HTMLFieldWidget, self).render(name, value, attrs)
 
+class HTMLFieldWidgetTrivial(forms.Textarea):
+    
+    class Media:
+        js = (
+              settings.STATIC_URL + 'grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
+              settings.STATIC_URL + 'js/tinymce_setup_trivial.js',
+        )
+        
+    def render(self, name, value, attrs=None):
+        if attrs is None:
+            attrs = {}
+        attrs['class'] = 'mceEditor'
+        return super(HTMLFieldWidgetTrivial, self).render(name, value, attrs)
+
+
 class UrlOrFileInput(ClearableFileInput):
 
     def render(self, name, value, attrs=None):

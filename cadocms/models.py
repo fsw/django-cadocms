@@ -213,7 +213,12 @@ class Sluggable(models.Model):
         else:
             filter_kwargs = {}
         
+            
         queryset = self._get_queryset_for_slug().filter(**filter_kwargs)
+        
+        if self.pk:
+            queryset = queryset.exclude(pk=self.pk)
+            
         base_slug = self._generate_base_slug()
         
         try:
