@@ -100,6 +100,29 @@ class CaptureasNode(template.Node):
         context[self.varname] = output  
         return ''  
 
+
+
 @register.filter
 def get_range( value ):
   return range( value )
+  
+  
+def paginator(page, url, adjacent_pages=2):
+    
+    page_numbers = [n for n in \
+                    range(page.number - adjacent_pages, page.number + adjacent_pages + 1) \
+                    if n > 0 and n <= page.paginator.num_pages]
+    return {
+        'page': page.number,
+        'pages': page.paginator.num_pages,
+        'page_numbers': page_numbers,
+        'next': page.next_page_number,
+        'url': url,
+        'previous': page.previous_page_number,
+        'has_next': page.has_next,
+        'has_previous': page.has_previous,
+        'show_first': 1 not in page_numbers,
+        'show_last': page.paginator.num_pages not in page_numbers,
+    }
+
+register.inclusion_tag('paginator.html')(paginator)
