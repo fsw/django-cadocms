@@ -49,7 +49,8 @@ tinyMCE.init({
     element_format: 'xhtml',
     fix_list_elements: true,
 
-    force_br_newlines : true,
+    force_br_newlines : false,
+    force_p_newlines : true,
     forced_root_block: '',
     // style formsts overrides theme_advanced_styles
     // see http://www.tinymce.com/wiki.php/Configuration:style_formats
