@@ -189,7 +189,7 @@ class Setting(models.Model):
 
     
 class Sluggable(models.Model):
-    slug = models.SlugField(unique=True, blank=True, max_length=256)#, editable=False)
+    slug = models.SlugField(unique=True, blank=True, max_length=255)#, editable=False)
     
     def _get_queryset_for_slug(self):
         """
