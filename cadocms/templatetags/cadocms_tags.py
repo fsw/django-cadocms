@@ -154,9 +154,9 @@ def simpletime(value):
                 ) % {'count': delta.days}
             else:
                 if value.year == now.year:
-                    return value.strftime("%d %b");
+                    return value.strftime("%d %B");
                 else: 
-                    return value.strftime("%b %Y");
+                    return value.strftime("%B %Y");
         elif delta.seconds == 0:
             return _('now')
         elif delta.seconds < 60:
