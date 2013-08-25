@@ -1,10 +1,18 @@
+import urllib
+
+from datetime import date, datetime
 from django import template
 from django.conf import settings
+from cadocms.models import Setting, Chunk
 
-import urllib
+from django.template import defaultfilters
+from django.utils.encoding import force_text
+from django.utils.formats import number_format
+from django.utils.timezone import is_aware, utc
+from django.utils.translation import pgettext, ungettext, ugettext as _
+
 register = template.Library()
 
-from cadocms.models import Setting, Chunk
 
 @register.filter()
 def field_type(field):
@@ -126,3 +134,71 @@ def paginator(page, url, adjacent_pages=2):
     }
 
 register.inclusion_tag('paginator.html')(paginator)
+
+
+
+@register.filter
+def simpletime(value):
+    
+    if not isinstance(value, date): # datetime is a subclass of date
+        return value
+
+    now = datetime.now(utc if is_aware(value) else None)
+    if value < now:
+        delta = now - value
+        if delta.days != 0:
+            if delta.days < 10:
+                return ungettext(
+                    # Translators: \\u00a0 is non-breaking space
+                    'yesterday', '%(count)s days ago', delta.days
+                ) % {'count': delta.days}
+            else:
+                if value.year == now.year:
+                    return value.strftime("%d %b");
+                else: 
+                    return value.strftime("%b %Y");
+        elif delta.seconds == 0:
+            return _('now')
+        elif delta.seconds < 60:
+            return ungettext(
+                # Translators: \\u00a0 is non-breaking space
+                'a second ago', '%(count)s seconds ago', delta.seconds
+            ) % {'count': delta.seconds}
+        elif delta.seconds // 60 < 60:
+            count = delta.seconds // 60
+            return ungettext(
+                # Translators: \\u00a0 is non-breaking space
+                'a minute ago', '%(count)s minutes ago', count
+            ) % {'count': count}
+        else:
+            count = delta.seconds // 60 // 60
+            return ungettext(
+                # Translators: \\u00a0 is non-breaking space
+                'an hour ago', '%(count)s hours ago', count
+            ) % {'count': count}
+    else:
+        delta = value - now
+        if delta.days != 0:
+            return pgettext(
+                'naturaltime', '%(delta)s from now'
+            ) % {'delta': defaultfilters.timeuntil(value, now)}
+        elif delta.seconds == 0:
+            return _('now')
+        elif delta.seconds < 60:
+            return ungettext(
+                # Translators: \\u00a0 is non-breaking space
+                'a second from now', '%(count)s seconds from now', delta.seconds
+            ) % {'count': delta.seconds}
+        elif delta.seconds // 60 < 60:
+            count = delta.seconds // 60
+            return ungettext(
+                # Translators: \\u00a0 is non-breaking space
+                'a minute from now', '%(count)s minutes from now', count
+            ) % {'count': count}
+        else:
+            count = delta.seconds // 60 // 60
+            return ungettext(
+                # Translators: \\u00a0 is non-breaking space
+                'an hour from now', '%(count)s hours from now', count
+            ) % {'count': count}
+
