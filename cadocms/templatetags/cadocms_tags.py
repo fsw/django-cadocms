@@ -147,7 +147,7 @@ def simpletime(value):
     if value < now:
         delta = now - value
         if delta.days != 0:
-            if delta.days < 10:
+            if delta.days < 31:
                 return ungettext(
                     # Translators: \\u00a0 is non-breaking space
                     'yesterday', '%(count)s days ago', delta.days
