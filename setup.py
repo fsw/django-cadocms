@@ -56,6 +56,6 @@ setup(
     dependency_links = [
         #'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=fsw-django-versioning-0.7.3',
         'http://github.com/SeanHayes/django-config-gen/tarball/master#egg=django-config-gen-1.0.0',
-        'http://github.com/fsw/django-haystack/tarball/master#egg=django-haystack-2.0.1',
+        'http://github.com/fsw/django-haystack/tarball/null-field#egg=django-haystack-2.0.1',
     ],
 )
