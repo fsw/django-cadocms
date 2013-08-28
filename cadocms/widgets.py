@@ -60,7 +60,7 @@ class HTMLFieldWidgetTrivial(forms.Textarea):
     
     class Media:
         js = (
-              settings.STATIC_URL + 'grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
+              settings.STATIC_URL + 'tinymce/tinymce.min.js',
               settings.STATIC_URL + 'js/tinymce_setup_trivial.js',
         )
         
