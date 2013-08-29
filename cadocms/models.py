@@ -102,7 +102,7 @@ class Moderated(models.Model):
                     for key,value in version.field_dict.items():
                         ret[key] = ret.get(key,[])
                         ret[key].append(value)
-            except Error:
+            except:
                 pass
             return ret
         #model_to_dict(self, fields=[field.name for field in self._meta.fields])
