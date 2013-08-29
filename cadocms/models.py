@@ -97,10 +97,13 @@ class Moderated(models.Model):
         if (self.moderation_status == MODERATION_STATUS['MODIFIED']):
             version_list = reversion.get_for_object(self)
             ret = {}
-            for version in version_list[0:2]:
-                for key,value in version.field_dict.items():
-                    ret[key] = ret.get(key,[])
-                    ret[key].append(value)
+            try:
+                for version in version_list[0:2]:
+                    for key,value in version.field_dict.items():
+                        ret[key] = ret.get(key,[])
+                        ret[key].append(value)
+            except Error:
+                pass
             return ret
         #model_to_dict(self, fields=[field.name for field in self._meta.fields])
         #model_to_dict(self, fields=[field.name for field in self._meta.fields])
