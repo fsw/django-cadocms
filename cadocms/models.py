@@ -14,6 +14,8 @@ from django.forms.models import model_to_dict
 from django.core.mail import send_mail
 from datetime import datetime    
 
+import caching.base
+
 import reversion
 
 MODERATION_STATUS = {
@@ -147,7 +149,7 @@ class Translatable(models.Model):
     class Meta:
         abstract = True
     
-class StaticPage(Translatable):
+class StaticPage(caching.base.CachingMixin, Translatable):
     
     url = models.CharField(_('URL'), max_length=200, db_index=True)
     title = models.CharField(_('Title'), max_length=256)
@@ -157,6 +159,8 @@ class StaticPage(Translatable):
     seo_description = models.TextField('seo_description', blank=True)
     translatable_fields = ('title', 'content', 'seo_title', 'seo_keywords', 'seo_description',)
 
+    objects = caching.base.CachingManager()
+    
     class Meta:
         verbose_name = _('static page')
         verbose_name_plural = _('static pages')
@@ -170,22 +174,26 @@ class StaticPage(Translatable):
         return self.url
 
 
-class Chunk(Translatable):
+class Chunk(caching.base.CachingMixin, Translatable):
     key = models.CharField(max_length=256)
     body = HTMLField(blank=True, null=True)
     translatable_fields = ('body',)
 
+    objects = caching.base.CachingManager()
+    
     def __unicode__(self):
         return self.key    
     class Meta:
         abstract = True
     
     
-class Setting(models.Model):
+class Setting(caching.base.CachingMixin, models.Model):
     
     key = models.CharField(_('Key'), max_length=200, db_index=True)
     value = models.TextField(_('Value'), blank=True)
     description = models.TextField('description', blank=True)
+    
+    objects = caching.base.CachingManager()
 
     def __unicode__(self):
         return u"%s = %s" % (self.key, self.value)
@@ -271,13 +279,10 @@ class Sluggable(models.Model):
     class Meta:
         abstract = True
       
-class MemCachedManager(models.Manager):
-    pass
-      
+
 class Tree(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     order = models.FloatField(default=0)
-    manager = MemCachedManager()
     class Meta:
         abstract = True
         ordering = ['order', 'name']
@@ -287,7 +292,6 @@ class Tree(MPTTModel):
 class RootedTree(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=False, related_name='children', default=0)
     order = models.FloatField(default=0)
-    manager = MemCachedManager()
     class Meta:
         abstract = True
         ordering = ['order', 'name']

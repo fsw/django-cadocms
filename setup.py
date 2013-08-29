@@ -51,6 +51,7 @@ setup(
         'django-celery',
         'dnspython',
         'cssselect',
+        'django-cache-machine',
         
     ],
     dependency_links = [
