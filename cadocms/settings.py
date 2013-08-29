@@ -4,6 +4,12 @@ from configurations import Settings as BaseSettings
 import djcelery
 djcelery.setup_loader()
 
+def allways_show_toolbar(request):
+    return True
+
+def never_show_toolbar(request):
+    return False
+
 class Settings(BaseSettings):
     
     @property
@@ -313,9 +319,14 @@ class Settings(BaseSettings):
             },
         }
     }
-    DEBUG_TOOLBAR_CONFIG = {
-        'INTERCEPT_REDIRECTS' : False
-    }
+    
+    @property
+    def DEBUG_TOOLBAR_CONFIG(self):
+        return {
+                'INTERCEPT_REDIRECTS' : False,
+                'SHOW_TOOLBAR_CALLBACK': allways_show_toolbar if self.DEBUG else never_show_toolbar,
+                }
+    
     """
     DEBUG_TOOLBAR_PANELS = (
       'debug_toolbar.panels.version.VersionDebugPanel',
