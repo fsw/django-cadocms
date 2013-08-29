@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     #    local("git commit -m '%s'" % message)
                     #else:
                     local("git commit")
-                    local("git push origin master")
+                    local("git push origin")
 
         print 'REBUILDING CONFIGURATION'
         #local("./manage.py build_solr_schema > config/solr_schema.xml")
@@ -37,4 +37,4 @@ class Command(BaseCommand):
             #local("git commit -m '%s'" % message)
             #else:
             local("git commit")
-            local("git push origin master")
+            local("git push origin")
