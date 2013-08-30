@@ -280,7 +280,9 @@ class Settings(BaseSettings):
     @property
     def GRAPPELLI_ADMIN_TITLE(self):
         return self.CADO_NAME + ' Admin'
-    
+
+    #COMPRESSOR SETTINGS
+        
     COMPRESS_PRECOMPILERS = (
         ('text/coffeescript', 'coffee --compile --stdio'),
         #('text/less', 'lessc {infile} {outfile}'),
@@ -295,6 +297,8 @@ class Settings(BaseSettings):
     @property
     def COMPRESS_ENABLED(self):
         return (self.HOST.CLASS != 'DEV')
+
+    COMPRESS_DEBUG_TOGGLE = None
     
     LOGGING = {
         'version': 1,
