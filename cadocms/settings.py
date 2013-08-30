@@ -300,10 +300,9 @@ class Settings(BaseSettings):
 
     COMPRESS_PARSER = 'compressor.parser.HtmlParser' 
     
-    COMPRESS_ENABLED = True
-    #@property
-    #def COMPRESS_ENABLED(self):
-    #    return (self.HOST.CLASS != 'DEV')
+    @property
+    def COMPRESS_ENABLED(self):
+        return (self.HOST.CLASS != 'DEV')
 
     COMPRESS_CSS_FILTERS = [
         'compressor.filters.css_default.CssAbsoluteFilter',
