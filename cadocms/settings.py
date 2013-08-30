@@ -93,6 +93,12 @@ class Settings(BaseSettings):
     }
     """
     
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': 'unix:/tmp/memcached.sock',
+        }
+    }
     @property
     def DEBUG(self):
         return self.HOST.DEBUG
@@ -294,9 +300,15 @@ class Settings(BaseSettings):
 
     COMPRESS_PARSER = 'compressor.parser.HtmlParser' 
     
-    @property
-    def COMPRESS_ENABLED(self):
-        return (self.HOST.CLASS != 'DEV')
+    COMPRESS_ENABLED = True
+    #@property
+    #def COMPRESS_ENABLED(self):
+    #    return (self.HOST.CLASS != 'DEV')
+
+    COMPRESS_CSS_FILTERS = [
+        'compressor.filters.css_default.CssAbsoluteFilter',
+        'compressor.filters.cssmin.CSSMinFilter'    
+        ]
 
     COMPRESS_DEBUG_TOGGLE = None
     

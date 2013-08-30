@@ -6,13 +6,9 @@ from django.contrib.staticfiles import finders
 
 class SassFilter(CompilerFilter):
     
-    def __init__(self, content, attrs, filter_type=None, filename=None):
+    def __init__(self, content, attrs, *args, **kwargs):
         self.attrs = attrs
-        super(SassFilter, self).__init__(
-                    content,
-                    filter_type = filter_type,
-                    command='sass --scss',
-                    filename = filename)
+        super(SassFilter, self).__init__(content, command='sass --scss', *args, **kwargs)
     
     def replace_images(self, csspath, content):
         #print "REPLACING IMAGES FOR " + csspath
@@ -48,7 +44,7 @@ class SassFilter(CompilerFilter):
         return content
     
     def input(self, **kwargs):
-        #print self.content, self.filename, self.infile
+        print self.content, self.filename, self.infile
         staticpath = self.attrs.get('href').replace(settings.STATIC_URL, '')
         self.content = self.replace_imports(staticpath, self.content, [])
         #print self.content

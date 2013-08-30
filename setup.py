@@ -52,7 +52,7 @@ setup(
         'dnspython',
         'cssselect',
         'django-cache-machine',
-        
+        'python-memcached',
     ],
     dependency_links = [
         #'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=fsw-django-versioning-0.7.3',
