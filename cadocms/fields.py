@@ -308,8 +308,8 @@ class StackedTreeNodeChoiceField(forms.ModelChoiceField):
     def __init__(self, *args, **kwargs):
         kwargs['empty_label'] = '-WHOLE AUSTRALIA-'
         self.model = kwargs.pop('model')
-        self.root_id = kwargs.pop('root_id')
-        queryset = self.model.tree.filter(parent_id=self.root_id)
+        self.root = kwargs.pop('root')
+        queryset = self.model.tree.filter(parent=self.root)
         super(StackedTreeNodeChoiceField, self).__init__(queryset, *args, **kwargs)
     
     def widget_attrs(self, widget):
