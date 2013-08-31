@@ -6,6 +6,8 @@ from django.forms.widgets import ClearableFileInput
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.html import format_html
+from django.forms.util import flatatt
 
 import urllib2, os
 
@@ -95,3 +97,52 @@ class UrlOrFileInput(ClearableFileInput):
         #print upload
         #print type(upload)
         return upload
+    
+    
+class StackedTreeNodeChoiceWidget(forms.Select):
+    class Media:
+        js = ('js/jquery-1.10.1.js', 'cadocms/stackedtree.js',)
+        
+    def __init__(self, attrs=None, **kwargs):
+        if attrs == None:
+            attrs = {}
+        attrs['class'] = 'stackedselect'
+        #print kwargs['model']
+        #print kwargs['root_id']
+        #/api/children/unravelling.Location/1
+        super(StackedTreeNodeChoiceWidget, self).__init__(attrs)
+        
+    def render(self, name, value, attrs=None, choices=()):
+        #return super(StackedTreeNodeChoiceWidget, self).render(name, value, attrs, choices)
+        if value is None: value = ''
+        final_attrs = self.build_attrs(attrs, name=name)
+        final_attrs['data-value'] = value
+        output = [format_html('<select{0}>', flatatt(final_attrs))]
+        options = self.render_options(choices, [value])
+        if options:
+            output.append(options)
+        output.append('</select>')
+        return mark_safe('\n'.join(output))
+    
+    """
+    def decompress(self, value):
+        if value:
+            return [City.objects.get(id=value).country.continent,
+                    City.objects.get(id=value).country.id,
+                    None, 
+                    City.objects.get(id=value).region.id,
+                    None,
+                    value,
+                    None]
+        return [None, None, None, None, None, None, None]
+
+    def _has_changed(self, initial, data):
+        return initial != data
+
+    def value_from_datadict(self, data, files, name):
+        value = super(CitySelectorWidget, self).value_from_datadict(data, files, name);
+        if value and value[5]:
+            return int(value[5])
+        else:
+            return None
+    """

@@ -16,7 +16,12 @@ from django.core.exceptions import ImproperlyConfigured
 from django import forms
 from django.utils.text import capfirst
 
-from cadocms.widgets import ExtraFieldsValuesWidget, HTMLFieldWidget
+from cadocms.widgets import ExtraFieldsValuesWidget, HTMLFieldWidget, StackedTreeNodeChoiceWidget
+
+from django.utils.html import conditional_escape, mark_safe
+from django.utils.encoding import smart_unicode
+
+from django.core.urlresolvers import reverse
 
 import re
 import decimal
@@ -294,4 +299,22 @@ class HTMLField(models.TextField):
         return super(HTMLField, self).formfield(**kwargs)
 
 add_introspection_rules([], ["^cadocms\.fields\.HTMLField"])
+
+
+class StackedTreeNodeChoiceField(forms.ModelChoiceField):
+    
+    widget = StackedTreeNodeChoiceWidget
+
+    def __init__(self, *args, **kwargs):
+        kwargs['empty_label'] = '-WHOLE AUSTRALIA-'
+        self.model = kwargs.pop('model')
+        self.root_id = kwargs.pop('root_id')
+        queryset = self.model.tree.filter(parent_id=self.root_id)
+        super(StackedTreeNodeChoiceField, self).__init__(queryset, *args, **kwargs)
+    
+    def widget_attrs(self, widget):
+        return {
+            'data-urlchildren': reverse('cadocms.views.api_tree_children', kwargs={'model': self.model._meta.app_label + '.' + self.model.__name__, 'parent_id': 0}),
+            'data-urlpath': reverse('cadocms.views.api_tree_path', kwargs={'model': self.model._meta.app_label + '.' + self.model.__name__, 'item_id': 0}),
+        }
 

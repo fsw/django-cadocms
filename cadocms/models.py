@@ -302,7 +302,7 @@ class RootedTree(MPTTModel):
         super(RootedTree, self).clean()
         from django.core.exceptions import ValidationError
         if self.tree_id > 1:
-            raise ValidationError("Cant create new category here")
+            raise ValidationError("Can't create new item here")
         
 class ExtraFieldsProvider(models.Model):
 

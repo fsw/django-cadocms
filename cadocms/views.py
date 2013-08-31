@@ -12,8 +12,11 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render_to_response
 from django.db.models import get_app, get_models
 
-from cadocms.models import Moderated, MODERATION_STATUS, ModerationReason
+from cadocms.models import Moderated, MODERATION_STATUS, ModerationReason, Tree
 
+from django.http import HttpResponse
+import simplejson
+    
 def staticpage(request, url):
     print url
     for StaticPageClass in StaticPage.__subclasses__():
@@ -30,7 +33,36 @@ def extrafields(request, model, provider_id):
     for key, field in model.get_provided_extra_fields_by_provider_id(provider_id):
         form.fields['extra[%s]' % key] = field['field'].formfield()
     return HttpResponse(form.as_p())
-
+    
+def api_tree_children(request, model, parent_id):
+    app_label, model_name = model.split(".")
+    model = get_model(app_label, model_name)
+    return HttpResponse(
+        simplejson.dumps(dict(model.tree.filter(parent_id=parent_id).values_list('id', 'name'))), 
+        mimetype='application/json'
+    )
+    
+def api_tree_path(request, model, item_id):
+    app_label, model_name = model.split(".")
+    model = get_model(app_label, model_name)
+    return HttpResponse(
+        simplejson.dumps(list(model.objects.get(id=item_id).get_ancestors(include_self=True).values_list('id', flat=True))), 
+        mimetype='application/json'
+    )
+    
+def api_tree_fullpath(request, model, item_id):
+    app_label, model_name = model.split(".")
+    model = get_model(app_label, model_name)
+    path = list(model.objects.get(id=item_id).get_ancestors(include_self=True).values_list('id', flat=True))
+    ret = [path]
+    for i in path:
+        ret.append(list(model.tree.filter(parent_id=i).values_list('id', 'name')));
+        
+    return HttpResponse(
+        simplejson.dumps(ret), 
+        mimetype='application/json'
+    )
+    
 def testsuite(request):
     #SQLITE
     TestRunner = get_runner(settings)

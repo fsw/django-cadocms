@@ -44,7 +44,7 @@ class SassFilter(CompilerFilter):
         return content
     
     def input(self, **kwargs):
-        print self.content, self.filename, self.infile
+        #print self.content, self.filename, self.infile
         staticpath = self.attrs.get('href').replace(settings.STATIC_URL, '')
         self.content = self.replace_imports(staticpath, self.content, [])
         #print self.content
