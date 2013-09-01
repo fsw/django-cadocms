@@ -20,9 +20,9 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     
     url(r'^extrafields/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<provider_id>\d+)$', 'cadocms.views.extrafields'),
-    url(r'^api/children/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<parent_id>\d+)$', 'cadocms.views.api_tree_children'),
-    url(r'^api/path/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<item_id>\d+)$', 'cadocms.views.api_tree_path'),
-    url(r'^api/fullpath/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<item_id>\d+)$', 'cadocms.views.api_tree_fullpath'),
+    #url(r'^api/children/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<parent_id>\d+)$', 'cadocms.views.api_tree_children'),
+    #url(r'^api/path/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<item_id>\d+)$', 'cadocms.views.api_tree_path'),
+    #url(r'^api/fullpath/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<item_id>\d+)$', 'cadocms.views.api_tree_fullpath'),
       
     url(r'^testsuite/$', 'cadocms.views.testsuite'),
 
