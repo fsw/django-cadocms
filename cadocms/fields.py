@@ -310,13 +310,13 @@ class StackedTreeNodeChoiceField(forms.ModelChoiceField):
         kwargs['empty_label'] = '-WHOLE AUSTRALIA-'
         self.model = kwargs.pop('model')
         self.root = kwargs.pop('root')
-        #self.urlchildren = reverse('cadocms.views.api_tree_children', kwargs={'model': self.model._meta.app_label + '.' + self.model.__name__, 'parent_id': 0})
         queryset = self.model.tree.filter(parent=self.root)
         super(StackedTreeNodeChoiceField, self).__init__(queryset, *args, **kwargs)
     
     def widget_attrs(self, widget):
         return {
-            #'data-urlchildren': reverse('login'),
+            'data-urlchildren': 'api/children/%s/%d/$' % (self.model._meta.app_label + '.' + self.model.__name__, 0),
+            
             #'data-urlchildren': reverse('cadocms.views.api_tree_children', kwargs={'model': self.model._meta.app_label + '.' + self.model.__name__, 'parent_id': 0}),
             #'data-urlpath': reverse('cadocms.views.api_tree_path', kwargs={'model': self.model._meta.app_label + '.' + self.model.__name__, 'item_id': 0}),
         }
