@@ -58,10 +58,13 @@
 				<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
 				<script type="text/javascript" src="{{ STATIC_URL }}fancybox/jquery.fancybox.js"></script>
 				<script type='text/javascript' src="{{ STATIC_URL }}js/cado.js"></script>
+				{% endblock %}
+			{% endcompress %}
+			
+			{% compress js %}
 				{% block extra_html_scripts %}
 				{% endblock %}
 				<script type='text/javascript' src="{{ STATIC_URL }}{% get_current_flavour %}.js"></script>
-				{% endblock %}
 			{% endcompress %}
 			{% block html_very_last %}
 			{% endblock %}

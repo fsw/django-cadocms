@@ -85,6 +85,17 @@ if (jQuery != undefined) {
 						saveExtra(extraDiv);
 					});
 					loadExtra(extraDiv);
+					extraDiv.find(".extraDateField").datepicker({
+			        	format:'dd/mm/yyyy'
+					});
+					extraDiv.find(".extraTimeField").wrap('<div class="bootstrap-timepicker"/>');
+					
+					extraDiv.find(".extraTimeField").after('<i class="icon-time" style="margin: -2px 0 0 -22.5px; pointer-events: none; position: relative;"></i>');
+					extraDiv.find(".extraTimeField").timepicker({
+		                minuteStep: 5,
+		                showInputs: false//,
+		                //disableFocus: true
+		            });
 				}, 'html');
 			});
 			

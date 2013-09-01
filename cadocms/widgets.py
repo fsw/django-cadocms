@@ -101,7 +101,7 @@ class UrlOrFileInput(ClearableFileInput):
     
 class StackedTreeNodeChoiceWidget(forms.Select):
     class Media:
-        js = ('js/jquery-1.10.1.js', 'cadocms/stackedtree.js',)
+        js = ('cadocms/stackedtree.js',)
         
     def __init__(self, attrs=None, **kwargs):
         if attrs == None:

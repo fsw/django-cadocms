@@ -4,7 +4,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey, TreeManyToManyField
 from django.utils.translation import ugettext_lazy as _
+
 from .fields import ExtraFieldsDefinition, ExtraFieldsValues, HTMLField
+
 from .widgets import ExtraFieldsValuesWidget
 from django.contrib.auth.models import User
 from haystack import indexes
@@ -301,8 +303,29 @@ class RootedTree(MPTTModel):
     def clean(self):
         super(RootedTree, self).clean()
         from django.core.exceptions import ValidationError
-        if self.tree_id > 1:
+        if not self.parent_id:
             raise ValidationError("Can't create new item here")
+        
+        
+
+class MyDateField(models.DateField):
+    #def formfield(self, **kwargs):
+    #    #//defaults.update(kwargs)
+    #    print defaults
+    #    return super(MyDateField, self).formfield(**kwargs)
+    
+    def formfield(self, **kwargs):
+        return super(MyDateField, self).formfield(input_formats = ("%d/%m/%Y",), **kwargs)
+
+class MyTimeField(models.TimeField):
+    def formfield(self, **kwargs):
+        return super(MyTimeField, self).formfield(input_formats = ("%I:%M %p",), **kwargs)
+
+class MyDateTimeField(models.DateTimeField):
+    def __init__(self, *args, **kwargs):
+        #kwargs.setdefault('input_formats', ("%d.%m.%Y",))
+        super(MyDateTimeField, self).__init__(*args, **kwargs)
+        
         
 class ExtraFieldsProvider(models.Model):
 
@@ -327,15 +350,25 @@ class ExtraFieldsProvider(models.Model):
                         ret = [(k, v) for k, v in ret if k != key]
                     else:
                         #print key, field
-                        methodToCall = getattr(models, field.get('class', 'CharField'), models.CharField)
-                        #print methodToCall
+                        className = field.get('class', 'CharField')
+                        if className == 'DateField': 
+                            methodToCall = MyDateField
+                        elif className == 'TimeField': 
+                            methodToCall = MyTimeField
+                        elif className == 'DateTimeField':
+                            methodToCall = MyDateTimeField
+                        else:
+                            methodToCall = getattr(models, className, models.CharField)
+                            
                         args = field.get('kwargs', {}).copy()
                         if ('choices' in args) and (type(args['choices']) is dict):
                             new_options = []
                             for k, v in args['choices'].items():
                                 new_options.append((k,v))
                             args['choices'] = new_options
+                        
                         f = methodToCall(**args)
+        
                         solr_key = key
                         h_field = indexes.index_field_from_django_field(f)
                         if h_field == indexes.CharField:
@@ -444,9 +477,11 @@ class ExtraFieldsUser(models.Model):
         #print 'VALUES', self.extra;
         #print self.extra_definition
         for key, field in self.extra_definition:
+            #print 'BBBBB', field['field'].formfield()
             try:
                 #import ipdb; ipdb.set_trace() 
-                self.extra_fields[key] = field['field'].to_python(self.extra[key])
+                #print 'JJJJJJJ', field['field'].formfield()
+                self.extra_fields[key] = field['field'].formfield().to_python(self.extra[key])
                 #print 'set'
                 if not self.extra_fields[key] :
                     self.extra_fields[key] = getattr(self, self.EXTRA_PARENT).extra_fields[key]
@@ -459,6 +494,6 @@ class ExtraFieldsUser(models.Model):
                     #print 'EEE2', e
                     self.extra_fields[key] = field['field'].get_default();
                     #print 'default'
-            #print key, self.extra_fields[key], self.extra.get(key, None)
+            #print key, self.extra.get(key, None), self.extra_fields[key], type(self.extra_fields[key])
         #print self.extra_fields
         #print self.extra_fields, 'FIELDS'

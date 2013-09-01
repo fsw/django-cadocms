@@ -32,6 +32,9 @@ def extrafields(request, model, provider_id):
     form = Form()
     for key, field in model.get_provided_extra_fields_by_provider_id(provider_id):
         form.fields['extra[%s]' % key] = field['field'].formfield()
+        form.fields['extra[%s]' % key].widget.attrs['class'] = 'extra' + field['field'].__class__.__name__ 
+        
+    #print form.as_p(), form.media
     return HttpResponse(form.as_p())
     
 def api_tree_children(request, model, parent_id):
