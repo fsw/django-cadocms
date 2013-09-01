@@ -321,7 +321,7 @@ class StackedTreeNodeChoiceField(forms.ModelChoiceField):
             # very awkward bug was causing the above to break url resolver on production (with DEBUG=False)
             # that is why this is hardcoded (TODO)
             
-            'data-urlchildren': 'api/children/%s/%d/$' % (self.model._meta.app_label + '.' + self.model.__name__, 0),
-            'data-urlpath': 'api/path/%s/%d/$' % (self.model._meta.app_label + '.' + self.model.__name__, 0),
+            'data-urlchildren': '/api/children/%s/%d/$' % (self.model._meta.app_label + '.' + self.model.__name__, 0),
+            'data-urlpath': '/api/path/%s/%d/$' % (self.model._meta.app_label + '.' + self.model.__name__, 0),
         }
 
