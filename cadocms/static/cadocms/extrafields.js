@@ -85,13 +85,13 @@ if (jQuery != undefined) {
 						saveExtra(extraDiv);
 					});
 					loadExtra(extraDiv);
-					extraDiv.find(".extraDateField").datepicker({
+					extraDiv.find(".extraMyDateField").datepicker({
 			        	format:'dd/mm/yyyy'
 					});
-					extraDiv.find(".extraTimeField").wrap('<div class="bootstrap-timepicker"/>');
+					extraDiv.find(".extraMyTimeField").wrap('<div class="bootstrap-timepicker"/>');
 					
-					extraDiv.find(".extraTimeField").after('<i class="icon-time" style="margin: -2px 0 0 -22.5px; pointer-events: none; position: relative;"></i>');
-					extraDiv.find(".extraTimeField").timepicker({
+					extraDiv.find(".extraMyTimeField").after('<i class="icon-time" style="margin: -2px 0 0 -22.5px; pointer-events: none; position: relative;"></i>');
+					extraDiv.find(".extraMyTimeField").timepicker({
 		                minuteStep: 5,
 		                showInputs: false//,
 		                //disableFocus: true

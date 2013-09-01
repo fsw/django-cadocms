@@ -61,9 +61,10 @@
 				{% endblock %}
 			{% endcompress %}
 			
+			{% block extra_html_scripts %}
+			{% endblock %}
+				
 			{% compress js %}
-				{% block extra_html_scripts %}
-				{% endblock %}
 				<script type='text/javascript' src="{{ STATIC_URL }}{% get_current_flavour %}.js"></script>
 			{% endcompress %}
 			{% block html_very_last %}
