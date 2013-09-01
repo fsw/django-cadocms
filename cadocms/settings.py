@@ -383,6 +383,10 @@ class Settings(BaseSettings):
     @property
     def SITES(self):
         return [self]
+    
+    @property
+    def ALLOWED_HOSTS(self):
+        return [self.HOST.DOMAIN]
 
 class MultiAppSettings(Settings):
     
