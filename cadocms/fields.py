@@ -314,6 +314,8 @@ class StackedTreeNodeChoiceField(forms.ModelChoiceField):
     
     def widget_attrs(self, widget):
         return {
+            'data-urlchildren': reverse('cadocms.views.api_tree_children', kwargs={'model': 'test', 'parent_id': 0}),
+
             #'data-urlchildren': reverse('cadocms.views.api_tree_children', kwargs={'model': self.model._meta.app_label + '.' + self.model.__name__, 'parent_id': 0}),
             #'data-urlpath': reverse('cadocms.views.api_tree_path', kwargs={'model': self.model._meta.app_label + '.' + self.model.__name__, 'item_id': 0}),
         }
