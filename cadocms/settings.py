@@ -225,6 +225,7 @@ class Settings(BaseSettings):
             'modeltranslation',
             'djcelery',
             'celery_haystack',
+            'django_extensions',
             #'kombu.transport.django', ## DEV ONLY
         )
         

@@ -145,6 +145,7 @@ class Command(BaseCommand):
                 with settings(warn_only=True): 
                     run("kill -9 `cat %s/%s.pid`" % (host.APPROOT, site.CADO_PROJECT))
                 
+                run("find . -name '*.pyc' -delete")
                 run("%spython manage.py runfcgi %s method=prefork socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT) )
-                run("sleep 5")
+                run("sleep 3")
                 run("chmod 766 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
