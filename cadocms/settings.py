@@ -387,6 +387,11 @@ class Settings(BaseSettings):
     @property
     def ALLOWED_HOSTS(self):
         return [self.HOST.DOMAIN]
+    
+    @property
+    def BACKUP_DIR(self):
+        return self.HOST.BACKUP_DIR
+    
 
 class MultiAppSettings(Settings):
     
@@ -424,9 +429,16 @@ class HostSettings(object):
     PYTHON_PREFIX = "~/virtualenv/bin/"
     SOLR_URL = 'http://127.0.0.1:8080/solr/'
     SOLR_PATH = '/opt/solr/'
+    SRCROOT = None
+    APPROOT = None
+    
     @property
     def SOLR_CORE_NAME(self):
         return self.SETTINGS.CADO_PROJECT
+    
+    @property
+    def BACKUP_DIR(self): 
+        return self.APPROOT + "backup/"
     
     @property
     def DEBUG(self):
