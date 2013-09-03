@@ -25,5 +25,6 @@ class Command(BaseCommand):
             args += ["--port=%s" % settings.DATABASES['default']['PORT']]
             
         args += [settings.DATABASES['default']['NAME']]
-        
-        os.system('mysqldump %s > %s' % (' '.join(args), outfile))
+        command = 'mysqldump %s > %s' % (' '.join(args), outfile)
+        print command
+        os.system(command)
