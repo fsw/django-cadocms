@@ -3,7 +3,7 @@ import urllib
 from datetime import date, datetime
 from django import template
 from django.conf import settings
-from cadocms.models import Setting, Chunk
+from cadocms.models import Setting, Chunk, StaticPage
 
 from django.template import defaultfilters
 from django.utils.encoding import force_text
@@ -48,7 +48,14 @@ def get_chunk(key):
         else:
             return '<div class="content"></div>';
 
-
+@register.simple_tag(name="staticpage")
+def get_staticpage(key):
+    for StaticpageClass in StaticPage.__subclasses__():
+        if StaticpageClass.objects.get(url=key).content:
+            return '<div class="content">' + StaticpageClass.objects.get(url=key).content + '</div>';
+        else:
+            return '<div class="content"></div>';
+        
 class FlavoursNode(template.Node):
     def __init__(self, var_name):
         self.var_name = var_name

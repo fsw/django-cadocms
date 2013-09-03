@@ -133,6 +133,9 @@ class Settings(BaseSettings):
     STATIC_URL = '/static/'
     ADMIN_URL = '/admin/'
     
+    STATICPAGE_TEMPLATES = (
+        ('base.html', 'Default')
+    )
     
     @property
     def MEDIA_ROOT(self):

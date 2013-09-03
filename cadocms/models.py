@@ -156,6 +156,7 @@ class StaticPage(caching.base.CachingMixin, Translatable):
     url = models.CharField(_('URL'), max_length=200, db_index=True)
     title = models.CharField(_('Title'), max_length=256)
     content = HTMLField('Content')
+    #template = models.CharField(max_length=512, choices=settings.STATICPAGE_TEMPLATES, blank=False)
     seo_title = models.CharField(max_length=512, blank=True)
     seo_keywords = models.CharField(max_length=512, blank=True)
     seo_description = models.TextField('seo_description', blank=True)
