@@ -148,4 +148,7 @@ class Command(BaseCommand):
                 run("find . -name '*.pyc' -delete")
                 run("%spython manage.py runfcgi %s method=prefork socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT) )
                 run("sleep 3")
+                print colors.yellow("CLEARING CACHE:", bold=True)
+                run("%spython manage.py clear_cache" % (virtpath,))
                 run("chmod 766 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
+                print colors.green("DONE!", bold=True)
