@@ -460,8 +460,10 @@ class DevHostSettings(HostSettings):
     HOST_STRING = 'localhost'
     SRCROOT = os.getcwd() + '/'
     APPROOT = os.getcwd() + '/data/'
-    DATABASE = {
+    @property
+    def DATABASE(self):
+        return {
                 'ENGINE': 'django.db.backends.sqlite3',
-                'NAME' : 'data/local.db3'
+                'NAME' : self.APPROOT + 'local.db3'
                 }
 
