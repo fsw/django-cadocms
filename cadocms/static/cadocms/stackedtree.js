@@ -5,7 +5,7 @@ $(function($) {
 	function changeSelect(){
 		$(this).nextAll('select').remove();
 		real = $(this).prevAll('input'); 
-		root = real.next(); 
+		root = real.next();
 		if ($(this).val()){
 			real.val($(this).val());
 			that = this;
@@ -27,7 +27,11 @@ $(function($) {
 				  }
 			});
 		} else {
-			real.val($(this).prev().val());
+			if($(this).is(root)) {
+				real.val($(this).val());
+			} else {
+				real.val($(this).prev().val());	
+			}
 		}
 	}
 	
