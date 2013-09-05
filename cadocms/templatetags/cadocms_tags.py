@@ -10,9 +10,24 @@ from django.utils.encoding import force_text
 from django.utils.formats import number_format
 from django.utils.timezone import is_aware, utc
 from django.utils.translation import pgettext, ungettext, ugettext as _
+from django.template.defaultfilters import stringfilter
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
+import re
 
 register = template.Library()
 
+
+#http://stackoverflow.com/questions/721035/django-templates-stripping-spaces
+@stringfilter
+def spacify(value, autoescape=None):
+    if autoescape:
+        esc = conditional_escape
+    else:
+        esc = lambda x: x
+    return mark_safe(re.sub('\s', '&'+'nbsp;', esc(value)))
+spacify.needs_autoescape = True
+register.filter(spacify)
 
 @register.filter()
 def field_type(field):
