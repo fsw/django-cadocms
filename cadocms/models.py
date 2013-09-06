@@ -111,7 +111,10 @@ class Moderated(models.Model):
             return ret
         #model_to_dict(self, fields=[field.name for field in self._meta.fields])
         #model_to_dict(self, fields=[field.name for field in self._meta.fields])
-        
+    
+    def diff_ignored_fields(self):
+        return ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment', 'created', 'modified']
+    
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.moderation_status = MODERATION_STATUS['NEW']
@@ -125,7 +128,7 @@ class Moderated(models.Model):
             print self.__class__._meta.get_all_field_names()
             print self.__class__._meta.fields
             for field in self.__class__._meta.fields + self.__class__._meta.many_to_many: #self.__class__._meta.get_all_field_names():
-                if field.name not in ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment', 'created', 'modified']:
+                if field.name not in self.diff_ignored_fields():
                     #field_class = self.__class__._meta.get_field(field)
                     original_data = getattr(original, field.name)
                     new_data = getattr(self, field.name)
