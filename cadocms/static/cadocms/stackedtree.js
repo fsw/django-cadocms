@@ -14,7 +14,7 @@ $(function($) {
 				  dataType: "json",
 				  success: function(data) {
 					  if(! $.isEmptyObject(data)){
-						  $next = $('<select></select>');
+						  $next = $('<select class="stackedchild"></select>');
 						  $next.append( '<option value="">-ALL-</option>' );
 						  $.each(data, function(id, name) {
 							  $next.append( '<option value="' + id + '">' + name + '</option>' ); 
