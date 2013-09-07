@@ -125,19 +125,25 @@ class Moderated(models.Model):
         self.modified = datetime.today()
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
-            print self.__class__._meta.get_all_field_names()
-            print self.__class__._meta.fields
+            #print self.__class__._meta.get_all_field_names()
+            #print self.__class__._meta.fields
+            #print 'IGNORING FIELDS:', self.diff_ignored_fields()
             for field in self.__class__._meta.fields + self.__class__._meta.many_to_many: #self.__class__._meta.get_all_field_names():
                 if field.name not in self.diff_ignored_fields():
                     #field_class = self.__class__._meta.get_field(field)
                     original_data = getattr(original, field.name)
                     new_data = getattr(self, field.name)
                     if isinstance(field, models.ManyToManyField):
-                        pass
+                        #pass
                         #TODO
-                        #print original_data.all()
-                        #print new_data.all()
-                    elif original_data != new_data:
+                        #print 'KASZANA'
+                        list1 = original_data.values_list('id', flat=True).order_by('id')
+                        list2 = new_data.values_list('id', flat=True).order_by('id')
+                        #print list1
+                        #print list2
+                        #print set(list1) == set(list2)
+                    elif unicode(original_data) != unicode(new_data):
+                        #print 'DIFF on ', field.name, original_data, new_data  
                         self.moderation_status = MODERATION_STATUS['MODIFIED']
                         #print 'MODIFIED ' + field
                         #print original_data
@@ -309,8 +315,42 @@ class RootedTree(MPTTModel):
         from django.core.exceptions import ValidationError
         if not self.parent_id:
             raise ValidationError("Can't create new item here")
-        
-        
+
+"""
+loosly based on https://github.com/thornomad/django-hitcount
+"""
+
+class HitCounter(models.Model):
+    key         = models.SlugField(unique=True, blank=True, max_length=255)
+    value       = models.PositiveIntegerField(default=0)
+    
+class Hit(models.Model):
+    counter         = models.ForeignKey(HitCounter, editable=False)
+    created         = models.DateTimeField(editable=False)
+    ip              = models.CharField(max_length=40, editable=False)
+    session         = models.CharField(max_length=40, editable=False)
+    user_agent      = models.CharField(max_length=255, editable=False)
+    user            = models.ForeignKey(User,null=True, editable=False)
+ 
+ 
+def hits_get(key):
+    try:
+        counter = HitCounter.objects.get(key=key)
+        return counter.value
+    except HitCounter.DoesNotExist:
+        return 0
+
+# if request is passed key will increment only if it is unique
+def hits_inc(key, request = None, interval = 'day'):
+    try:
+        counter = HitCounter.objects.get(key=key)
+    except HitCounter.DoesNotExist:
+        counter = HitCounter(key=key, value=0)    
+    counter.value = counter.value + 1
+    counter.save()
+    return counter.value
+    
+
 
 class MyDateField(models.DateField):
     #def formfield(self, **kwargs):
