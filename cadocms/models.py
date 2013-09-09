@@ -13,8 +13,9 @@ from haystack import indexes
 from django.conf import settings
 from django.db.models.signals import class_prepared
 from django.forms.models import model_to_dict
-from django.core.mail import send_mail
+#from django.core.mail import send_mail
 from datetime import datetime    
+from cadocms.email import StandardEmail
 
 import caching.base
 
@@ -70,16 +71,18 @@ class Moderated(models.Model):
         return MODERATION_STATUSES_CODES[self.moderation_status]
     
     def on_moderate_accept(self):
-        send_mail('[' + settings.CADO_NAME + '] ' + str(self) + ' has been accepted by moderation',
-                  'Dear ' + str(self.owner) + "!\n\n" + 'Your item has been accepted and is now publicly visible on ' + settings.CADO_NAME,
-                  settings.SPAM_EMAIL,
-                  [self.owner.email])
+        StandardEmail(template = "email/moderate_accept.haml", 
+                      subject = '[' + settings.CADO_NAME + '] ' + str(self) + ' has been accepted by moderation', 
+                      from_email = settings.SPAM_EMAIL, 
+                      to_email = [self.owner.email], 
+                      variables = {'item': self, 'owner': self.owner})
         
     def on_moderate_reject(self, reason):
-        send_mail('[' + settings.CADO_NAME + '] ' + str(self) + ' has been rejected by moderation',
-                  'Dear ' + str(self.owner) + "!\n\n" + reason.email_body,
-                  settings.SPAM_EMAIL,
-                  [self.owner.email])
+        StandardEmail(template = "email/moderate_reject.haml", 
+                      subject = '[' + settings.CADO_NAME + '] ' + str(self) + ' has been rejected by moderation', 
+                      from_email = settings.SPAM_EMAIL, 
+                      to_email = [self.owner.email], 
+                      variables = {'item': self, 'owner': self.owner, 'reason':reason})
 
     def moderate_accept(self, user):
         self.moderation_status = MODERATION_STATUS['OK']
