@@ -86,7 +86,8 @@ if (jQuery != undefined) {
 					});
 					loadExtra(extraDiv);
 					extraDiv.find(".extraMyDateField").datepicker({
-			        	format:'dd/mm/yyyy'
+			        	format:'dd/mm/yyyy',
+			        	autoclose: true
 					});
 					extraDiv.find(".extraMyTimeField").wrap('<div class="bootstrap-timepicker"/>');
 					
