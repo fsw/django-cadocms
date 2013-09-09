@@ -176,17 +176,19 @@ class Settings(BaseSettings):
         'django.template.loaders.app_directories.Loader',  
     )
 
-    MIDDLEWARE_CLASSES = (
-        'django.middleware.common.CommonMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-        'cadocms.middleware.Middleware',
-        #'cadocms.middleware.Profiler',
-        #'versioning.middleware.VersioningMiddleware',
-    )
+    @property   
+    def MIDDLEWARE_CLASSES(self):
+        return (
+                'django.middleware.common.CommonMiddleware',
+                'django.contrib.sessions.middleware.SessionMiddleware',
+                'django.middleware.csrf.CsrfViewMiddleware',
+                'django.contrib.auth.middleware.AuthenticationMiddleware',
+                'django.contrib.messages.middleware.MessageMiddleware',
+                'debug_toolbar.middleware.DebugToolbarMiddleware',
+                'cadocms.middleware.Middleware',
+                #'cadocms.middleware.Profiler',
+                #'versioning.middleware.VersioningMiddleware',
+                )
     
     @property
     def ROOT_URLCONF(self):
