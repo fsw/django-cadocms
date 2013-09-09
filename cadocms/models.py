@@ -75,14 +75,14 @@ class Moderated(models.Model):
                       subject = '[' + settings.CADO_NAME + '] ' + str(self) + ' has been accepted by moderation', 
                       from_email = settings.SPAM_EMAIL, 
                       to_email = [self.owner.email], 
-                      variables = {'item': self, 'owner': self.owner})
+                      variables = {'item': self, 'owner': self.owner}).send()
         
     def on_moderate_reject(self, reason):
         StandardEmail(template = "email/moderate_reject.haml", 
                       subject = '[' + settings.CADO_NAME + '] ' + str(self) + ' has been rejected by moderation', 
                       from_email = settings.SPAM_EMAIL, 
                       to_email = [self.owner.email], 
-                      variables = {'item': self, 'owner': self.owner, 'reason':reason})
+                      variables = {'item': self, 'owner': self.owner, 'reason':reason}).send()
 
     def moderate_accept(self, user):
         self.moderation_status = MODERATION_STATUS['OK']
