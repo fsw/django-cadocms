@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 
 from grappelli.dashboard import modules, Dashboard
 from grappelli.dashboard.utils import get_admin_site_name
-
+from django.conf import settings
 
 class CustomIndexDashboard(Dashboard):
     """
@@ -65,7 +65,7 @@ class CustomIndexDashboard(Dashboard):
                     'url': '/admin/filebrowser/browse/',
                     'external': False,
                 },
-            ]
+            ] + settings.CADO_EXTRA_ADMIN_LINKS
         ))
         
         # append another link list module for "support".

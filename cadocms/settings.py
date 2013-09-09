@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     SITE_ID = 1
     MULTISITE = False
 
+    CADO_EXTRA_ADMIN_LINKS = []
+
     ADMINS = (
               ('Franciszek Szczepan Wawrzak', 'frank.wawrzak@cadosolutions.com'),
     )
