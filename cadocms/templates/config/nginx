@@ -1,5 +1,15 @@
 {% for SITE in SITES %}
 
+{% if SITE.CADO_FULL_DOMAIN|slice:":4" == 'www.' %}
+
+server {
+    listen       80;
+    server_name  {{SITE.CADO_FULL_DOMAIN|slice:"4:"}};
+    return       301 http://{{SITE.CADO_FULL_DOMAIN}}$request_uri;
+}
+
+{% endif %}
+
 server {
     listen 80;
     server_name .{{SITE.CADO_FULL_DOMAIN}};
