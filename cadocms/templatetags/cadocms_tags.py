@@ -33,6 +33,18 @@ register.filter(spacify)
 def field_type(field):
     return field.field.__class__.__name__
 
+@register.filter()
+def smart_ul(list, attrs=''):
+    if not list:
+        return ''
+    else:
+        ret = '<ul %s>' % (attrs,)
+        for item in list:
+            ret = ret + '<li>%s</li>' % (item,)
+        ret = ret + '</ul>'
+        return mark_safe(ret);
+        
+
 @register.simple_tag(name="setting")
 def get_setting(key):
     try: 
@@ -56,12 +68,18 @@ def keyvalue(dict, key, default=None):
     return dict.get(key, default)
 
 @register.simple_tag(name="chunk")
-def get_chunk(key):
+def get_chunk(key, raw=False):
     for ChunkClass in Chunk.__subclasses__():
         if ChunkClass.objects.get(key=key).body:
-            return '<div class="content">' + ChunkClass.objects.get(key=key).body + '</div>';
+            if raw:
+                return ChunkClass.objects.get(key=key).body
+            else:
+                return '<div class="content">' + ChunkClass.objects.get(key=key).body + '</div>';
         else:
-            return '<div class="content"></div>';
+            if raw:
+                return ''
+            else:
+                return '<div class="content"></div>';
 
 @register.simple_tag(name="staticpage")
 def get_staticpage(key):
