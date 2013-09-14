@@ -34,7 +34,10 @@ if settings.HOST.CLASS == 'DEV':
         url(r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT,}),                    
     )
 
+if settings.EXTRA_URLS:
+    urlpatterns += patterns('', *settings.EXTRA_URLS)
+
 for extra in settings.EXTRA_URLCONFS:
-    print extra
+    #print extra
     extrapatterns = __import__(extra, globals(), locals(), ['urlpatterns'], -1) 
     urlpatterns += extrapatterns.urlpatterns

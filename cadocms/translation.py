@@ -1,4 +1,5 @@
 from modeltranslation.translator import translator, TranslationOptions
+from modeltranslation.models import autodiscover
 from cadocms.models import Translatable
 from django.db.models.loading import get_models, get_apps
 from django.conf import settings
@@ -11,8 +12,10 @@ if 'cadoshop' in settings.INSTALLED_APPS:
     from cadoshop.models import StaticPage
 
 #for app in get_apps():
-#    print app
+    #print app
     
+    
+#print '111'
 #make sure all models are loaded
 for model in get_models():
     #print model.__module__, model.__name__

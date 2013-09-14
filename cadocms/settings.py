@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     SITE_ID = 1
     MULTISITE = False
 
+    MODELTRANSLATION_ENABLE_REGISTRATIONS = True
+
     BOOTSTRAP_THEME = 'bootstrap' 
     
     CADO_EXTRA_ADMIN_LINKS = []
@@ -207,6 +209,7 @@ class Settings(BaseSettings):
                 'django.contrib.messages.middleware.MessageMiddleware',
                 'debug_toolbar.middleware.DebugToolbarMiddleware',
                 'cadocms.middleware.Middleware',
+                'cadocms.middleware.StaticPagesFallback',
                 #'cadocms.middleware.Profiler',
                 #'versioning.middleware.VersioningMiddleware',
                 )
@@ -419,6 +422,7 @@ class Settings(BaseSettings):
         return self.HOST.BACKUP_DIR
     
     EXTRA_URLCONFS = []
+    EXTRA_URLS = []
     ROOT_URLCONF = 'cadocms.urls'
 
     @property

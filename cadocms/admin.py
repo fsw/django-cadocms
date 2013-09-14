@@ -4,6 +4,8 @@ from models import StaticPage, Setting, Moderated, MODERATION_STATUS, Chunk, Mod
 from django import forms
 from django.conf import settings
 
+#from modeltranslation.models import autodiscover
+
 from modeltranslation.admin import TranslationAdmin
 
 import reversion

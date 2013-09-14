@@ -18,9 +18,9 @@ from django.http import HttpResponse
 import simplejson
     
 def staticpage(request, url):
-    print url
+    print 'STATICPAGE', url
     for StaticPageClass in StaticPage.__subclasses__():
-        staticpage = get_object_or_404(StaticPageClass, url=url)
+        staticpage = get_object_or_404(StaticPageClass, url=url[1:])
     context = RequestContext(request, {'staticpage': staticpage})
     return HttpResponse(loader.get_template('staticpage.html').render(context))
 
