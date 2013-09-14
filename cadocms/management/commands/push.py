@@ -13,28 +13,30 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        libs_dir = os.environ.get("DJANGO_LIBS", "../libs")
-        workspace_dir = '..'
-        for submodule in os.listdir(libs_dir):
-            path = os.path.abspath(os.path.join(libs_dir, submodule))
-            print 'trying to push ' + path
-            with lcd(path):
-                with settings(warn_only=True): 
-                    local("git add -A")
-                    #if message is not None:
-                    #    local("git commit -m '%s'" % message)
-                    #else:
-                    local("git commit")
-                    local("git push origin")
+        for path in reversed(sys.path):
+            if os.path.isdir(os.path.join(path, '.git')):
+                if path.find('virtualenv') == -1:
+                    print path
+                    print 'trying to push ' + path
+                    with lcd(path):
+                        with settings(warn_only=True): 
+                            local("git add -A")
+                            #if message is not None:
+                            #    local("git commit -m '%s'" % message)
+                            #else:
+                            local("git commit")
+                            local("git push origin")
+                            local("git push mirror")
 
-        print 'REBUILDING CONFIGURATION'
+        #print 'REBUILDING CONFIGURATION'
         #local("./manage.py build_solr_schema > config/solr_schema.xml")
         #local("./manage.py config_gen")
-        with settings(warn_only=True):
+        #with settings(warn_only=True):
             #local("git submodule foreach git pull") 
-            local("git add -A")
+        #    local("git add -A")
             #if message is not None:
             #local("git commit -m '%s'" % message)
             #else:
-            local("git commit")
-            local("git push origin")
+        #    local("git commit")
+        #    local("git push origin")
+        #    local("git push mirror")

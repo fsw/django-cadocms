@@ -37,7 +37,7 @@ class SassFilter(CompilerFilter):
             else:
                 filepath = parentpath.replace(os.path.basename(parentpath), '') + file
             if finders.find(filepath):
-                #print 'IMPORTING ', file, '  path= ', finders.find(filepath, True);
+                #print 'IMPORTING ', file, '  path= ', finders.find(filepath, True), ' chosen=', finders.find(filepath, False);
                 #print "@import \"%s\";" % file
                 content = content.replace("@import \"%s\";" % file, 
                           self.replace_imports(filepath, open(finders.find(filepath), 'r').read(), stack))

@@ -12,6 +12,11 @@ import os, sys
 
 #if issubclass(settingsClass, MultiAppSettings):
 #if os.environ.get("CADO_SITES", None):
+
+
+commands_requiring_site = ['solr_install', 'runserver', 'restyle_tinymce', 'rebuild_index', 'syncdb', 'schemamigration', 'migrate', 'collectstatic', 'runfcgi', 'loaddata', 'dumpdata', 'fix_defaultoptions']
+
+
 sites = []
 for name in os.listdir(os.getcwd()):
     if os.path.isdir(os.path.join(os.getcwd(), name)):
@@ -24,9 +29,6 @@ if sys.argv:
     if sys.argv:
         command = sys.argv.pop(0);
                 
-        commands_requiring_site = ['solr_install', 'runserver', 'restyle_tinymce', 'rebuild_index', 'syncdb', 'schemamigration', 'migrate', 'collectstatic', 'runfcgi', 'loaddata', 'dumpdata']
-        
-        
         if sites and command in commands_requiring_site:
             if not 'CADO_APP' in os.environ:
                 site = 'unknown'

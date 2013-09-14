@@ -1,5 +1,6 @@
 import socket, sys, pkgutil, os, inspect
 from configurations import Settings as BaseSettings
+from cadocms.management import commands_requiring_site
 
 import djcelery
 djcelery.setup_loader()
@@ -24,6 +25,8 @@ class Settings(BaseSettings):
     SITE_ID = 1
     MULTISITE = False
 
+    BOOTSTRAP_THEME = 'bootstrap' 
+    
     CADO_EXTRA_ADMIN_LINKS = []
 
     ADMINS = (
@@ -117,16 +120,32 @@ class Settings(BaseSettings):
     
     TIME_ZONE = 'America/Chicago'
     
-    LANGUAGE_CODE = 'en'
-    
-    LANGUAGES = (
+    CADO_DEFAULT_LANGUAGE = 'en'
+    CADO_LANGUAGES = (
         ('en', 'English'),
     )
     
-    CADO_DEFAULT_LANGUAGE = 'en'
-    CADO_LANGUAGES = ('en')
+    @property
+    def LANGUAGE_CODE(self):
+        return self.CADO_DEFAULT_LANGUAGE
     
-    USE_I18N = True
+    #@property
+    #def LANGUAGES(self):
+    #    return self.CADO_LANGUAGES
+    
+    @property
+    def LANGUAGES(self):
+        ret = dict()
+        for site in self.SITES_SETTINGS:
+            for c,n in site.CADO_LANGUAGES:
+                ret[c] = n
+        #print 'LANG', ret
+        return ret.items()
+    
+    @property
+    def USE_I18N(self):
+        return len(self.LANGUAGES) > 1
+
     USE_L10N = True
     
     USE_TZ = True
@@ -210,7 +229,7 @@ class Settings(BaseSettings):
             'grappelli.dashboard',
             'grappelli',
             'filebrowser',
-        ) + super(Settings, self).INSTALLED_APPS + (
+        #) + super(Settings, self).INSTALLED_APPS + (
             'django.contrib.auth',
             'django.contrib.contenttypes',
             'django.contrib.sessions',
@@ -399,7 +418,13 @@ class Settings(BaseSettings):
     def BACKUP_DIR(self):
         return self.HOST.BACKUP_DIR
     
+    EXTRA_URLCONFS = []
+    ROOT_URLCONF = 'cadocms.urls'
 
+    @property
+    def SITES_SETTINGS(self):
+        yield self
+        
 class MultiAppSettings(Settings):
     
     MULTISITE = True
@@ -423,12 +448,28 @@ class MultiAppSettings(Settings):
             #    self._SITES = [self]
                 
         return self._SITES
+    
+    @property
+    def SITES_SETTINGS(self):
+        for settings in self.SITES:
+            yield settings
+        #for SettingsClass in MultiAppSettings.__subclasses__():
+        #    yield SettingsClass()
+        
     """
     @property
     def DB_PREFIX(self):
         return self.CADO_PROJECT + '_'
-    """
+    
+"""
 
+def get_management_command(settings, command):
+    if settings.MULTISITE and command in commands_requiring_site:
+        return "%spython manage.py %s %s" % (settings.HOST.PYTHON_PREFIX, command, settings.CADO_PROJECT)
+    else:
+        return "%spython manage.py %s" % (settings.HOST.PYTHON_PREFIX, command)
+        
+    
 class HostSettings(object):
     def __init__(self, parent):
         self.SETTINGS = parent

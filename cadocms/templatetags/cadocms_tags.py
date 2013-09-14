@@ -70,11 +70,17 @@ def keyvalue(dict, key, default=None):
 @register.simple_tag(name="chunk")
 def get_chunk(key, raw=False):
     for ChunkClass in Chunk.__subclasses__():
-        if ChunkClass.objects.get(key=key).body:
+        try:
+            chunk = ChunkClass.objects.get(key=key)
+        except ChunkClass.DoesNotExist:
+            chunk = ChunkClass(key=key, body='TODO')
+            chunk.save()
+            
+        if chunk.body:
             if raw:
-                return ChunkClass.objects.get(key=key).body
+                return chunk.body
             else:
-                return '<div class="content">' + ChunkClass.objects.get(key=key).body + '</div>';
+                return '<div class="content">' + chunk.body + '</div>';
         else:
             if raw:
                 return ''

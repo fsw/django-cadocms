@@ -15,7 +15,7 @@
 			
 			<meta name="description" content="{% block seo_description %}{% endblock %}">
 			<meta name="keywords" content="{% block seo_keywords %}{% endblock %}">
-			<title>{% block seo_title %}{% endblock %}</title>
+			<title>{% block seo_title %}{% setting 'CADO_NAME' %}{% endblock %}</title>
 			
 			<meta name="robots" content="index,follow">
 			<meta name="GOOGLEBOT" content="index,follow">
@@ -24,7 +24,13 @@
 			{% load compress %}
 			{% compress css %}
 				{% block html_styles %}
-					<link rel="stylesheet" href="{{STATIC_URL}}main.{% get_current_flavour %}.scss" type="text/x-scss" charset="utf-8">
+					{% captureas current_flavour %}{% get_current_flavour %}{% endcaptureas %}
+					{% if current_flavour = 'desktop' or current_flavour = 'mobile' %}
+						<link rel="stylesheet" href="{{STATIC_URL}}bootstrap/css/{% setting 'BOOTSTRAP_THEME' %}.css" type="text/x-scss" charset="utf-8">
+						<link rel="stylesheet" href="{{STATIC_URL}}bootstrap/css/bootstrap-responsive.css" type="text/x-scss" charset="utf-8">
+						<link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css" type="text/x-scss" charset="utf-8">
+					{% endif %}
+					<link rel="stylesheet" href="{{STATIC_URL}}main.{{ current_flavour }}.scss" type="text/x-scss" charset="utf-8">
 					{% block extra_html_styles %}
 					{% endblock %}
 				{% endblock %}
