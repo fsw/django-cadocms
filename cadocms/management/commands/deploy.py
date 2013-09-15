@@ -7,6 +7,7 @@ from fabric.operations import put
 from django.conf import settings as django_settings
 from fabric import colors
 from difflib import context_diff
+from optparse import make_option
 
 from cadocms.settings import HostSettings
 env.use_ssh_config = True
@@ -15,16 +16,18 @@ class Command(BaseCommand):
     args = '<host> [initial]'
     help = 'Deploys to specified host'
     
-    """
-    if HostSettingsClass.NAME == host_name and HostSettingsClass.SRCROOT == host_srcroot:
-                CurrentHostSettingsClass = HostSettingsClass
-                found = True
-        if not found:
-            print 'THIS SEEMS LIKE A DEV SERVER'
-        self._HOST = CurrentHostSettingsClass
-        
-    return self._HOST
-    """
+    option_list = BaseCommand.option_list + (
+        make_option('--nobackup',
+            action='store_true',
+            dest='delete',
+            default=False,
+            help='Delete poll instead of closing it'),
+        make_option('--initial',
+            action='store_true',
+            dest='delete',
+            default=False,
+            help='Delete poll instead of closing it'),
+        )
     
     def handle(self, *args, **options):
         
@@ -67,6 +70,9 @@ class Command(BaseCommand):
             return
         
         with cd(host.SRCROOT):
+            print colors.red("BACKUP:", bold=True)
+            run("%spython manage.py backup deploy")
+        
             print colors.red("UPDATING CODEBASE:", bold=True)
             run("git pull origin master")
 
