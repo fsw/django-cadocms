@@ -95,3 +95,25 @@ def admin_moderation(request):
 
     r = render_to_response('admin/moderation.html', context, RequestContext(request))
     return HttpResponse(r)
+
+@staff_member_required
+def admin_clearcache(request): 
+    context = {}
+    from StringIO import StringIO
+    from django.core import management
+    output = StringIO()
+    management.call_command('clear_cache', stdout=output)
+    context['output'] = output.getvalue()
+    r = render_to_response('admin/clearcache.html', context, RequestContext(request))
+    return HttpResponse(r)
+
+@staff_member_required
+def admin_rebuildindex(request): 
+    context = {}
+    from StringIO import StringIO
+    from django.core import management
+    output = StringIO()
+    management.call_command('rebuild_index', noinput=True, interactive=False ,stdout=output)
+    context['output'] = output.getvalue()
+    r = render_to_response('admin/rebuildindex.html', context, RequestContext(request))
+    return HttpResponse(r)

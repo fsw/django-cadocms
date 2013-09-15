@@ -65,6 +65,16 @@ class CustomIndexDashboard(Dashboard):
                     'url': '/admin/filebrowser/browse/',
                     'external': False,
                 },
+                {
+                    'title': _('Admin Manual'),
+                    'url': '/admin/manual/',
+                    'external': False,
+                },
+                {
+                    'title': _('Clear Cache'),
+                    'url': '/admin/clearcache/',
+                    'external': False,
+                }
             ] + settings.CADO_EXTRA_ADMIN_LINKS
         ))
         

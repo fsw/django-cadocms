@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^admin/manual/$', TemplateView.as_view(template_name='admin/manual.html')),
     url(r'^admin/rosetta/', include('rosetta.urls')),
     url(r'^admin/moderation/$', 'cadocms.views.admin_moderation'),
+    url(r'^admin/clearcache/$', 'cadocms.views.admin_clearcache'),
+    url(r'^admin/rebuildindex/$', 'cadocms.views.admin_rebuildindex'),
     url(r'^admin/', include(admin.site.urls)),
     
     url(r'^extrafields/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<provider_id>\d+)$', 'cadocms.views.extrafields'),
