@@ -70,8 +70,9 @@ class Command(BaseCommand):
             return
         
         with cd(host.SRCROOT):
-            print colors.red("BACKUP:", bold=True)
-            run("%spython manage.py backup deploy" % (virtpath,))
+            if host.CLASS == 'PROD':
+                print colors.red("PROD BACKUP:", bold=True)
+                run("%spython manage.py backup deploy" % (virtpath,))
         
             print colors.red("UPDATING CODEBASE:", bold=True)
             run("git pull origin master")
