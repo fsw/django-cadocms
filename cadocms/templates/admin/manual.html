@@ -5,6 +5,42 @@
 {% block content %}
 <h1>Manual</h1>
 
-manual will go here
+<h2>Admin Actions</h2>
+<p>
+On RHS of <a href="/admin/">admin dashboard</a> you see a list of available manual commands, 
+this list might depend of your website features
+</p>
+
+<h3>FileBrowser</h3>
+<p>
+Here you can upload media files (images, videos etc) for later use in all TextEdit fields.
+</p>
+
+<h3>Admin Manual</h3>
+<p>
+Shows this manual
+</p>
+
+<h3>Clear Cache</h3>
+<p>
+This clears the application cache.
+</p>
+<p> 
+To run faster this website is using cache layer not to query database or build styles / javascripts on each request.
+When you change anything in the admin panel it should be also cleared from a cache, 
+however if this does not happen for some reason and you still see the old version on the site you can use this action to force cleaning up whole cache.
+</p>
+<p>
+After running this command first few requests to frontend might take very long (as everything is rebuilded).
+</p>
+
+<h3>Rebuild Search Index</h3>
+<p>
+	'Search index' is automatically updated as a background process. 
+	So if you add a word in item description it might take a while before this item can be found on frontend using this keyword.
+</p>
+<p>
+	If this wont happen after a long while or you see some strange behavior of search results you can use this option to force rebuilding of the whole index (this can take a while if you have a lot of searchable items)
+</p>
 
 {% endblock %}
