@@ -71,7 +71,7 @@ class Command(BaseCommand):
         
         with cd(host.SRCROOT):
             print colors.red("BACKUP:", bold=True)
-            run("%spython manage.py backup deploy")
+            run("%spython manage.py backup deploy" % (virtpath,))
         
             print colors.red("UPDATING CODEBASE:", bold=True)
             run("git pull origin master")
