@@ -19,9 +19,9 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--nobackup',
             action='store_true',
-            dest='delete',
+            dest='nobackup',
             default=False,
-            help='Delete poll instead of closing it'),
+            help='Do not BACKUP'),
         make_option('--initial',
             action='store_true',
             dest='delete',
@@ -70,7 +70,7 @@ class Command(BaseCommand):
             return
         
         with cd(host.SRCROOT):
-            if host.CLASS == 'PROD':
+            if host.CLASS == 'PROD' and not options['nobackup']:
                 print colors.red("PROD BACKUP:", bold=True)
                 run("%spython manage.py backup deploy" % (virtpath,))
         
