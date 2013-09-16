@@ -20,7 +20,7 @@ setup(
         'django-compressor==1.3',
         'django-imagekit >= 3.0.3',
         'django-mptt==0.5.5',
-        'pilkit==0.1.3',
+        'pilkit==1.1.4',
         'pysolr==3.0.3',
         'simplejson==2.3.2',
         'six==1.2.0',
