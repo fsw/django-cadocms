@@ -89,7 +89,7 @@ if (jQuery != undefined) {
 			        	format:'dd/mm/yyyy',
 			        	autoclose: true
 					});
-					extraDiv.find(".extraMyTimeField").wrap('<div class="bootstrap-timepicker"/>');
+					extraDiv.find(".extraMyTimeField").wrap('<span class="bootstrap-timepicker"/>');
 					
 					extraDiv.find(".extraMyTimeField").after('<i class="icon-time" style="margin: -2px 0 0 -22.5px; pointer-events: none; position: relative;"></i>');
 					extraDiv.find(".extraMyTimeField").timepicker({
