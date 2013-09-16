@@ -73,7 +73,7 @@ def get_chunk(key, raw=False):
         try:
             chunk = ChunkClass.objects.get(key=key)
         except ChunkClass.DoesNotExist:
-            chunk = ChunkClass(key=key, body='TODO')
+            chunk = ChunkClass(key=key, body='please edit this in admin chunks panel:<br/><b>%s</b>' % key)
             chunk.save()
             
         if chunk.body:
@@ -158,7 +158,7 @@ class CaptureasNode(template.Node):
 
 @register.filter
 def get_range( value ):
-  return range( value )
+    return range( value )
   
   
 def paginator(page, url, adjacent_pages=2):
