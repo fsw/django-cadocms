@@ -14,7 +14,7 @@ from django.conf import settings
 from django.db.models.signals import class_prepared
 from django.forms.models import model_to_dict
 #from django.core.mail import send_mail
-from datetime import datetime    
+from datetime import datetime, timedelta     
 from cadocms.email import StandardEmail
 
 import caching.base
@@ -334,7 +334,12 @@ class Hit(models.Model):
     session         = models.CharField(max_length=40, editable=False)
     user_agent      = models.CharField(max_length=255, editable=False)
     user            = models.ForeignKey(User,null=True, editable=False)
- 
+    
+    class Meta:
+        index_together = [
+            ["counter", "ip", "created"],
+        ]
+
  
 def hits_get(key):
     try:
@@ -356,12 +361,20 @@ def hits_inc(key, request = None, interval = 'day'):
             ip = x_forwarded_for.split(',')[0]
         else:
             ip = request.META.get('REMOTE_ADDR')
-
-        hit, hit_created = Hit.objects.get_or_create(counter = counter, 
-                                                     ip = ip,
-                                                     session = request.session.session_key,
-                                                     user_agent = request.META.get('HTTP_USER_AGENT'),
-                                                     user = request.user);
+        
+        try:
+            now = datetime.now() - timedelta(1,0)
+            hit = Hit.objects.get(counter = counter, ip = ip, created__gt = now)
+            hit_created = False;
+        except Hit.DoesNotExist:
+            hit = Hit(counter = counter, 
+                      ip = ip, 
+                      session = request.session.session_key,
+                      user_agent = request.META.get('HTTP_USER_AGENT'),
+                      user = request.user)
+            hit_created = True;
+        
+        
     print 'HIT', hit, hit_created
     
     if hit_created:
