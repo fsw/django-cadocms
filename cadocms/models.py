@@ -329,7 +329,7 @@ class HitCounter(models.Model):
     
 class Hit(models.Model):
     counter         = models.ForeignKey(HitCounter, editable=False)
-    created         = models.DateTimeField(editable=False)
+    created         = models.DateTimeField(editable=False, default=datetime.now)
     ip              = models.CharField(max_length=40, editable=False)
     session         = models.CharField(max_length=40, editable=False)
     user_agent      = models.CharField(max_length=255, editable=False)
@@ -345,14 +345,30 @@ def hits_get(key):
 
 # if request is passed key will increment only if it is unique
 def hits_inc(key, request = None, interval = 'day'):
-    try:
-        counter = HitCounter.objects.get(key=key)
-    except HitCounter.DoesNotExist:
-        counter = HitCounter(key=key, value=0)    
-    counter.value = counter.value + 1
-    counter.save()
-    return counter.value
     
+    counter, created_created = HitCounter.objects.get_or_create(key=key)
+    
+    if request is None:
+        hit_created = True;
+    else:
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+
+        hit, hit_created = Hit.objects.get_or_create(counter = counter, 
+                                                     ip = ip,
+                                                     session = request.session.session_key,
+                                                     user_agent = request.META.get('HTTP_USER_AGENT'),
+                                                     user = request.user);
+    print 'HIT', hit, hit_created
+    
+    if hit_created:
+        counter.value = counter.value + 1
+        counter.save()
+        
+    return counter.value
 
 
 class MyDateField(models.DateField):
