@@ -27,7 +27,7 @@ $(function(){
 			diff = dmp.diff_main(first, second);
 			//console.log(diff);
 			if (diff.length < 2) {
-				$(elem).remove();
+				//$(elem).remove();
 			} else {
 				newFirst = "";
 				newSecond = "";
@@ -128,4 +128,7 @@ $(function(){
 		{% endfor%}
 	</tbody>
 </table>
+
+<strong>there are {{total}} items to moderate, showing oldest ones</strong>
+
 {% endblock %}

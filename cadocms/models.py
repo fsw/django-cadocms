@@ -98,8 +98,9 @@ class Moderated(models.Model):
         super(Moderated, self).save()
 
     def show_diff(self):
+        print self, self.moderation_status, MODERATION_STATUS['NEW']
         if (self.moderation_status == MODERATION_STATUS['NEW']):
-            d = model_to_dict(self, fields=[field.name for field in self._meta.fields])
+            d = model_to_dict(self, fields=list(set([field.name for field in self._meta.fields]) - set(self.diff_ignored_fields())))
             return dict([(x,[y]) for x,y in d.items()])
         if (self.moderation_status == MODERATION_STATUS['MODIFIED']):
             version_list = reversion.get_for_object(self)
@@ -107,8 +108,9 @@ class Moderated(models.Model):
             try:
                 for version in version_list[0:2]:
                     for key,value in version.field_dict.items():
-                        ret[key] = ret.get(key,[])
-                        ret[key].append(value)
+                        if key not in self.diff_ignored_fields():
+                            ret[key] = ret.get(key,[])
+                            ret[key].append(value)
             except:
                 pass
             return ret
@@ -371,7 +373,8 @@ def hits_inc(key, request = None, interval = 'day'):
                       ip = ip, 
                       session = request.session.session_key,
                       user_agent = request.META.get('HTTP_USER_AGENT'),
-                      user = request.user)
+                      #user = request.user
+                      )
             hit_created = True;
         
         
