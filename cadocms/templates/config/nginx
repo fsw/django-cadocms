@@ -19,6 +19,16 @@ server {
     
     client_max_body_size 10M;
     
+    {% if HOST.HTTPS_ON %}
+    location /admin {
+        rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}/$1 permanent;
+    }
+    
+    location /accounts {
+        rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}/$1 permanent;
+    }
+	{% endif %}
+	
     location {{SITE.STATIC_URL}} {
         alias {{SITE.STATIC_ROOT}};
         expires 30d;
@@ -33,6 +43,47 @@ server {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
     }
+    
+	
 }
+
+{% if HOST.HTTPS_ON %}
+
+server {
+    listen              443 ssl;
+    server_name			.{{SITE.CADO_FULL_DOMAIN}};
+    ssl_certificate     {{HOST.APPROOT}}server.crt;
+    ssl_certificate_key {{HOST.APPROOT}}server.key;
+    ssl_protocols       SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+
+    access_log {{HOST.APPROOT}}logs/nginx.access.ssl.log;
+    error_log {{HOST.APPROOT}}logs/nginx.error.ssl.log;
+    
+    client_max_body_size 10M;
+    
+    location {{SITE.STATIC_URL}} {
+        alias {{SITE.STATIC_ROOT}};
+        expires 30d;
+    }
+
+    location {{SITE.MEDIA_URL}} {
+        alias {{SITE.MEDIA_ROOT}};
+        expires 30d;
+    }
+
+    location /admin {
+        include fastcgi_params;
+        fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+    }
+    
+    location /accounts {
+        include fastcgi_params;
+        fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+    }
+}
+
+{% endif %}
 
 {% endfor %}

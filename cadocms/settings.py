@@ -484,6 +484,8 @@ class HostSettings(object):
     SRCROOT = None
     APPROOT = None
     
+    HTTPS_ON = False
+    
     @property
     def SOLR_CORE_NAME(self):
         return self.SETTINGS.CADO_PROJECT
