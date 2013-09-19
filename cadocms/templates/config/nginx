@@ -21,11 +21,11 @@ server {
     
     {% if HOST.HTTPS_ON %}
     location /admin {
-        rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}/$1 permanent;
+        rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}$1 permanent;
     }
     
     location /accounts {
-        rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}/$1 permanent;
+        rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}$1 permanent;
     }
 	{% endif %}
 	
@@ -84,7 +84,7 @@ server {
     }
     
     location / {
-        rewrite (.*) http://{{SITE.CADO_FULL_DOMAIN}}/$1 permanent;
+        rewrite (.*) http://{{SITE.CADO_FULL_DOMAIN}}$1 permanent;
     }
 }
 
