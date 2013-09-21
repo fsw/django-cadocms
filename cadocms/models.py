@@ -105,7 +105,9 @@ class Moderated(models.Model):
         ret = []
         #print self, self.moderation_status, MODERATION_STATUS['NEW']
         
-        versions = [reversion.get_for_object(self)[0], ]
+        versions = [ ]
+        if reversion.get_for_object(self).count():
+            versions.append(reversion.get_for_object(self)[0])
         
         print 'XXX'
         if (self.moderation_last_ok_revision):
