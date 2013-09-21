@@ -20,6 +20,7 @@ from cadocms.email import StandardEmail
 import caching.base
 
 import reversion
+from reversion.models import Version
 
 MODERATION_STATUS = {
     'NEW' : 0,
@@ -59,6 +60,8 @@ class Moderated(models.Model):
     moderation_reason = models.ForeignKey(ModerationReason, related_name='moderation_reason', null=True, blank=True)
     moderation_user = models.ForeignKey(User, related_name='moderation_user', null=True, blank=True)
     moderation_comment = models.TextField(_('Moderator Comment'), blank=True)
+    moderation_last_ok_revision = models.ForeignKey(Version, blank=True, null=True)
+                                 
     created     = models.DateTimeField(editable=False, default=datetime.now)
     modified    = models.DateTimeField(editable=False, default=datetime.now)
     
@@ -87,6 +90,7 @@ class Moderated(models.Model):
     def moderate_accept(self, user):
         self.moderation_status = MODERATION_STATUS['OK']
         self.moderation_user = user
+        self.moderation_last_ok_revision = reversion.get_for_object(self)[0]
         self.on_moderate_accept()
         super(Moderated, self).save()
 
@@ -98,36 +102,56 @@ class Moderated(models.Model):
         super(Moderated, self).save()
 
     def show_diff(self):
-        print self, self.moderation_status, MODERATION_STATUS['NEW']
-        if (self.moderation_status == MODERATION_STATUS['NEW']):
-            d = model_to_dict(self, fields=list(set([field.name for field in self._meta.fields]) - set(self.diff_ignored_fields())))
-            return dict([(x,[y]) for x,y in d.items()])
-        if (self.moderation_status == MODERATION_STATUS['MODIFIED']):
-            version_list = reversion.get_for_object(self)
-            ret = {}
-            try:
-                for version in version_list[0:2]:
-                    for key,value in version.field_dict.items():
-                        if key not in self.diff_ignored_fields():
-                            ret[key] = ret.get(key,[])
-                            ret[key].append(value)
-            except:
-                pass
-            return ret
+        ret = []
+        #print self, self.moderation_status, MODERATION_STATUS['NEW']
+        
+        versions = [reversion.get_for_object(self)[0], ]
+        
+        print 'XXX'
+        if (self.moderation_last_ok_revision):
+            print self.moderation_last_ok_revision, 'ID'
+            versions.append(self.moderation_last_ok_revision);
+        
+        print 'YYY'
+        tmp_ret = {}
+        
+        for version in versions:
+            for key,value in version.field_dict.items():
+                if key not in self.diff_ignored_fields():
+                    tmp_ret[key] = tmp_ret.get(key,[])
+                    tmp_ret[key].append(value)
+            
+        for field in self.__class__._meta.fields:
+            if field.name in tmp_ret:
+                if len(tmp_ret[field.name]) < 2 or str(tmp_ret[field.name][0]) != str(tmp_ret[field.name][1]):
+                    ret.append((field.name, tmp_ret[field.name]))
+        for field in self.__class__._meta.many_to_many:
+            if field.name in tmp_ret:
+                ret.append((field.name, tmp_ret[field.name]))
+                
+        #print 'XXX', ret
+        return ret
         #model_to_dict(self, fields=[field.name for field in self._meta.fields])
         #model_to_dict(self, fields=[field.name for field in self._meta.fields])
     
-    def diff_ignored_fields(self):
-        return ['moderation_status', 'moderation_reason', 'moderation_user', 'moderation_comment', 'created', 'modified']
+    @staticmethod
+    def diff_ignored_fields():
+        return ['moderation_status', 'moderation_reason', 
+                'moderation_user', 'moderation_comment', 
+                'moderation_last_ok_revision',
+                'created', 'modified']
     
     def save(self, *args, **kwargs):
+        
+        self.modified = datetime.now()
+        
         if self.pk is None:
             self.moderation_status = MODERATION_STATUS['NEW']
             self.created = datetime.today()
+        """
         else:
             original = self.__class__._default_manager.get(pk=self.pk)
         
-        self.modified = datetime.today()
         
         if (self.moderation_status != MODERATION_STATUS['NEW']):
             #print self.__class__._meta.get_all_field_names()
@@ -154,11 +178,35 @@ class Moderated(models.Model):
                         #print original_data
                         #print new_data
         
-        with reversion.create_revision():
-            ret = super(Moderated, self).save(*args, **kwargs)
+        """
+        print 'SAVE', self, self.moderation_status, 'XXX'
+        ret = super(Moderated, self).save(*args, **kwargs)
         
         return ret
-    
+
+def pre_revision_commit(**kwargs):
+    print 'PRE', kwargs
+    for idx, instance in enumerate(kwargs['instances']):
+        if isinstance(instance, Moderated):
+            if instance.moderation_status == MODERATION_STATUS['NEW']:
+                pass
+            elif instance.moderation_status == MODERATION_STATUS['MODIFIED']:
+                pass
+            elif instance.moderation_status == MODERATION_STATUS['OK']:
+                instance.moderation_status = MODERATION_STATUS['MODIFIED']
+                instance.save()
+            elif instance.moderation_status == MODERATION_STATUS['REJECTED']:
+                instance.moderation_status = MODERATION_STATUS['MODIFIED']
+                instance.save()
+                            
+            #print 'VERSION', version.field_dict
+            #print 'VERSIONS', version_list.count()
+            #print 'VERSION_LIST', version_list
+            #print 'POST COMMIT', instance
+            
+
+reversion.pre_revision_commit.connect(pre_revision_commit)
+  
 
 class Translatable(models.Model):
     translatable_fields = ()
