@@ -113,17 +113,20 @@ class Moderated(models.Model):
         
         #print 'XXX'
         if (self.moderation_last_ok_revision):
-            print self.moderation_last_ok_revision, 'ID'
+            #print self.moderation_last_ok_revision, 'ID'
             versions.append(self.moderation_last_ok_revision);
         
         #print 'YYY'
         tmp_ret = {}
         
-        for version in versions:
-            for key,value in version.field_dict.items():
-                if key not in self.diff_ignored_fields():
-                    tmp_ret[key] = tmp_ret.get(key,[])
-                    tmp_ret[key].append(value)
+        try:
+            for version in versions:
+                for key,value in version.field_dict.items():
+                    if key not in self.diff_ignored_fields():
+                        tmp_ret[key] = tmp_ret.get(key,[])
+                        tmp_ret[key].append(value)
+        except:
+            pass
             
         for field in self.__class__._meta.fields:
             if field.name in tmp_ret:
