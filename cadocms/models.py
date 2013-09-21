@@ -17,6 +17,8 @@ from django.forms.models import model_to_dict
 from datetime import datetime, timedelta     
 from cadocms.email import StandardEmail
 
+from django.utils.safestring import mark_safe
+
 import caching.base
 
 import reversion
@@ -109,12 +111,12 @@ class Moderated(models.Model):
         if reversion.get_for_object(self).count():
             versions.append(reversion.get_for_object(self)[0])
         
-        print 'XXX'
+        #print 'XXX'
         if (self.moderation_last_ok_revision):
             print self.moderation_last_ok_revision, 'ID'
             versions.append(self.moderation_last_ok_revision);
         
-        print 'YYY'
+        #print 'YYY'
         tmp_ret = {}
         
         for version in versions:
@@ -126,10 +128,17 @@ class Moderated(models.Model):
         for field in self.__class__._meta.fields:
             if field.name in tmp_ret:
                 if len(tmp_ret[field.name]) < 2 or str(tmp_ret[field.name][0]) != str(tmp_ret[field.name][1]):
-                    ret.append((field.name, tmp_ret[field.name]))
+                    if any(tmp_ret[field.name]):
+                        if isinstance(field, models.ForeignKey):
+                            tmp_ret[field.name] = [(str(field.rel.to.objects.get(id=int(id)))) for id in tmp_ret[field.name]]
+                        if isinstance(field, models.ImageField):
+                            tmp_ret[field.name] = [mark_safe('<a class="fancybox" href="%s%s"><img src="%s%s" height="100" width="100"/></a>' % (settings.MEDIA_URL, path, settings.MEDIA_URL, path)) for path in tmp_ret[field.name]]
+
+                        ret.append((field.verbose_name, tmp_ret[field.name]))
         for field in self.__class__._meta.many_to_many:
             if field.name in tmp_ret:
-                ret.append((field.name, tmp_ret[field.name]))
+                tmp_ret[field.name] = [[(str(field.rel.to.objects.get(id=int(id)))) for id in lll] for lll in tmp_ret[field.name]]
+                ret.append((field.verbose_name, tmp_ret[field.name]))
                 
         #print 'XXX', ret
         return ret

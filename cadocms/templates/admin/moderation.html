@@ -16,6 +16,20 @@
 <script type="text/javascript">
 //<!--
 $(function(){
+	$('.ajaxForm').submit(function () {
+        $.ajax({
+            type: $(this).attr('method'),
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function (data) {
+            	
+            }
+        });
+		$(this).parents('.grp-row').next().hide();
+        $(this).parents('.grp-row').hide();
+        return false;
+    });
+	
 	$('.fancybox').fancybox();
 	var dmp = new diff_match_patch();
 	
@@ -87,14 +101,14 @@ $(function(){
 			<div class="grp-submit-row" style="width:300px; overflow: auto;">
 				<ul style="margin:5px; overflow:auto;">
 					<li>
-						<form action="" method="post">
+						<form class="ajaxForm" action="/admin/moderation/" method="post">
 							{% csrf_token %}
 							<input type="hidden" name="accept" value="{{item.id}}"/>
 							<button class="grp-button" style="background-color: #30bf30; background-image: none;" type="submit">ACCEPT</button>
 						</form>
 					</li>
 					<li>
-						<form action="" method="post">
+						<form class="ajaxForm" action="/admin/moderation/" method="post">
 							{% csrf_token %}
 							<input type="hidden" name="reject" value="{{item.id}}"/>
 							<select name="reason">
@@ -128,7 +142,9 @@ $(function(){
 		{% endfor%}
 	</tbody>
 </table>
-
-<strong>there are {{total}} items to moderate, showing oldest ones</strong>
-
+<div style="padding:50px;">
+	there are <strong>{{total}} more</strong> items to moderate
+	<br/> 
+	<a class="grp-button" href="/admin/moderation/">LOAD</a>
+</div>
 {% endblock %}

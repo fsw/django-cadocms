@@ -85,13 +85,19 @@ def admin_moderation(request):
             if request.POST.get('accept', 0):
                 model.objects.get(id=request.POST.get('accept', 0)).moderate_accept(request.user);
         
-            if request.POST.get('reject', 0):
+            elif request.POST.get('reject', 0):
                 model.objects.get(id=request.POST.get('reject', 0)).moderate_reject(request.user, ModerationReason.objects.get(id=request.POST.get('reason', 0)));
-    
-            context['items'] = model.objects.filter(moderation_status__in=[MODERATION_STATUS['NEW'],MODERATION_STATUS['MODIFIED']])[0:20]
-            context['total'] = model.objects.filter(moderation_status__in=[MODERATION_STATUS['NEW'],MODERATION_STATUS['MODIFIED']]).count()
             
-            context['admin_url_prefix'] = '/admin/' + model._meta.app_label + '/' + model._meta.object_name.lower() + '/';
+            else:
+                offset = 0;
+                if 'offset' in request.GET:
+                    offset = int(request.GET['offset']);
+                    
+                context['items'] = model.objects.filter(moderation_status__in=[MODERATION_STATUS['NEW'],MODERATION_STATUS['MODIFIED']])[offset:20]
+                
+                context['total'] = model.objects.filter(moderation_status__in=[MODERATION_STATUS['NEW'],MODERATION_STATUS['MODIFIED']]).count() - len(context['items'])
+            
+                context['admin_url_prefix'] = '/admin/' + model._meta.app_label + '/' + model._meta.object_name.lower() + '/';
     
     context['reasons'] = ModerationReason.objects.all();
 
