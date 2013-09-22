@@ -253,10 +253,16 @@ class ExtraFieldsValues(JSONField):
     model_name = 'Unknown'
     
     def clean(self, raw_value, instance):
-        value = json.loads(raw_value)
-        if value is None:
+        print 'VALIDATING', type(raw_value), raw_value
+        if type( raw_value ) == dict:
+            value = raw_value
+        elif type( raw_value ) == unicode:
+            value = json.loads(raw_value)
+            if value is None:
+                value = {}
+        else:
             value = {}
-        #print value
+        
         errors = {}
         for key, field in instance.get_provided_extra_fields():
             try:
