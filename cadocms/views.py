@@ -30,12 +30,13 @@ def extrafields(request, model, provider_id):
     #path_bits = model.PROVIDER_FIELD.split('.')
     #setattr(model, path_bits.pop(0), provider_id)
     form = Form()
+    form.required_css_class = 'required'
     for key, field in model.get_provided_extra_fields_by_provider_id(provider_id):
         form.fields['extra[%s]' % key] = field['field'].formfield()
         form.fields['extra[%s]' % key].widget.attrs['class'] = 'extra' + field['field'].__class__.__name__ 
         
     #print form.as_p(), form.media
-    return HttpResponse(form.as_p())
+    return HttpResponse('<table class="extraFieldsTable">' + form.as_table() + '</table>')
     
 def api_tree_children(request, model, parent_id):
     app_label, model_name = model.split(".")

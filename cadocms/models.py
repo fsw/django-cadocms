@@ -24,6 +24,8 @@ import caching.base
 import reversion
 from reversion.models import Version
 
+from django.core.exceptions import ValidationError
+
 MODERATION_STATUS = {
     'NEW' : 0,
     'MODIFIED' : 1,
@@ -199,7 +201,7 @@ class Moderated(models.Model):
         return ret
 
 def pre_revision_commit(**kwargs):
-    print 'PRE', kwargs
+    #print 'PRE', kwargs
     for idx, instance in enumerate(kwargs['instances']):
         if isinstance(instance, Moderated):
             if instance.moderation_status == MODERATION_STATUS['NEW']:
@@ -481,6 +483,7 @@ class ExtraFieldsProvider(models.Model):
         ret = []
         for cat in all_cats:
             try:
+                #print 'WHOLE', cat.extra_fields
                 if type(cat.extra_fields) is list:
                     loop = cat.extra_fields
                 else:
@@ -492,6 +495,8 @@ class ExtraFieldsProvider(models.Model):
                     else:
                         #print key, field
                         className = field.get('class', 'CharField')
+                        args = field.get('kwargs', {}).copy()
+                        
                         if className == 'DateField': 
                             methodToCall = MyDateField
                         elif className == 'TimeField': 
@@ -500,13 +505,21 @@ class ExtraFieldsProvider(models.Model):
                             methodToCall = MyDateTimeField
                         else:
                             methodToCall = getattr(models, className, models.CharField)
-                            
-                        args = field.get('kwargs', {}).copy()
+                        
+                        #different default values    
+                        if className == 'CharField':
+                            args.setdefault('max_length', 64)
+                        else:
+                            pass
+                         
                         if ('choices' in args) and (type(args['choices']) is dict):
                             new_options = []
                             for k, v in args['choices'].items():
                                 new_options.append((k,v))
                             args['choices'] = new_options
+                        
+                        
+                        #print 'XXX EXTRA:', className, args
                         
                         f = methodToCall(**args)
         
@@ -528,6 +541,7 @@ class ExtraFieldsProvider(models.Model):
                             raise Exception('unknown type')
     
                         #ret[key] = {'field' : f, 'solr_key' : solr_key}
+                        #TODO option to override fields in child categories here!
                         ret.append((key, {'field' : f, 'solr_key' : solr_key}))
                     
             except Exception, err:
@@ -548,6 +562,11 @@ class ExtraFieldsUser(models.Model):
     class Meta:
         abstract = True
     
+    def clean(self):
+        #raise ValidationError({'extra' : 'test'})
+        return super(ExtraFieldsUser, self).clean();
+
+        
     def get_provided_extra_fields_by_provider_id(self, provider_field_value):
         # TODO: late static binding ?
         if int(provider_field_value) not in ExtraFieldsUser.definitions_cache:

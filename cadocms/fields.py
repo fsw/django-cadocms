@@ -27,6 +27,8 @@ import re
 import decimal
 import datetime
 
+from django.core.exceptions import ValidationError
+
 try:
     from dateutil import parser as date_parser
 except ImportError:
@@ -249,6 +251,22 @@ class ExtraFieldsValues(JSONField):
     
     provider_field = 'unknown'
     model_name = 'Unknown'
+    
+    def clean(self, raw_value, instance):
+        value = json.loads(raw_value)
+        if value is None:
+            value = {}
+        #print value
+        errors = {}
+        for key, field in instance.get_provided_extra_fields():
+            try:
+                #field['field'].clean(value.get(key,''), instance)
+                #print 'VALIDATING', key, value.get(key,'')
+                field['field'].formfield().clean(value.get(key,''))
+            except ValidationError as e:
+                errors[key] = ['%s: %s' % (key, m) for m in e.messages]
+        if errors:
+            raise ValidationError(errors)
     
     def __init__(self, *args, **kwargs):
         #print "INIT FIELD %s %s" % (self.provider_field, self.model_name)
