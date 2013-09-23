@@ -34,6 +34,9 @@ server {
 	{% endif %}
 	
     location {{SITE.STATIC_URL}} {
+    	gzip on;
+    	gzip_proxied any;
+    	gzip_types text/plain application/xml text/css text/javascript;
         alias {{SITE.STATIC_ROOT}};
         expires 30d;
     }
@@ -68,6 +71,9 @@ server {
     client_max_body_size 10M;
     
     location {{SITE.STATIC_URL}} {
+    	gzip on;
+    	gzip_proxied any;
+    	gzip_types text/plain application/xml text/css text/javascript;
         alias {{SITE.STATIC_ROOT}};
         expires 30d;
     }
