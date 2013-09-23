@@ -27,6 +27,10 @@ server {
     location /accounts {
         rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}$1 permanent;
     }
+    
+    location /captcha {
+        rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}$1 permanent;
+    }
 	{% endif %}
 	
     location {{SITE.STATIC_URL}} {
@@ -79,6 +83,11 @@ server {
     }
     
     location /accounts {
+        include fastcgi_params;
+        fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+    }
+    
+    location /captcha {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
     }

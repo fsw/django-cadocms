@@ -53,7 +53,6 @@ def get_setting(key):
     except Setting.DoesNotExist:
         return getattr(settings, key)
 
-
 @register.filter(name="setting")
 def filter_setting(key):
     try:
@@ -62,6 +61,13 @@ def filter_setting(key):
     except Setting.DoesNotExist:
         return getattr(settings, key)
 
+@register.simple_tag(name="host_setting")
+def get_host_setting(key):
+    return getattr(settings.HOST, key)
+
+@register.filter(name="host_setting")
+def filter_host_setting(key):
+    return getattr(settings.HOST, key)
 
 @register.filter
 def keyvalue(dict, key, default=None):    
