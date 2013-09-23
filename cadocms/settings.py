@@ -114,6 +114,9 @@ class Settings(BaseSettings):
     def CACHE_PREFIX(self):
         return self.HOST.DATABASE['NAME']
         
+    
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+    
     @property
     def DEBUG(self):
         return self.HOST.DEBUG
