@@ -34,16 +34,13 @@ server {
 	{% endif %}
 	
     location {{SITE.STATIC_URL}} {
-    	gzip on;
-    	gzip_proxied any;
-    	gzip_types text/plain application/xml text/css text/javascript;
         alias {{SITE.STATIC_ROOT}};
-        expires 30d;
+        expires max;
     }
 
     location {{SITE.MEDIA_URL}} {
         alias {{SITE.MEDIA_ROOT}};
-        expires 30d;
+        expires max;
     }
 
     location / {
@@ -71,16 +68,13 @@ server {
     client_max_body_size 10M;
     
     location {{SITE.STATIC_URL}} {
-    	gzip on;
-    	gzip_proxied any;
-    	gzip_types text/plain application/xml text/css text/javascript;
         alias {{SITE.STATIC_ROOT}};
-        expires 30d;
+        expires max;
     }
 
     location {{SITE.MEDIA_URL}} {
         alias {{SITE.MEDIA_ROOT}};
-        expires 30d;
+        expires max;
     }
 
     location /admin {
