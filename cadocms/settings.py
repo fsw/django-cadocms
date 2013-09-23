@@ -109,6 +109,10 @@ class Settings(BaseSettings):
                 'PREFIX': self.HOST.DATABASE['NAME'],
             }
         }
+    
+    @property
+    def CACHE_PREFIX(self):
+        return self.HOST.DATABASE['NAME']
         
     @property
     def DEBUG(self):
