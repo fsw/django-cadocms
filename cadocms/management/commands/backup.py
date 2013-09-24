@@ -14,7 +14,7 @@ class Command(BaseCommand):
             label = ''
             
         backup_date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M");
-        host_label = settings.HOST.DOMAIN.replace('.','_').replace(':','_');
+        host_label = settings.CADO_FULL_DOMAIN.replace('.','_').replace(':','_');
         
         outfile = getattr(settings, 'BACKUP_DIR', 'backup') + host_label + '_' + backup_date + label + '.sql.gz'
         outfile_tar = getattr(settings, 'BACKUP_DIR', 'backup') + host_label + '_' + backup_date + label + '_media.tar.gz'
