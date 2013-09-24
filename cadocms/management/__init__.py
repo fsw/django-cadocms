@@ -14,7 +14,7 @@ import os, sys
 #if os.environ.get("CADO_SITES", None):
 
 
-commands_requiring_site = ['solr_install', 'runserver', 'restyle_tinymce', 'rebuild_index', 'syncdb', 'schemamigration', 'migrate', 'collectstatic', 'runfcgi', 'loaddata', 'dumpdata', 'fix_defaultoptions']
+commands_requiring_site = ['solr_install', 'runserver', 'restyle_tinymce', 'rebuild_index', 'warmup', 'syncdb', 'schemamigration', 'migrate', 'collectstatic', 'runfcgi', 'loaddata', 'dumpdata', 'fix_defaultoptions', 'shell']
 
 
 sites = []
