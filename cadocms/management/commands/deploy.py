@@ -65,9 +65,13 @@ class Command(BaseCommand):
                 run("git remote add origin %s" % host.GIT_REMOTE)
                 run("git pull origin master")
                 run(host.PYTHON_INSTALL)
-                run("%spip install -q -r requirements.txt" % virtpath)
+                run("%spip install -r requirements.txt" % virtpath)
+                sql = "CREATE DATABASE %s; GRANT ALL ON %s.* TO %s@localhost IDENTIFIED BY '%s';" % (host.DATABASE['NAME'], host.DATABASE['NAME'], host.DATABASE['USER'], host.DATABASE['PASSWORD'])
+                print colors.red(sql)
+                #print sql
+                run('echo "%s" | mysql --batch -u %s -p' % (sql, 'root'))
                 run("%spython manage.py install" % virtpath)
-            return
+            #return
         
         with cd(host.SRCROOT):
             if host.CLASS == 'PROD' and not options['nobackup']:
@@ -158,7 +162,7 @@ class Command(BaseCommand):
                 print colors.yellow("CLEARING CACHE:", bold=True)
                 run("%spython manage.py clear_cache" % (virtpath,))
                 run("chmod 766 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
-                run("curl -s -D - %s -o /dev/null | grep HTTP" % (host.DOMAIN,))
+                run("%spython manage.py warmup" % (virtpath,))
                 print colors.green("DONE!", bold=True)
                 
                 
