@@ -67,7 +67,13 @@ class Settings(BaseSettings):
         if (self.HOST.CLASS == 'DEV'):
             return 'localhost:8000'
         else:
-            return self.HOST.DOMAIN
+            if self.MULTISITE:
+                if (self.HOST.CLASS == 'TEST'):
+                    return 'test.' + self.CADO_DOMAIN
+                else:
+                    return self.CADO_DOMAIN
+            else:
+                return self.HOST.DOMAIN
         """
         elif (self.HOST.CLASS == 'TEST'):
             return self.HOST.CLASS.lower() + '.' + self.CADO_DOMAIN
@@ -426,7 +432,7 @@ class Settings(BaseSettings):
     
     @property
     def ALLOWED_HOSTS(self):
-        return [self.HOST.DOMAIN]
+        return [self.CADO_FULL_DOMAIN]
     
     @property
     def BACKUP_DIR(self):
