@@ -60,6 +60,7 @@ class Command(BaseCommand):
             print colors.red("initial=true and SRCROOT/APPROOT does not exist. will install now");
             run('mkdir %s' % host.SRCROOT)
             run('mkdir %s' % host.APPROOT)
+            run('mkdir %s/logs' % host.APPROOT)
             with cd(host.SRCROOT):
                 run("git init")
                 run("git remote add origin %s" % host.GIT_REMOTE)
