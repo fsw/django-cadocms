@@ -522,6 +522,8 @@ class ExtraFieldsProvider(models.Model):
                         #print 'XXX EXTRA:', className, args
                         
                         f = methodToCall(**args)
+                        
+                        #print 'ZZZ EXTRA:', f
         
                         solr_key = key
                         h_field = indexes.index_field_from_django_field(f)
