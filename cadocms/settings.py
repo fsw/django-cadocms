@@ -231,9 +231,9 @@ class Settings(BaseSettings):
                 #'versioning.middleware.VersioningMiddleware',
                 )
     
-    @property
-    def ROOT_URLCONF(self):
-        return self.CADO_PROJECT +'.urls'
+    #@property
+    #def ROOT_URLCONF(self):
+    #    return self.CADO_PROJECT +'.urls'
     
     @property
     def WSGI_APPLICATION(self):
