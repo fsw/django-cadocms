@@ -73,10 +73,12 @@
 				{% endblock %}
 			{% endcompress %}
 			
-			{% compress js %}
-				{% block extra_html_scripts %}
-				{% endblock %}
-			{% endcompress %}
+			{% comment %}
+			Do not minitfy this!
+			Stuff like googlemaps and tinyMCE are getting relative paths and stops working 
+			{% endcomment %}
+			{% block extra_html_scripts %}
+			{% endblock %}
 				
 			{% compress js %}
 				<script type='text/javascript' src="{{ STATIC_URL }}{% get_current_flavour %}.js"></script>
