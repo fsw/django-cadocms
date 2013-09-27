@@ -273,6 +273,8 @@ class ExtraFieldsValues(JSONField):
                 errors[key] = ['%s: %s' % (key, m) for m in e.messages]
         if errors:
             raise ValidationError(errors)
+        
+        return super(ExtraFieldsValues, self).clean(raw_value, instance);
     
     def __init__(self, *args, **kwargs):
         #print "INIT FIELD %s %s" % (self.provider_field, self.model_name)
