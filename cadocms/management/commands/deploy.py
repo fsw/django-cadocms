@@ -163,7 +163,7 @@ class Command(BaseCommand):
                 if host.CLASS == 'TEST':
                     maxchildren = 1
                     
-                run("%spython manage.py runfcgi %s method=prefork maxchildren=%d socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, maxchildren, host.APPROOT, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT) )
+                run("%spython manage.py runfcgi %s method=threaded maxchildren=%d socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, maxchildren, host.APPROOT, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT) )
                 #run("sleep 3")
                 print colors.yellow("CLEARING CACHE:", bold=True)
                 run("%spython manage.py clear_cache" % (virtpath,))
