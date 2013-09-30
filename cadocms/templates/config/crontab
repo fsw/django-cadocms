@@ -15,5 +15,8 @@
 # m h  dom mon dow   command
 
 {% for SITE in SITES %}
-@reboot {{HOST.PYTHON_PREFIX}}python {{HOST.SRCROOT}}manage.py runfcgi {{SITE.CADO_PROJECT}} method=prefork socket={{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock pidfile={{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.pid
+
+
+
+@reboot {{HOST.PYTHON_PREFIX}}python {{HOST.SRCROOT}}manage.py runfcgi {{SITE.CADO_PROJECT}} maxchildren={% if HOST.CLASS = 'TEST' %}1{% else %}3{% endif %} method=prefork socket={{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock pidfile={{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.pid
 {% endfor %}
