@@ -65,7 +65,7 @@ server {
     access_log {{HOST.APPROOT}}logs/nginx.access.ssl.log;
     error_log {{HOST.APPROOT}}logs/nginx.error.ssl.log;
     
-    client_max_body_size 10M;
+    client_max_body_size 50M;
     
     location {{SITE.STATIC_URL}} {
         alias {{SITE.STATIC_ROOT}};
