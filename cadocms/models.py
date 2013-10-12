@@ -371,7 +371,7 @@ class Tree(MPTTModel):
         order_insertion_by=['order']
 
 class RootedTree(MPTTModel):
-    parent = TreeForeignKey('self', null=True, blank=False, related_name='children', default=0)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', default=0)
     order = models.FloatField(default=0)
     class Meta:
         abstract = True
@@ -382,7 +382,8 @@ class RootedTree(MPTTModel):
     def clean(self):
         super(RootedTree, self).clean()
         from django.core.exceptions import ValidationError
-        if not self.parent_id:
+        if not self.parent_id and not (self.level == 0 and self.tree_id == 1):
+            #print self.parent_id, self.level, self.tree_id
             raise ValidationError("Can't create new item here")
 
 """

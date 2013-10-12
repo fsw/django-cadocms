@@ -12,15 +12,19 @@
         </li>
     {% endif %}    
     {% for pagenum, url in page_urls %}
-        {% if page.number == pagenum %}            
-            <li class="active">
-                <a title="Current Page" href="#">{{ pagenum }}</a>
-            </li>            
-        {% else %}
-            <li>          
-                <a title="Page {{ pagenum }} of {{ page.paginator.num_pages }}" href="{{ url }}">{{ pagenum }}</a>
-            </li>   
-        {% endif %}        
+    	{% if pagenum < 3 or pagenum > page_urls|length|add:"-2" or pagenum > page.number|add:"-4" and pagenum < page.number|add:"4" %}
+	        {% if page.number == pagenum %}            
+	            <li class="active">
+	                <a title="Current Page" href="#">{{ pagenum }}</a>
+	            </li>            
+	        {% else %}
+	            <li>          
+	                <a title="Page {{ pagenum }} of {{ page.paginator.num_pages }}" href="{{ url }}">{{ pagenum }}</a>
+	            </li>   
+	        {% endif %}
+	    {% elif pagenum = 3 or pagenum = page_urls|length|add:"-2" %}
+	    	<li class="disabled"><span>...</span></li>
+        {% endif %}
     {% endfor %}
     {% if show_prev_next %}
         <li {% if not page.has_next %}class="disabled"{% endif %}>
