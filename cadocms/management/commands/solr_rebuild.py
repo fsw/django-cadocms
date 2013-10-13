@@ -18,4 +18,6 @@ class Command(BaseCommand):
         local("sudo /etc/init.d/tomcat6 restart")
         
         
-        curl -v 'http://127.0.0.1:8080/solr/admin/cores?action=CREATE&name=yardgear&instanceDir=yardgear&config=solrconfig.xml&schema=schema.xml&dataDir=data'
+        #curl -v 'http://127.0.0.1:8080/solr/admin/cores?action=CREATE&name=yardgear&instanceDir=yardgear&config=solrconfig.xml&schema=schema.xml&dataDir=data'
+        #curl -v 'http://127.0.0.1:8080/solr/core/select?q=''
+                

@@ -21,7 +21,7 @@ setup(
         'django-imagekit >= 3.0.3',
         'django-mptt==0.5.5',
         'pilkit==1.1.4',
-        'pysolr==3.0.3',
+        'pysolr==3.1.1',
         'simplejson==2.3.2',
         'six==1.2.0',
         'python-dateutil==2.1',
@@ -59,5 +59,6 @@ setup(
         #'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=fsw-django-versioning-0.7.3',
         'http://github.com/SeanHayes/django-config-gen/tarball/master#egg=django-config-gen-1.0.0',
         'http://github.com/fsw/django-haystack/tarball/null-field#egg=django-haystack-2.0.1-dev',
+        'http://github.com/fsw/pysolr/tarball/master#egg=pysolr-3.1.1',
     ],
 )
