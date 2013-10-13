@@ -95,9 +95,7 @@ class Command(BaseCommand):
                     run("%spython manage.py build_solr_schema %s > config/solr/%s_schema.xml" % (virtpath, site.CADO_PROJECT , site.SOLR_CORE_NAME))
             else:
                 run("%spython manage.py build_solr_schema > config/solr/schema.xml" % virtpath)
-                
-            x = y
-            
+                            
             for name, getter, setter, combined in host.CONFIGS:
                 diff = False
                 current = run(getter, quiet = True, warn_only = True).splitlines()
