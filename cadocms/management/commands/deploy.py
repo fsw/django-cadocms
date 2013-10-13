@@ -88,7 +88,15 @@ class Command(BaseCommand):
         
             print colors.red("REGENERATIN CONFIG FILES:", bold=True)
             run("%spython manage.py regenerate_config" % virtpath)
-            run("%spython manage.py build_solr_schema > config/solr/schema.xml" % virtpath)
+            
+            if django_settings.MULTISITE:
+                for site in django_settings.SITES:
+                    run("mkdir config/solr/%s" % site.SOLR_CORE_NAME)
+                    run("%spython manage.py build_solr_schema %s > config/solr/%s/schema.xml" % (virtpath, site.CADO_PROJECT , site.SOLR_CORE_NAME))
+            else:
+                run("%spython manage.py build_solr_schema > config/solr/schema.xml" % virtpath)
+                
+            x = y
             
             for name, getter, setter, combined in host.CONFIGS:
                 diff = False
