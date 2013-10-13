@@ -91,8 +91,8 @@ class Command(BaseCommand):
             
             if django_settings.MULTISITE:
                 for site in django_settings.SITES:
-                    run("mkdir config/solr/%s" % site.SOLR_CORE_NAME)
-                    run("%spython manage.py build_solr_schema %s > config/solr/%s/schema.xml" % (virtpath, site.CADO_PROJECT , site.SOLR_CORE_NAME))
+                    #run("mkdir config/solr/%s" % site.SOLR_CORE_NAME)
+                    run("%spython manage.py build_solr_schema %s > config/solr/%s_schema.xml" % (virtpath, site.CADO_PROJECT , site.SOLR_CORE_NAME))
             else:
                 run("%spython manage.py build_solr_schema > config/solr/schema.xml" % virtpath)
                 
