@@ -253,7 +253,7 @@ class ExtraFieldsValues(JSONField):
     model_name = 'Unknown'
     
     def clean(self, raw_value, instance):
-        print 'VALIDATING', type(raw_value), raw_value
+        #print 'VALIDATING', type(raw_value), raw_value
         if type( raw_value ) == dict:
             value = raw_value
         elif type( raw_value ) == unicode:
