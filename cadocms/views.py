@@ -46,6 +46,15 @@ def api_tree_children(request, model, parent_id):
         mimetype='application/json'
     )
     
+def image_uploader(request):
+    ret = {
+           'test' : 'test'
+           }
+    return HttpResponse(
+        simplejson.dumps(ret), 
+        mimetype='application/json'
+    )
+    
 def api_tree_path(request, model, item_id):
     app_label, model_name = model.split(".")
     model = get_model(app_label, model_name)
