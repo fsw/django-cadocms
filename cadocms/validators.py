@@ -33,10 +33,10 @@ class EmailValidator(EmailValidator):
                     status = smtp.helo()
                     if status[0] != 250:
                         continue
-                    smtp.mail('')
-                    status = smtp.rcpt(value)
-                    if status[0] != 250:
-                        raise ValidationError(_('Invalid email address.'))
+                    #smtp.mail('')
+                    #status = smtp.rcpt(value)
+                    #if status[0] != 250:
+                    #    raise ValidationError(_('Invalid email address.'))
                     break
                 except smtplib.SMTPServerDisconnected:
                     break
