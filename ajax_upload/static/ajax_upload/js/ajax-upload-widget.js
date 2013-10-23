@@ -5,10 +5,8 @@
 
     var AjaxUploadWidget = global.AjaxUploadWidget = function(element, options) {
         this.options = {
-            changeButtonText: 'Change',
-            removeButtonText: 'Remove',
-            previewAreaClass: 'ajax-upload-preview-area',
-            previewFilenameLength: 30,
+            previewAreaClass: 'preview-area',
+            previewFilenameLength: 20,
             onUpload: null, // right before uploading to the server
             onComplete: null,
             onError: null,
@@ -30,6 +28,9 @@
         var self = this;
         this.name = this.$element.attr('name');
 
+
+        this.$element.wrap('<div class="ajax-uploader"></div>');
+
         // Create a hidden field to contain our uploaded file name
         this.$hiddenElement = $('<input type="hidden"/>')
             .attr('name', this.name)
@@ -37,6 +38,10 @@
         this.$element.attr('name', ''); // because we don't want to conflict with our hidden field
         this.$element.after(this.$hiddenElement);
 
+        this.$loadingIndicator = $('<div class="loading"></div>');
+        this.$loadingIndicator.hide();
+        this.$element.before(this.$loadingIndicator);
+        
         // Initialize preview area and action buttons
         this.$previewArea = $('<div class="'+this.options.previewAreaClass+'"></div>');
         this.$element.before(this.$previewArea);
@@ -45,16 +50,15 @@
         this.$element.on('change', function(evt) {
             self.upload();
         });
-        this.$changeButton = $('<button type="button" class="btn-change"></button>')
-            .text(this.options.changeButtonText)
+        this.$changeButton = $('<button type="button" class="btn-change" title="Upload New Image"></button>')
             .on('click', function(evt) {
-                self.$element.show();
-                $(this).hide();
+                //self.$element.show();
+                //$(this).hide();
+                self.$element.click();
             });
         this.$element.after(this.$changeButton);
 
-        this.$removeButton = $('<button type="button" class="btn-remove"></button>')
-            .text(this.options.removeButtonText)
+        this.$removeButton = $('<button type="button" class="btn-remove" title="Remove Image"></button>')
             .on('click', function(evt) {
                 if(self.options.onRemove) {
                     var result = self.options.onRemove.call(self);
@@ -77,19 +81,24 @@
         }
         this.$element.attr('name', 'file');
         this.$element.parents('form').find('input[type=submit]').attr('disabled', 'disabled');
+        this.$loadingIndicator.show();
         $.ajax(this.$element.data('upload-url'), {
             iframe: true,
             files: this.$element,
             processData: false,
             type: 'POST',
             dataType: 'json',
-            success: function(data) { self.uploadDone(data); },
-            error: function(data) { self.uploadFail(data); }
+            success: function(data) { self.postUpload(); self.uploadDone(data); },
+            error: function(data) { self.postUpload(); self.uploadFail(data); }
         });
     };
+    
+    AjaxUploadWidget.prototype.postUpload = function() {
+        this.$loadingIndicator.fadeOut();
+        this.$element.parents('form').find('input[type=submit]').removeAttr('disabled');
+    }
 
     AjaxUploadWidget.prototype.uploadDone = function(data) {
-        this.$element.parents('form').find('input[type=submit]').removeAttr('disabled');
         // This handles errors as well because iframe transport does not
         // distinguish between 200 response and other errors
         if(data.errors) {
@@ -110,7 +119,6 @@
     };
 
     AjaxUploadWidget.prototype.uploadFail = function(xhr) {
-        this.$element.parents('form').find('input[type=submit]').removeAttr('disabled');
         if(this.options.onError) {
             this.options.onError.call(this);
         } else {
@@ -135,24 +143,40 @@
             }
             this.$element.hide();
         } else {
-            this.$previewArea.slideUp();
-            this.$changeButton.hide();
+            this.$previewArea.empty();
+            this.$previewArea.append(this.generateFilePreview(filename));
+            //this.$previewArea.slideUp();
+            //this.$changeButton.show();
             this.$removeButton.hide();
-            this.$element.show();
+            this.$element.hide();
+            this.$changeButton.hide();
+            //this.$element.show();
         }
     };
 
     AjaxUploadWidget.prototype.generateFilePreview = function(filename) {
         // Returns the html output for displaying the given uploaded filename to the user.
-        var prettyFilename = this.prettifyFilename(filename);
-        var output = '<a href="'+filename+'" target="_blank">'+prettyFilename+'';
-        $.each(['jpg', 'jpeg', 'png', 'gif'], function(i, ext) {
-            if(filename.toLowerCase().slice(-ext.length) == ext) {
-                output += '<img src="'+filename+'"/>';
-                return false;
-            }
-        });
-        output += '</a>';
+    	var output = '';
+    	if (filename == '') {
+    		output = '<label for="' + this.$element.attr('id') + '"><img class="empty" src="/static/ajax_upload/icons/empty.png"/>add image</label>';
+    	} else {
+	        var prettyFilename = this.prettifyFilename(filename);
+	        output = $('<a href="'+filename+'" target="_blank"></a>');
+	        $.each(['jpg', 'jpeg', 'png', 'gif'], function(i, ext) {
+	            if(filename.toLowerCase().slice(-ext.length) == ext) {
+	            	var $img = $('<img src="'+filename+'"/>');
+	            	$img.load(function(){
+	            		var mrg = (130 - $(this).height()) / 2;
+	            		$(this).css('margin-top', (mrg + 5) + 'px');
+	            		$(this).css('margin-bottom', mrg + 'px');
+	            	});
+	                output.append($img);
+	                return false;
+	            }
+	        });
+	        output.append(prettyFilename);
+	        output.fancybox();
+    	}
         return output;
     };
 
@@ -168,7 +192,7 @@
         var maxChars = this.options.previewFilenameLength;
         var elipsis = '...';
         if(cleaned.length > maxChars) {
-            cleaned = elipsis + cleaned.slice((-1 * maxChars) + elipsis.length);
+            cleaned = cleaned.slice(0, 10) + elipsis + cleaned.slice((-1 * maxChars) + elipsis.length + 10);
         }
         return cleaned;
     };
