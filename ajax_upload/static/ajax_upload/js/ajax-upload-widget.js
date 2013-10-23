@@ -162,6 +162,7 @@
     	} else {
 	        var prettyFilename = this.prettifyFilename(filename);
 	        output = $('<a href="'+filename+'" target="_blank"></a>');
+	        var image = false;
 	        $.each(['jpg', 'jpeg', 'png', 'gif'], function(i, ext) {
 	            if(filename.toLowerCase().slice(-ext.length) == ext) {
 	            	var $img = $('<img src="'+filename+'"/>');
@@ -171,9 +172,13 @@
 	            		$(this).css('margin-bottom', mrg + 'px');
 	            	});
 	                output.append($img);
+	    	        image = true;
 	                return false;
 	            }
 	        });
+	        if(!image){
+                output.append('<img src="/static/ajax_upload/icons/other.png"/>');
+	        }
 	        output.append(prettyFilename);
 	        output.fancybox();
     	}
