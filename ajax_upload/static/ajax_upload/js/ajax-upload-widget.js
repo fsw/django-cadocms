@@ -48,15 +48,12 @@
 
         // Listen for when a file is selected, and perform upload
         this.$element.on('change', function(evt) {
+        	//console.log('change');
+        	//console.log($(this).val());
             self.upload();
         });
-        this.$changeButton = $('<button type="button" class="btn-change" title="Upload New Image"></button>')
-            .on('click', function(evt) {
-                //self.$element.show();
-                //$(this).hide();
-                self.$element.click();
-            });
-        this.$element.after(this.$changeButton);
+        //this.$changeButton = $('<label class="btn-change" for="' + this.$element.attr('id') + '" title="Upload New Image"></label>');
+        //this.$element.after(this.$changeButton);
 
         this.$removeButton = $('<button type="button" class="btn-remove" title="Remove Image"></button>')
             .on('click', function(evt) {
@@ -67,12 +64,19 @@
                 self.$hiddenElement.val('');
                 self.displaySelection();
             });
-        this.$changeButton.after(this.$removeButton);
+        this.$element.after(this.$removeButton);
 
+        this.$element.wrap('<div class="hiddenCheat"></div>');
         this.displaySelection();
+    };
+    
+    AjaxUploadWidget.prototype.getElement = function() {
+    	return this.$element;
     };
 
     AjaxUploadWidget.prototype.upload = function() {
+    	//console.log('upload1');
+    	//console.log(this.$element.val());
         var self = this;
         if(!this.$element.val()) return;
         if(this.options.onUpload) {
@@ -81,6 +85,7 @@
         }
         this.$element.attr('name', 'file');
         this.$element.parents('form').find('input[type=submit]').attr('disabled', 'disabled');
+        //console.log('upload2');
         this.$loadingIndicator.show();
         $.ajax(this.$element.data('upload-url'), {
             iframe: true,
@@ -94,22 +99,26 @@
     };
     
     AjaxUploadWidget.prototype.postUpload = function() {
+    	//console.log('postUpload');
         this.$loadingIndicator.fadeOut();
-        this.$element.parents('form').find('input[type=submit]').removeAttr('disabled');
+    	//console.log(this.$hiddenElement.parents('form').find('input[type=submit]').length);
+        this.$hiddenElement.parents('form').find('input[type=submit]').removeAttr('disabled');
     }
 
     AjaxUploadWidget.prototype.uploadDone = function(data) {
+    	//console.log('DONE');
         // This handles errors as well because iframe transport does not
         // distinguish between 200 response and other errors
         if(data.errors) {
             if(this.options.onError) {
                 this.options.onError.call(this, data);
             } else {
-                console.log('Upload failed:');
-                console.log(data);
+                //console.log('Upload failed:');
+                //console.log(data);
             }
         } else {
             this.$hiddenElement.val(data.path);
+            //this.$element.val('');
             var tmp = this.$element;
             this.$element = this.$element.clone(true).val('');
             tmp.replaceWith(this.$element);
@@ -119,11 +128,12 @@
     };
 
     AjaxUploadWidget.prototype.uploadFail = function(xhr) {
+    	//console.log('FAIL');
         if(this.options.onError) {
             this.options.onError.call(this);
         } else {
-            console.log('Upload failed:');
-            console.log(xhr);
+            //console.log('Upload failed:');
+            //console.log(xhr);
         }
     };
 
@@ -135,21 +145,21 @@
             this.$previewArea.append(this.generateFilePreview(filename));
 
             this.$previewArea.show();
-            this.$changeButton.show();
+            //this.$changeButton.show();
             if(this.$element.data('required') === 'True') {
                 this.$removeButton.hide();
             } else {
                 this.$removeButton.show();
             }
-            this.$element.hide();
+            //this.$element.hide();
         } else {
             this.$previewArea.empty();
             this.$previewArea.append(this.generateFilePreview(filename));
             //this.$previewArea.slideUp();
             //this.$changeButton.show();
             this.$removeButton.hide();
-            this.$element.hide();
-            this.$changeButton.hide();
+            //this.$element.hide();
+            //this.$changeButton.hide();
             //this.$element.show();
         }
     };
@@ -158,7 +168,7 @@
         // Returns the html output for displaying the given uploaded filename to the user.
     	var output = '';
     	if (filename == '') {
-    		output = '<label for="' + this.$element.attr('id') + '"><img class="empty" src="/static/ajax_upload/icons/empty.png"/>add image</label>';
+    		output = '<label for="' + this.$element.attr('id') + '" class="add-image-label">add image</label>';
     	} else {
 	        var prettyFilename = this.prettifyFilename(filename);
 	        output = $('<a href="'+filename+'" target="_blank"></a>');

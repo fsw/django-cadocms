@@ -7,6 +7,18 @@
     border: 1px dashed #bbb;
 }
 
+.ajax-uploader .hiddenCheat {
+	height: 0;
+	width: 0;
+	position: relative;
+	overflow: hidden;
+}
+
+.ajax-uploader input.ajax-upload {
+	position: absolute;
+	top: 10px;
+}
+
 .ajax-uploader .loading {
     background: #eee;
     border-radius: 5px;
@@ -29,6 +41,9 @@
     line-height: 14px;
     font-family: Arial, sans-serif;
 }
+
+
+
 .ajax-uploader .preview-area img {
     display: block;
     max-width: 130px;
@@ -37,7 +52,15 @@
     margin: 5px auto 0px auto;
 }
 
-.ajax-uploader button.btn-change {
+.ajax-uploader .preview-area label.add-image-label {
+    width: 130px;
+    padding-top: 126px;
+    margin: 5px auto 0px auto;
+	background-image: url(/static/ajax_upload/icons/empty.png);
+	background-repeat: none;
+}
+
+.ajax-uploader label.btn-change {
 	position: absolute;
 	right: 32px;
 	top: 0px;
@@ -50,8 +73,8 @@
 
 .ajax-uploader button.btn-remove {
 	position: absolute;
-	right: 0px;
-	top: 0px;
+	right: -2px;
+	top: -2px;
 	background: url(/static/ajax_upload/icons/delete.png);
 	width: 32px;
 	height: 32px;
@@ -59,7 +82,7 @@
 	opacity: 0.3;
 }
 
-.ajax-uploader:hover button.btn-change {
+.ajax-uploader:hover label.btn-change {
 	opacity: 1;
 }
 
@@ -67,10 +90,10 @@
 	opacity: 1;	
 }
 
-.ajax-uploader img.empty {
+.ajax-uploader label.add-image-label {
 	opacity: 0.5;
 }
 
-.ajax-uploader:hover img.empty {
+.ajax-uploader:hover label.add-image-label {
 	opacity: 1;
 }
