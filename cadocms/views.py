@@ -18,7 +18,7 @@ from django.http import HttpResponse
 import simplejson
     
 def staticpage(request, url):
-    print 'STATICPAGE', url
+    #print 'STATICPAGE', url
     for StaticPageClass in StaticPage.__subclasses__():
         staticpage = get_object_or_404(StaticPageClass, url=url[1:])
     context = RequestContext(request, {'staticpage': staticpage})
@@ -36,7 +36,7 @@ def extrafields(request, model, provider_id):
         form.fields['extra[%s]' % key].widget.attrs['class'] = 'extra' + field['field'].__class__.__name__ 
         
     #print form.as_p(), form.media
-    return HttpResponse('<table class="extraFieldsTable">' + form.as_table() + '</table>')
+    return HttpResponse(('<table class="extraFieldsTable provider%s">' % provider_id) + form.as_table() + '</table>')
     
 def api_tree_children(request, model, parent_id):
     app_label, model_name = model.split(".")
