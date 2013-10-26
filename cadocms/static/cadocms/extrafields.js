@@ -113,6 +113,9 @@ if (jQuery != undefined) {
 						saveExtra(extraDiv);
 					});
 					loadExtra(extraDiv);
+					extraDiv.find(".extraMyDateField").attr("autocomplete", "off");
+					extraDiv.find(".extraMyTimeField").attr("autocomplete", "off");
+					
 					extraDiv.find(".extraMyDateField").datepicker({
 			        	format:'dd/mm/yyyy',
 			        	autoclose: true
@@ -124,8 +127,12 @@ if (jQuery != undefined) {
 		                minuteStep: 5,
 		                showInputs: false,
 		                defaultTime: false
+		                //defaultTime: '12:00 AM'
 		                //disableFocus: true
+		            }).click(function(){
+		            	$(this).timepicker('setDefaultTime', '12:00 AM');
 		            });
+					
 				}, 'html');
 			});
 			
