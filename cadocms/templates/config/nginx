@@ -100,6 +100,11 @@ server {
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
     }
     
+    location /ajax-upload {
+        include fastcgi_params;
+        fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+    }
+    
     location / {
         rewrite (.*) http://{{SITE.CADO_FULL_DOMAIN}}$1 permanent;
     }
