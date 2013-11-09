@@ -19,6 +19,7 @@
   	-khtml-box-shadow: $shadow;
   	-ms-box-shadow: $shadow;
 	box-shadow: $shadow;
+	position: relative;
 	behavior: url(/PIE.htc);
 	
 }
@@ -31,6 +32,7 @@
 	background-image: -webkit-linear-gradient($direction, $from, $to);
 	background-image: -ms-linear-gradient($direction, $from, $to);
 	-pie-background: linear-gradient($direction, $from, $to); /*ie 6-9 via PIE*/
+	position: relative;
 	behavior: url(/PIE.htc);
 	
 }
@@ -42,6 +44,7 @@
 	background-image: -moz-linear-gradient($direction, $from, $trough, $to);
 	background-image: -webkit-linear-gradient($direction, $from, $trough, $to);
 	background-image: -ms-linear-gradient($direction, $from, $trough, $to);
+	position: relative;
 	behavior: url(/PIE.htc);
 	
 }
