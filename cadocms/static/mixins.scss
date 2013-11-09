@@ -6,6 +6,7 @@
   	-khtml-border-radius: $radius;
   	-ms-border-radius: $radius;
 	border-radius: $radius;
+	position: relative;
 	behavior: url(/PIE.htc);
 	
 }
@@ -29,6 +30,7 @@
 	background-image: -moz-linear-gradient($direction, $from, $to);
 	background-image: -webkit-linear-gradient($direction, $from, $to);
 	background-image: -ms-linear-gradient($direction, $from, $to);
+	-pie-background: linear-gradient($direction, $from, $to); /*ie 6-9 via PIE*/
 	behavior: url(/PIE.htc);
 	
 }
