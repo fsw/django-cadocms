@@ -16,7 +16,9 @@ from cadocms.models import Moderated, MODERATION_STATUS, ModerationReason, Tree
 
 from django.http import HttpResponse
 import simplejson
-    
+from django.db.models.fields import NOT_PROVIDED
+
+
 def staticpage(request, url):
     #print 'STATICPAGE', url
     for StaticPageClass in StaticPage.__subclasses__():
@@ -29,14 +31,22 @@ def extrafields(request, model, provider_id):
     model = get_model(app_label, model_name)()
     #path_bits = model.PROVIDER_FIELD.split('.')
     #setattr(model, path_bits.pop(0), provider_id)
-    form = Form()
-    form.required_css_class = 'required'
-    for key, field in model.get_provided_extra_fields_by_provider_id(provider_id):
-        form.fields['extra[%s]' % key] = field['field'].formfield()
-        form.fields['extra[%s]' % key].widget.attrs['class'] = 'extra' + field['field'].__class__.__name__ 
+    fields = model.get_provided_extra_fields_by_provider_id(provider_id)
+    
+    for key, field in fields:
+        field['formfield'] = field['field'].formfield()
+        field['formfield'].widget.attrs['id'] = 'id_extra[%s]' % key
+        field['formfield'].widget.attrs['class'] = 'extra' + field['field'].__class__.__name__
+        field['formfield'].widget.attrs['placeholder'] = field['formfield'].label
+        field['input'] = field['formfield'].widget.render('extra[%s]' % key,  None if field['field'].default == NOT_PROVIDED else field['field'].default)
+        field['html_id'] = 'id_extra[%s]' % key
         
+    context = RequestContext(request, {
+        'fields':fields,
+        'provider_id':provider_id
+    })
     #print form.as_p(), form.media
-    return HttpResponse(('<table class="extraFieldsTable provider%s">' % provider_id) + form.as_table() + '</table>')
+    return HttpResponse(loader.get_template('extrafields.html').render(context));
     
 def api_tree_children(request, model, parent_id):
     app_label, model_name = model.split(".")

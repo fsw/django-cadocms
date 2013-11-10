@@ -1,0 +1,30 @@
+<table class="extraFieldsTable provider{{provider_id}}">
+	{% for key, field in fields %}
+		<tr class="{% if field.formfield.required %}required{% endif %}">
+			<th>
+				<label for="{{field.html_id}}">{{ field.formfield.label }}</label>
+			</th>
+			<td class="exTd">
+				<div>
+					{% comment %}
+					{% if field.formfield.help_text %}
+						<i style="float:right;" class="help" title="{{ field.formfield.label }}" data-content="{{ field.formfield.help_text }}"></i>
+					{% endif %}
+					{% endcomment %}
+					
+					{{ field.formfield.errors }}
+					
+					{% if field.params.prefix %}
+						<div class="input-prepend">
+						  	<span class="add-on">{{field.params.prefix}}</span>
+						  	{{ field.input }}
+						</div>
+					{% else %}
+						{{ field.input }}
+					{% endif %}
+					
+				</div>
+			</td>
+		</tr>
+    {% endfor %}
+</table>

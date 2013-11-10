@@ -75,9 +75,9 @@ if (jQuery != undefined) {
 			field.hide();
 			//TODO grp-error
 			var errorLists = {};
-			if (field.parent().hasClass('error')) {
+			if (field.parents('.error').length) {
 				//TODO
-				field.parent().find('.errorlist li').each(function(i,e){
+				field.parents('.error').find('.errorlist li').each(function(i,e){
 					var elist = $(e).text().split(':');
 					var ekey = elist.shift()
 					var etext = elist.join('|')
@@ -86,8 +86,8 @@ if (jQuery != undefined) {
 					}
 					errorLists[ekey].push(etext);
 				});
-				field.parent().find('.errorlist').hide();
-				field.parent().removeClass('error');
+				field.parents('.error').find('.errorlist').hide();
+				field.parents('.error').removeClass('error');
 			}
 			if (provider_name.indexOf('.') > 0) {
 				provider_name = provider_name.substring(0, provider_name.indexOf('.'));
@@ -100,12 +100,12 @@ if (jQuery != undefined) {
 					
 					for (var k in errorLists){
 						var $elem = extraDiv.find('[name=\'extra\[' + k + '\]\']');
-						$elem.parent().addClass('error');
+						$elem.parents('.exTd').addClass('error');
 						var $ul = $('<ul class="errorlist"></ul>');
 						for (error in errorLists[k]){
 							$ul.append($('<li></li>').text(errorLists[k][error]));
 						}
-						$elem.parent().prepend($ul);
+						$elem.parents('.exTd').prepend($ul);
 					}
 					errorLists = {};
 					
@@ -132,6 +132,8 @@ if (jQuery != undefined) {
 		            }).click(function(){
 		            	$(this).timepicker('setDefaultTime', '12:00 AM');
 		            });
+					
+					extraDiv.find(".extraFloatField").tooltip({'trigger':'focus', 'title': 'Decimal number (eg. 1234.50)', 'placement': 'bottom'});
 					
 				}, 'html');
 			});

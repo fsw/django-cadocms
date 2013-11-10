@@ -268,13 +268,20 @@ class ExtraFieldsValues(JSONField):
             try:
                 #field['field'].clean(value.get(key,''), instance)
                 #print 'VALIDATING', key, value.get(key,'')
-                field['field'].formfield().clean(value.get(key,''))
+                v = value.get(key,'')
+                if 'prefix' in field['params']:
+                    v = v.lstrip(field['params']['prefix'])
+                if 'suffix' in field['params']:
+                    v = v.rstrip(field['params']['suffix'])
+                value[key] = v
+                print 'XXX', v
+                field['field'].formfield().clean(v)
             except ValidationError as e:
-                errors[key] = ['%s: %s' % (key, m) for m in e.messages]
+                errors[key] = ['%s:%s' % (key, m) for m in e.messages]
         if errors:
             raise ValidationError(errors)
-        
-        return super(ExtraFieldsValues, self).clean(raw_value, instance);
+        print value
+        return super(ExtraFieldsValues, self).clean(value, instance);
     
     def __init__(self, *args, **kwargs):
         #print "INIT FIELD %s %s" % (self.provider_field, self.model_name)

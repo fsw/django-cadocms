@@ -545,7 +545,7 @@ class ExtraFieldsProvider(models.Model):
     
                         #ret[key] = {'field' : f, 'solr_key' : solr_key}
                         #TODO option to override fields in child categories here!
-                        ret.append((key, {'field' : f, 'solr_key' : solr_key}))
+                        ret.append((key, {'field' : f, 'solr_key' : solr_key, 'params' : field.get('params', {}).copy()}))
                     
             except Exception, err:
                 print err
