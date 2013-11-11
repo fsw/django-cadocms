@@ -132,17 +132,17 @@ class Moderated(models.Model):
             
         for field in self.__class__._meta.fields:
             if field.name in tmp_ret:
-                if len(tmp_ret[field.name]) < 2 or str(tmp_ret[field.name][0]) != str(tmp_ret[field.name][1]):
+                if len(tmp_ret[field.name]) < 2 or unicode(tmp_ret[field.name][0]) != unicode(tmp_ret[field.name][1]):
                     if any(tmp_ret[field.name]):
                         if isinstance(field, models.ForeignKey):
-                            tmp_ret[field.name] = [(str(field.rel.to.objects.get(id=int(id)))) for id in tmp_ret[field.name]]
+                            tmp_ret[field.name] = [(unicode(field.rel.to.objects.get(id=int(id)))) for id in tmp_ret[field.name]]
                         if isinstance(field, models.ImageField):
                             tmp_ret[field.name] = [mark_safe('<a class="fancybox" href="%s%s"><img src="%s%s" height="100" width="100"/></a>' % (settings.MEDIA_URL, path, settings.MEDIA_URL, path)) for path in tmp_ret[field.name]]
 
                         ret.append((field.verbose_name, tmp_ret[field.name]))
         for field in self.__class__._meta.many_to_many:
             if field.name in tmp_ret:
-                tmp_ret[field.name] = [[(str(field.rel.to.objects.get(id=int(id)))) for id in lll] for lll in tmp_ret[field.name]]
+                tmp_ret[field.name] = [[(unicode(field.rel.to.objects.get(id=int(id)))) for id in lll] for lll in tmp_ret[field.name]]
                 ret.append((field.verbose_name, tmp_ret[field.name]))
                 
         #print 'XXX', ret
