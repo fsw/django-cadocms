@@ -274,13 +274,13 @@ class ExtraFieldsValues(JSONField):
                 if 'suffix' in field['params']:
                     v = v.rstrip(field['params']['suffix'])
                 value[key] = v
-                print 'XXX', v
+                #print 'XXX', v
                 field['field'].formfield().clean(v)
             except ValidationError as e:
                 errors[key] = ['%s:%s' % (key, m) for m in e.messages]
         if errors:
             raise ValidationError(errors)
-        print value
+        #print value
         return super(ExtraFieldsValues, self).clean(value, instance);
     
     def __init__(self, *args, **kwargs):

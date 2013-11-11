@@ -8,6 +8,7 @@ from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.html import format_html
 from django.forms.util import flatatt
+import bleach
 
 import urllib2, os
 
@@ -71,7 +72,20 @@ class HTMLFieldWidgetTrivial(forms.Textarea):
             attrs = {}
         attrs['class'] = 'mceEditor'
         return super(HTMLFieldWidgetTrivial, self).render(name, value, attrs)
-
+    
+    def value_from_datadict(self, data, files, name):
+        val = data.get(name, None)
+        if val is not None:
+            val = bleach.clean(val, tags=['p', 'span', 'strong', 'i', 'em', 'u', 'ul', 'ol', 'li', 'blockquote', 'a', 
+                                          'table', 'tbody', 'thead', 'tfoot', 'td', 'tr', 'th'], 
+                               attributes={'span':['style'], 
+                                           'a':['href'],
+                                           'table': ['width', 'height', 'style', 'cellspacing', 'cellpadding', 'border', 'class'],
+                                           'tr':['style', 'scope'],
+                                           'th':['width', 'height', 'style', 'scope'],
+                                           'td`':['width', 'height', 'style', 'scope']
+                                           }, strip=True);
+        return val
 
 class UrlOrFileInput(ClearableFileInput):
 
