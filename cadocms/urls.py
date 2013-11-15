@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     url(r'^admin/rebuildindex/$', 'cadocms.views.admin_rebuildindex'),
     url(r'^admin/', include(admin.site.urls)),
     
+    url(r'^ajax-upload/', include('ajax_upload.urls')),
+    
     url(r'^accounts/extrafields/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<provider_id>\d+)$', 'cadocms.views.extrafields'),
     url(r'^api/children/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<parent_id>\d+)/$', 'cadocms.views.api_tree_children'),
     url(r'^api/path/(?P<model>[A-Za-z0-9\-\.\_]*)/(?P<item_id>\d+)/$', 'cadocms.views.api_tree_path'),

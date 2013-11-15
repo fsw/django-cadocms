@@ -89,6 +89,12 @@
 
 // ## Annotated Source
 
+if (jQuery != undefined) {
+    var django = {
+        'jQuery':jQuery
+    }
+}
+
 (function($, undefined) {
   "use strict";
 
@@ -220,4 +226,4 @@
     }
   });
 
-})(jQuery);
+})(django.jQuery);

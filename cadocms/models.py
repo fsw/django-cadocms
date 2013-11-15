@@ -558,7 +558,7 @@ class ExtraFieldsUser(models.Model):
     PROVIDER_FIELD = 'category'
     EXTRA_PARENT = ''
     extra = ExtraFieldsValues(null=True, blank=True, help_text='Extra fields depends on category you select', 
-                              provider_field = PROVIDER_FIELD)
+                              provider_field = PROVIDER_FIELD, extra_parent = EXTRA_PARENT)
                               #model_name = _meta.app_label + '.' + _meta.object_name)
     definitions_cache = dict()
     

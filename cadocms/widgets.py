@@ -9,6 +9,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.html import format_html
 from django.forms.util import flatatt
 import bleach
+from ajax_upload.widgets import AjaxClearableFileInput
 
 import urllib2, os
 
@@ -89,6 +90,14 @@ class HTMLFieldWidgetTrivial(forms.Textarea):
 
 class UrlOrFileInput(ClearableFileInput):
 
+    class Media:
+        css = {
+            'all': ('ajax_upload/css/ajax-upload-widget.css',)
+        }
+        js = ('ajax_upload/js/jquery.iframe-transport.js', 
+              'ajax_upload/js/ajax-upload-widget.js', 
+              'ajax_upload/js/autodiscover.js')
+        
     def render(self, name, value, attrs=None):
         parent = super(UrlOrFileInput, self).render(name, value, attrs)
         return parent + mark_safe('or paste URL: <input type="text" value="" name="%s_url"/>' % name)

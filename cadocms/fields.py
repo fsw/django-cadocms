@@ -251,6 +251,7 @@ class ExtraFieldsValues(JSONField):
     
     provider_field = 'unknown'
     model_name = 'Unknown'
+    extra_parent = ''
     
     def clean(self, raw_value, instance):
         #print 'VALIDATING', type(raw_value), raw_value
@@ -287,6 +288,8 @@ class ExtraFieldsValues(JSONField):
         #print "INIT FIELD %s %s" % (self.provider_field, self.model_name)
         self.provider_field = kwargs.pop('provider_field' , 'unknown') 
         self.model_name = kwargs.pop('model_name' , 'Unknown') 
+        self.extra_parent = kwargs.pop('extra_parent' , '') 
+         
         super(ExtraFieldsValues, self).__init__(*args, **kwargs)
 
     def set_model_and_provider(self, provider_field, model_name):

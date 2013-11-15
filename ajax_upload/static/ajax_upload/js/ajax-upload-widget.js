@@ -1,8 +1,14 @@
+if (jQuery != undefined) {
+    var django = {
+        'jQuery':jQuery
+    }
+}
+
 (function() {
     var global = this;
-    var $ = global.$;
+    var $ = django.jQuery;
     var console = global.console || {log: function() {}};
-
+    
     var AjaxUploadWidget = global.AjaxUploadWidget = function(element, options) {
         this.options = {
             previewAreaClass: 'preview-area',
@@ -139,7 +145,7 @@
 
     AjaxUploadWidget.prototype.displaySelection = function() {
         var filename = this.$hiddenElement.val();
-
+        console.log('PENIS');
         if(filename !== '') {
             this.$previewArea.empty();
             this.$previewArea.append(this.generateFilePreview(filename));
@@ -190,7 +196,10 @@
                 output.append('<img src="/static/ajax_upload/icons/other.png"/>');
 	        }
 	        output.append(prettyFilename);
-	        output.fancybox();
+	        if (typeof output.fancybox !== 'undefined')
+	        {
+	        	output.fancybox();
+	        }
     	}
         return output;
     };

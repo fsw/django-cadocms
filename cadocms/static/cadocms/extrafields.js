@@ -116,24 +116,35 @@ if (jQuery != undefined) {
 					extraDiv.find(".extraMyDateField").attr("autocomplete", "off");
 					extraDiv.find(".extraMyTimeField").attr("autocomplete", "off");
 					
-					extraDiv.find(".extraMyDateField").datepicker({
-			        	format:'dd/mm/yyyy',
-			        	autoclose: true
-					});
-					extraDiv.find(".extraMyTimeField").wrap('<span class="bootstrap-timepicker"/>');
+					if (typeof $.datepicker !== "undefined")
+					{
+						extraDiv.find(".extraMyDateField").datepicker({
+				        	format:'dd/mm/yyyy',
+				        	autoclose: true
+						});
+					}
 					
-					extraDiv.find(".extraMyTimeField").after('<i class="icon-time" style="margin: -2px 0 0 -22.5px; pointer-events: none; position: relative;"></i>');
-					extraDiv.find(".extraMyTimeField").timepicker({
-		                minuteStep: 5,
-		                showInputs: false,
-		                defaultTime: false
-		                //defaultTime: '12:00 AM'
-		                //disableFocus: true
-		            }).click(function(){
-		            	$(this).timepicker('setDefaultTime', '12:00 AM');
-		            });
+					if (typeof $.timepicker !== "undefined")
+					{
+						extraDiv.find(".extraMyTimeField").wrap('<span class="bootstrap-timepicker"/>');
 					
-					extraDiv.find(".extraFloatField").tooltip({'trigger':'focus', 'title': 'Decimal number (eg. 1234.50)', 'placement': 'bottom'});
+						extraDiv.find(".extraMyTimeField").after('<i class="icon-time" style="margin: -2px 0 0 -22.5px; pointer-events: none; position: relative;"></i>');
+						
+						extraDiv.find(".extraMyTimeField").timepicker({
+			                minuteStep: 5,
+			                showInputs: false,
+			                defaultTime: false
+			                //defaultTime: '12:00 AM'
+			                //disableFocus: true
+			            }).click(function(){
+			            	$(this).timepicker('setDefaultTime', '12:00 AM');
+			            });
+					}
+					
+					if (typeof $.tooltip !== "undefined")
+					{
+						extraDiv.find(".extraFloatField").tooltip({'trigger':'focus', 'title': 'Decimal number (eg. 1234.50)', 'placement': 'bottom'});
+					}
 					
 				}, 'html');
 			});

@@ -272,6 +272,7 @@ class Settings(BaseSettings):
             'djcelery',
             'celery_haystack',
             'django_extensions',
+            'ajax_upload',
             #'kombu.transport.django', ## DEV ONLY
         )
         
