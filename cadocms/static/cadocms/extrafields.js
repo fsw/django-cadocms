@@ -116,7 +116,7 @@ if (jQuery != undefined) {
 					extraDiv.find(".extraMyDateField").attr("autocomplete", "off");
 					extraDiv.find(".extraMyTimeField").attr("autocomplete", "off");
 					
-					if (typeof $.datepicker !== "undefined")
+					if (typeof $().datepicker !== "undefined")
 					{
 						extraDiv.find(".extraMyDateField").datepicker({
 				        	format:'dd/mm/yyyy',
@@ -124,7 +124,7 @@ if (jQuery != undefined) {
 						});
 					}
 					
-					if (typeof $.timepicker !== "undefined")
+					if (typeof $().timepicker !== "undefined")
 					{
 						extraDiv.find(".extraMyTimeField").wrap('<span class="bootstrap-timepicker"/>');
 					

@@ -145,7 +145,6 @@ if (jQuery != undefined) {
 
     AjaxUploadWidget.prototype.displaySelection = function() {
         var filename = this.$hiddenElement.val();
-        console.log('PENIS');
         if(filename !== '') {
             this.$previewArea.empty();
             this.$previewArea.append(this.generateFilePreview(filename));
