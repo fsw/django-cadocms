@@ -104,9 +104,11 @@ def admin_moderation(request):
             
             if request.POST.get('accept', 0):
                 model.objects.get(id=request.POST.get('accept', 0)).moderate_accept(request.user);
+                return HttpResponse(simplejson.dumps({}), mimetype='application/json')
         
             elif request.POST.get('reject', 0):
                 model.objects.get(id=request.POST.get('reject', 0)).moderate_reject(request.user, ModerationReason.objects.get(id=request.POST.get('reason', 0)));
+                return HttpResponse(simplejson.dumps({}), mimetype='application/json')
             
             else:
                 offset = 0;

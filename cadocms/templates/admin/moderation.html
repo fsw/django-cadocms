@@ -52,10 +52,10 @@ $(function(){
 						newSecond += diff[piece][1]; 
 					}
 					if (diff[piece][0] == 1) {
-						newFirst += "<span class='change'>" + diff[piece][1] + "</span>"; 
+						newSecond += "<span class='change'>" + diff[piece][1] + "</span>"; 
 					}
 					if (diff[piece][0] == -1) {
-						newSecond += "<span class='change'>" + diff[piece][1] + "</span>";
+						newFirst += "<span class='change'>" + diff[piece][1] + "</span>";
 					}
 				}
 				$(elem).find(".diff").first().html(newFirst);
@@ -93,6 +93,7 @@ $(function(){
 			<th>
 				<a href="{{admin_url_prefix}}{{item.id}}/">{{item}}</a>
 				(<a target="_blank" href="{{item.get_absolute_url}}">preview</a>)
+				(<a href="{{admin_url_prefix}}{{item.id}}/history/">history</a>)
 			</th>
 			<td>
 				{{item.moderation_status_code}}

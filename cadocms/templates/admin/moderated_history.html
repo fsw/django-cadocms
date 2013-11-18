@@ -1,0 +1,51 @@
+{% extends "admin/object_history.html" %}
+{% load i18n %}
+
+{% block content %}
+    <div id="grp-content-container">
+    
+    	<div class="grp-rte">
+        	<p>{% blocktrans %}Choose a date from the list below to revert to a previous version of this object.{% endblocktrans %}</p>
+        </div>
+    
+        <div class="module">
+            {% if action_list %}
+                <table id="grp-change-history" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans 'Date/time' %}</th>
+                            <th scope="col">{% trans 'User' %}</th>
+                            <th scope="col">{% trans 'Comment' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in action_list %}
+                            <tr>
+                            	{% if action.log %}
+                            		<th scope="row">{{action.log.action_time}}</th>
+	                                <td>
+	                                    {% if action.log.user %}
+	                                        {{action.log.user.get_username}}
+	                                    {% endif %}
+	                                </td>
+	                                <td>{{action.log.change_message}}</td>
+                            	{% else %}
+                                <th scope="row"><a href="{{action.url}}">{{action.revision.date_created}}</a></th>
+                                <td>
+                                    {% if action.revision.user %}
+                                        {{action.revision.user.get_username}}
+                                        {% if action.revision.user.get_full_name %} ({{action.revision.user.get_full_name}}){% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{% trans "This object doesn't have a change history. It probably wasn't added via this admin site." %}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

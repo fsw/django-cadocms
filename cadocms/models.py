@@ -18,13 +18,15 @@ from datetime import datetime, timedelta
 from cadocms.email import StandardEmail
 
 from django.utils.safestring import mark_safe
-
+from django.contrib.contenttypes.models import ContentType
 import caching.base
 
 import reversion
 from reversion.models import Version
 
 from django.core.exceptions import ValidationError
+from django.contrib.admin.models import LogEntry, CHANGE
+
 
 MODERATION_STATUS = {
     'NEW' : 0,
@@ -92,31 +94,37 @@ class Moderated(models.Model):
                       variables = {'item': self, 'owner': self.owner, 'reason':reason}).send()
 
     def moderate_accept(self, user):
+        self.on_moderate_accept()
         self.moderation_status = MODERATION_STATUS['OK']
         self.moderation_user = user
         self.moderation_last_ok_revision = reversion.get_for_object(self)[0]
-        self.on_moderate_accept()
         super(Moderated, self).save()
+        content_type = ContentType.objects.get_for_model(self) #get(app_label="unravelling", model="item")
+        LogEntry.objects.log_action(user.id, content_type.id, self.id, unicode(self), CHANGE, "MODERATION ACCEPT")
 
     def moderate_reject(self, user, reason):
+        self.on_moderate_reject(reason)
         self.moderation_status = MODERATION_STATUS['REJECTED']
         self.moderation_user = user
         self.moderation_reason = reason
-        self.on_moderate_reject(reason)
         super(Moderated, self).save()
+        content_type = ContentType.objects.get_for_model(self) #get(app_label="unravelling", model="item")
+        LogEntry.objects.log_action(user.id, content_type.id, self.id, unicode(self), CHANGE, "MODERATION REJECT (%s)" % reason)
 
     def show_diff(self):
         ret = []
         #print self, self.moderation_status, MODERATION_STATUS['NEW']
         
         versions = [ ]
-        if reversion.get_for_object(self).count():
-            versions.append(reversion.get_for_object(self)[0])
         
         #print 'XXX'
         if (self.moderation_last_ok_revision):
             #print self.moderation_last_ok_revision, 'ID'
             versions.append(self.moderation_last_ok_revision);
+            
+        if reversion.get_for_object(self).count():
+            versions.append(reversion.get_for_object(self)[0])
+        
         
         #print 'YYY'
         tmp_ret = {}
@@ -137,7 +145,9 @@ class Moderated(models.Model):
                         if isinstance(field, models.ForeignKey):
                             tmp_ret[field.name] = [(unicode(field.rel.to.objects.get(id=int(id)))) for id in tmp_ret[field.name]]
                         if isinstance(field, models.ImageField):
-                            tmp_ret[field.name] = [mark_safe('<a class="fancybox" href="%s%s"><img src="%s%s" height="100" width="100"/></a>' % (settings.MEDIA_URL, path, settings.MEDIA_URL, path)) for path in tmp_ret[field.name]]
+                            tmp_ret[field.name] = [mark_safe(
+                                                             '<a class="fancybox" href="%s%s"><img src="%s%s" height="100" width="100"/></a>' % (settings.MEDIA_URL, path, settings.MEDIA_URL, path) if path else 'NONE' 
+                                                             ) for path in tmp_ret[field.name]]
 
                         ret.append((field.verbose_name, tmp_ret[field.name]))
         for field in self.__class__._meta.many_to_many:

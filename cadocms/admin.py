@@ -7,11 +7,55 @@ from django.conf import settings
 #from modeltranslation.models import autodiscover
 
 from modeltranslation.admin import TranslationAdmin
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
+from django.contrib.admin.util import unquote, quote
+from django.core.urlresolvers import reverse
 
 import reversion
 
 class ModeratedAdmin(reversion.VersionAdmin):
-    pass
+    object_history_template = "admin/moderated_history.html"
+
+    def history_view(self, request, object_id, extra_context=None):
+        
+        if not self.has_change_permission(request):
+            raise PermissionDenied
+        object_id = unquote(object_id) # Underscores in primary key get quoted to "_5F"
+        opts = self.model._meta
+        action_list = [
+            {
+                "revision": version.revision,
+                "url": reverse("%s:%s_%s_revision" % (self.admin_site.name, opts.app_label, opts.module_name), args=(quote(version.object_id), version.id)),
+            }
+            for version
+            in self._order_version_queryset(self.revision_manager.get_for_object_reference(
+                self.model,
+                object_id,
+            ).select_related("revision__user"))
+        ]
+        # Compile the context.
+        full_action_list = []
+        
+        for log_action in LogEntry.objects.filter(
+                object_id=object_id,
+                content_type__id__exact=ContentType.objects.get_for_model(self.model).id
+            ).select_related().order_by('action_time'):
+            while (len(action_list) and (log_action.action_time > action_list[0]['revision'].date_created)):
+                full_action_list.append(action_list.pop(0))
+            full_action_list.append({"log":log_action})
+            #print len(action_list)
+        while (len(action_list)):
+            full_action_list.append(action_list.pop(0))
+        
+        context = {"action_list": full_action_list}
+            
+
+        context.update(extra_context or {})
+        return super(reversion.VersionAdmin, self).history_view(request, object_id, context)
+    
+        return super(ModeratedAdmin, self).history_view(request, object_id, context)
 
 class StaticPageForm(forms.ModelForm):
     url = forms.RegexField(label=_("URL"), max_length=100, regex=r'^[-\w/\.~]+$',
