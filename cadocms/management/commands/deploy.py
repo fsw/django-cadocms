@@ -13,7 +13,7 @@ from cadocms.settings import HostSettings
 env.use_ssh_config = True
 
 class Command(BaseCommand):
-    args = '<host> [initial]'
+    args = '<host>'
     help = 'Deploys to specified host'
     
     option_list = BaseCommand.option_list + (
@@ -24,22 +24,24 @@ class Command(BaseCommand):
             help='Do not BACKUP'),
         make_option('--initial',
             action='store_true',
-            dest='delete',
+            dest='initial',
             default=False,
-            help='Delete poll instead of closing it'),
+            help='Initial deploy'),
+        make_option('--branch',
+            action='store',
+            dest='branch',
+            default='master',
+            help='Branch to pull and checkout'),
         )
     
     def handle(self, *args, **options):
         
         host = None
-        initial = False
         hostname = 'unknown'
         hosts = []
         if len(args):
             hostname = args[0]
-        if len(args) > 1 and args[1] == 'initial':
-            initial = True
-            
+                
         for HostSettingsClass in HostSettings.__subclasses__():
             name = HostSettingsClass.__name__.replace('HostSettings', '').lower()
             hosts.append(name)
@@ -56,7 +58,7 @@ class Command(BaseCommand):
         #run("source virtualenv/bin/activate");
         virtpath = host.PYTHON_PREFIX
 
-        if initial and not files.exists(host.SRCROOT) and not files.exists(host.APPROOT):
+        if options['initial'] and not files.exists(host.SRCROOT) and not files.exists(host.APPROOT):
             print colors.red("initial=true and SRCROOT/APPROOT does not exist. will install now");
             run('mkdir %s' % host.SRCROOT)
             run('mkdir %s' % host.APPROOT)
@@ -80,8 +82,8 @@ class Command(BaseCommand):
                 run("%spython manage.py backup deploy" % (virtpath,))
         
             print colors.red("UPDATING CODEBASE:", bold=True)
-            run("git pull origin master")
-
+            run("git pull origin")
+            run("git checkout %s" % options['branch'])
 
             print colors.red("INSTALLING REQUIREMENTS:", bold=True)
             run("%spip install -q -r requirements.txt" % virtpath)
