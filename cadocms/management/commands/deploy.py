@@ -155,9 +155,9 @@ class Command(BaseCommand):
                     arguments = site.CADO_PROJECT
                 #run("git submodule init")
                 #run("git submodule update")
-                run("%spython manage.py syncdb %s" % (virtpath, arguments))
-                run("%spython manage.py migrate %s" % (virtpath, arguments))
-                run("%spython manage.py collectstatic %s --noinput" % (virtpath, arguments))
+                run("%spython manage.py --traceback syncdb %s" % (virtpath, arguments))
+                run("%spython manage.py --traceback migrate %s" % (virtpath, arguments))
+                run("%spython manage.py --traceback collectstatic %s --noinput" % (virtpath, arguments))
                 run("%spython manage.py restyle_tinymce %s" % (virtpath, arguments))
                 
                 print colors.yellow("RESTARTING FASTCGI:", bold=True)
