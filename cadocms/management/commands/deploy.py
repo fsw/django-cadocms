@@ -82,7 +82,7 @@ class Command(BaseCommand):
                 run("%spython manage.py backup deploy" % (virtpath,))
         
             print colors.red("UPDATING CODEBASE:", bold=True)
-            run("git pull origin")
+            run("git pull origin %s" % options['branch'])
             run("git checkout %s" % options['branch'])
 
             print colors.red("INSTALLING REQUIREMENTS:", bold=True)
