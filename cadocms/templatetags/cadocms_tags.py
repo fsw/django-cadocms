@@ -121,8 +121,9 @@ class FlavoursNode(template.Node):
     
 @register.simple_tag(name="get_current_flavour", takes_context = True)
 def get_flavour(context):
-    request = context['request']
-    return request.flavour
+    #CADO_FLAVOURS
+    request = context.get('request', None)
+    return getattr(request, 'flavour', 'desktop')
 
 @register.tag(name='get_available_flavours')
 def get_available_flavours(parser, token):
