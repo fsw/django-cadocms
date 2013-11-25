@@ -27,7 +27,7 @@ class CustomIndexDashboard(Dashboard):
             collapsible=False,
             column=1,
             #css_classes=('collapse closed',),
-            exclude=('cadocms.*', 'django.contrib.*', 'djcelery.*'),
+            exclude=('cadocms.*', 'django.contrib.*', 'djcelery.*', 'ajax_upload.*'),
         ))
         
         """
