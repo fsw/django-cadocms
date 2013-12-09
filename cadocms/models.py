@@ -578,8 +578,11 @@ class ExtraFieldsUser(models.Model):
     def clean(self):
         #raise ValidationError({'extra' : 'test'})
         return super(ExtraFieldsUser, self).clean();
+    
+    @staticmethod
+    def clear_cache():
+        ExtraFieldsUser.definitions_cache = dict()
 
-        
     def get_provided_extra_fields_by_provider_id(self, provider_field_value):
         # TODO: late static binding ?
         if int(provider_field_value) not in ExtraFieldsUser.definitions_cache:
