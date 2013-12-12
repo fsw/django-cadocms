@@ -151,11 +151,12 @@ if (jQuery != undefined) {
 
             this.$previewArea.show();
             //this.$changeButton.show();
-            if(this.$element.data('required') === 'True') {
-                this.$removeButton.hide();
-            } else {
+            //if(this.$element.data('required') === 'True') {
+            //    this.$removeButton.hide();
+            //} else {
+            	//removed change button so show this every time
                 this.$removeButton.show();
-            }
+            //}
             //this.$element.hide();
         } else {
             this.$previewArea.empty();
