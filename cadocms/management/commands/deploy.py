@@ -79,7 +79,7 @@ class Command(BaseCommand):
         with cd(host.SRCROOT):
             if host.CLASS == 'PROD' and not options['nobackup']:
                 print colors.red("PROD BACKUP:", bold=True)
-                run("%spython manage.py backup deploy" % (virtpath,))
+                run("%spython manage.py backup" % (virtpath,))
         
             print colors.red("UPDATING CODEBASE:", bold=True)
             run("git pull origin %s" % options['branch'])
