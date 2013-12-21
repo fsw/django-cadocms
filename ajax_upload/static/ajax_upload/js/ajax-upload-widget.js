@@ -116,12 +116,7 @@ if (jQuery != undefined) {
         // This handles errors as well because iframe transport does not
         // distinguish between 200 response and other errors
         if(data.errors) {
-            if(this.options.onError) {
-                this.options.onError.call(this, data);
-            } else {
-                //console.log('Upload failed:');
-                //console.log(data);
-            }
+            this.uploadFail(data);
         } else {
             this.$hiddenElement.val(data.path);
             //this.$element.val('');
@@ -134,13 +129,14 @@ if (jQuery != undefined) {
     };
 
     AjaxUploadWidget.prototype.uploadFail = function(xhr) {
-    	//console.log('FAIL');
+    	alert('File uploading failed. Please make sure this is a valid file.');
+    	/*
         if(this.options.onError) {
             this.options.onError.call(this);
         } else {
             //console.log('Upload failed:');
             //console.log(xhr);
-        }
+        }*/
     };
 
     AjaxUploadWidget.prototype.displaySelection = function() {
