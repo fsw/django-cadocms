@@ -17,3 +17,8 @@ body.grp-change-list table {
     width: 100%;
     margin: 0 !important;
 }
+
+.grp-tabular .grp-table .grp-th, .grp-tabular .grp-table .grp-td {
+	padding: 3px;
+}
+	
