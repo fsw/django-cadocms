@@ -100,7 +100,7 @@ if (jQuery != undefined) {
             type: 'POST',
             dataType: 'json',
             success: function(data) { self.postUpload(); self.uploadDone(data); },
-            error: function(data) { self.postUpload(); self.uploadFail(data); }
+            error: function(xhr, ajaxOptions, thrownError) { self.postUpload(); self.uploadFail(xhr, ajaxOptions, thrownError); }
         });
     };
     
@@ -116,7 +116,7 @@ if (jQuery != undefined) {
         // This handles errors as well because iframe transport does not
         // distinguish between 200 response and other errors
         if(data.errors) {
-            this.uploadFail(data);
+            this.uploadFail({}, {}, data.errors);
         } else {
             this.$hiddenElement.val(data.path);
             //this.$element.val('');
@@ -128,9 +128,15 @@ if (jQuery != undefined) {
         }
     };
 
-    AjaxUploadWidget.prototype.uploadFail = function(xhr) {
+    AjaxUploadWidget.prototype.uploadFail = function(xhr, status, error) {
     	alert('File uploading failed. Please make sure this is a valid file.');
         console.log(xhr);
+        console.log(xhr.responseText);
+        console.log(status);
+        console.log(error);
+
+        
+        
     	/*
         if(this.options.onError) {
             this.options.onError.call(this);
