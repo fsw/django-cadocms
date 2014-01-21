@@ -130,12 +130,12 @@ if (jQuery != undefined) {
 
     AjaxUploadWidget.prototype.uploadFail = function(xhr) {
     	alert('File uploading failed. Please make sure this is a valid file.');
+        console.log(xhr);
     	/*
         if(this.options.onError) {
             this.options.onError.call(this);
         } else {
             //console.log('Upload failed:');
-            //console.log(xhr);
         }*/
     };
 
