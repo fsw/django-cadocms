@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='django-cadocms',
-    version='0.1.0',
+    version='0.2.0',
     description='Simple set of tiny usefull bits',
     author='Frank Wawrzak (CadoSolutions)',
     author_email='frank.wawrzak@cadosolutions.com',
@@ -15,7 +15,7 @@ setup(
         #'PIL==1.1.7',
         'Pillow >=2.1.0',
         'South==0.7.6',
-        'Django==1.5.1',
+        'Django==1.6.1',
         'django-configurations',
         'django-compressor==1.3',
         'django-imagekit >= 3.0.3',
@@ -30,7 +30,7 @@ setup(
         'reportlab==2.5',
         'openpyxl==1.6.1',
         'lxml==3.0',
-        'django-debug-toolbar==0.9.4',
+        'django-debug-toolbar==1.0.1',
         #'django-versioning==0.7.3',
         'hamlpy==0.82.2',
         'html2text',

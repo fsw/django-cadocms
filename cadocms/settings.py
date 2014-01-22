@@ -387,7 +387,7 @@ class Settings(BaseSettings):
     def DEBUG_TOOLBAR_CONFIG(self):
         return {
                 'INTERCEPT_REDIRECTS' : False,
-                'SHOW_TOOLBAR_CALLBACK': allways_show_toolbar if self.DEBUG else never_show_toolbar,
+                'SHOW_TOOLBAR_CALLBACK': 'cadocms.settings.allways_show_toolbar' if self.DEBUG else 'cadocms.settings.never_show_toolbar',
                 }
     
     """
