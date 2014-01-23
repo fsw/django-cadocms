@@ -65,7 +65,7 @@ class HTMLFieldWidgetTrivial(forms.Textarea):
     class Media:
         js = (
               settings.STATIC_URL + 'tinymce/tinymce.min.js',
-              settings.STATIC_URL + 'js/tinymce_setup_trivial.js?v=4',
+              settings.STATIC_URL + 'js/tinymce_setup_trivial.js?v=5',
         )
         
     def render(self, name, value, attrs=None):
