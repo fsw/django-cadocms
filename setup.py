@@ -16,7 +16,7 @@ setup(
         'Pillow >=2.1.0',
         'South==0.7.6',
         'Django==1.6.1',
-        'django-configurations',
+        'django-configurations==0.8',
         'django-compressor==1.3',
         'django-imagekit >= 3.0.3',
         'django-mptt==0.5.5',

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import smtplib
 
 from django.utils.translation import ugettext_lazy as _
-from django.core.validators import EmailValidator, email_re
+from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
@@ -54,7 +54,6 @@ class EmailValidator(EmailValidator):
 
 
 validate_email = EmailValidator(
-    email_re,
     _('Enter a valid email address.'),
     'invalid'
 )

@@ -53,7 +53,7 @@ def api_tree_children(request, model, parent_id):
     model = get_model(app_label, model_name)
     return HttpResponse(
         simplejson.dumps(dict(model.tree.filter(parent_id=parent_id).values_list('id', 'name'))), 
-        mimetype='application/json'
+        content_type='application/json'
     )
     
 def image_uploader(request):
@@ -62,7 +62,7 @@ def image_uploader(request):
            }
     return HttpResponse(
         simplejson.dumps(ret), 
-        mimetype='application/json'
+        content_type='application/json'
     )
     
 def api_tree_path(request, model, item_id):
@@ -70,7 +70,7 @@ def api_tree_path(request, model, item_id):
     model = get_model(app_label, model_name)
     return HttpResponse(
         simplejson.dumps(list(model.objects.get(id=item_id).get_ancestors(include_self=True).values_list('id', flat=True))), 
-        mimetype='application/json'
+        content_type='application/json'
     )
     
 def api_tree_fullpath(request, model, item_id):
@@ -83,7 +83,7 @@ def api_tree_fullpath(request, model, item_id):
         
     return HttpResponse(
         simplejson.dumps(ret), 
-        mimetype='application/json'
+        content_type='application/json'
     )
     
 def testsuite(request):
@@ -104,11 +104,11 @@ def admin_moderation(request):
             
             if request.POST.get('accept', 0):
                 model.objects.get(id=request.POST.get('accept', 0)).moderate_accept(request.user);
-                return HttpResponse(simplejson.dumps({}), mimetype='application/json')
+                return HttpResponse(simplejson.dumps({}), content_type='application/json')
         
             elif request.POST.get('reject', 0):
                 model.objects.get(id=request.POST.get('reject', 0)).moderate_reject(request.user, ModerationReason.objects.get(id=request.POST.get('reason', 0)));
-                return HttpResponse(simplejson.dumps({}), mimetype='application/json')
+                return HttpResponse(simplejson.dumps({}), content_type='application/json')
             
             else:
                 offset = 0;
