@@ -40,7 +40,7 @@ setup(
         'django-geoposition',
         'django-haystack==2.1.1-dev',
         'redis',
-        'django-reversion',
+        'django-reversion==1.8.0',
         #'fsw-django-versioning>=0.7.3',
         'django-simple-captcha',
         'cssselect',
