@@ -81,10 +81,13 @@
 			{% endcomment %}
 			{% block extra_html_scripts %}
 			{% endblock %}
-				
+			
+			
+			{% block cado_html_scripts %}
 			{% compress js %}
 				<script type='text/javascript' src="{{ STATIC_URL }}{% get_current_flavour %}.js"></script>
 			{% endcompress %}
+			{% endblock %}
 			{% block html_very_last %}
 			{% endblock %}
 		</body>
