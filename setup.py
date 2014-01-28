@@ -38,7 +38,7 @@ setup(
         'django-filebrowser==3.5.3',
         'django-grappelli==2.5.1',
         'django-geoposition',
-        'django-haystack==2.1.1-dev',
+        'django-haystack',
         'redis',
         'django-reversion==1.8.0',
         #'fsw-django-versioning>=0.7.3',
@@ -59,8 +59,8 @@ setup(
     ],
     dependency_links = [
         #'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=fsw-django-versioning-0.7.3',
-        'http://github.com/SeanHayes/django-config-gen/tarball/master#egg=django-config-gen-1.0.0',
-        'http://github.com/fsw/django-haystack/tarball/null-field#egg=django-haystack-2.1.1-dev',
-        'http://github.com/fsw/pysolr/tarball/master#egg=pysolr-3.1.1',
+        #'http://github.com/SeanHayes/django-config-gen/tarball/master#egg=django-config-gen-1.0.0',
+        #'http://github.com/fsw/django-haystack/tarball/null-field#egg=django-haystack-2.1.1-dev',
+        #'http://github.com/fsw/pysolr/tarball/master#egg=pysolr-3.1.1',
     ],
 )
