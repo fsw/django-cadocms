@@ -239,7 +239,7 @@ class Translatable(models.Model):
     class Meta:
         abstract = True
     
-class StaticPage(caching.base.CachingMixin, Translatable):
+class StaticPage(caching.base.CachingMixin, models.Model): #, Translatable):
     
     url = models.CharField(_('URL'), max_length=200, db_index=True)
     title = models.CharField(_('Title'), max_length=256)
@@ -264,8 +264,7 @@ class StaticPage(caching.base.CachingMixin, Translatable):
     def get_absolute_url(self):
         return self.url
 
-
-class Chunk(caching.base.CachingMixin, Translatable):
+class Chunk(caching.base.CachingMixin, models.Model):#, Translatable):
     key = models.CharField(max_length=256)
     body = HTMLField(blank=True, null=True)
     translatable_fields = ('body',)
