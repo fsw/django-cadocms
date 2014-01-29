@@ -7,7 +7,7 @@ from .forms import JSONFormField, ExtraFieldsValuesFormField
 from django.forms import fields
 
 from django.db import models
-from django.utils import simplejson as json
+import json
 from django.core import exceptions
 from django.utils.timezone import is_aware
 from django.utils.translation import ugettext_lazy as _

@@ -15,7 +15,7 @@ from django.db.models import get_app, get_models
 from cadocms.models import Moderated, MODERATION_STATUS, ModerationReason, Tree
 
 from django.http import HttpResponse
-import simplejson
+import json
 from django.db.models.fields import NOT_PROVIDED
 
 
@@ -52,7 +52,7 @@ def api_tree_children(request, model, parent_id):
     app_label, model_name = model.split(".")
     model = get_model(app_label, model_name)
     return HttpResponse(
-        simplejson.dumps(dict(model.tree.filter(parent_id=parent_id).values_list('id', 'name'))), 
+        json.dumps(dict(model.tree.filter(parent_id=parent_id).values_list('id', 'name'))), 
         content_type='application/json'
     )
     
@@ -61,7 +61,7 @@ def image_uploader(request):
            'test' : 'test'
            }
     return HttpResponse(
-        simplejson.dumps(ret), 
+        json.dumps(ret), 
         content_type='application/json'
     )
     
@@ -69,7 +69,7 @@ def api_tree_path(request, model, item_id):
     app_label, model_name = model.split(".")
     model = get_model(app_label, model_name)
     return HttpResponse(
-        simplejson.dumps(list(model.objects.get(id=item_id).get_ancestors(include_self=True).values_list('id', flat=True))), 
+        json.dumps(list(model.objects.get(id=item_id).get_ancestors(include_self=True).values_list('id', flat=True))), 
         content_type='application/json'
     )
     
@@ -82,7 +82,7 @@ def api_tree_fullpath(request, model, item_id):
         ret.append(list(model.tree.filter(parent_id=i).values_list('id', 'name')));
         
     return HttpResponse(
-        simplejson.dumps(ret), 
+        json.dumps(ret), 
         content_type='application/json'
     )
     
@@ -104,11 +104,11 @@ def admin_moderation(request):
             
             if request.POST.get('accept', 0):
                 model.objects.get(id=request.POST.get('accept', 0)).moderate_accept(request.user);
-                return HttpResponse(simplejson.dumps({}), content_type='application/json')
+                return HttpResponse(json.dumps({}), content_type='application/json')
         
             elif request.POST.get('reject', 0):
                 model.objects.get(id=request.POST.get('reject', 0)).moderate_reject(request.user, ModerationReason.objects.get(id=request.POST.get('reason', 0)));
-                return HttpResponse(simplejson.dumps({}), content_type='application/json')
+                return HttpResponse(json.dumps({}), content_type='application/json')
             
             else:
                 offset = 0;
