@@ -264,7 +264,7 @@ class ExtraFieldsValues(JSONField):
         else:
             value = {}
         
-        errors = {}
+        errors = []
         for key, field in instance.get_provided_extra_fields():
             try:
                 #field['field'].clean(value.get(key,''), instance)
@@ -278,8 +278,10 @@ class ExtraFieldsValues(JSONField):
                 #print 'XXX', v
                 field['field'].formfield().clean(v)
             except ValidationError as e:
-                errors[key] = ['%s:%s' % (key, m) for m in e.messages]
+                for m in e.messages:
+                    errors.append('%s:%s' % (key, m))
         if errors:
+            print errors
             raise ValidationError(errors)
         #print value
         return super(ExtraFieldsValues, self).clean(value, instance);
