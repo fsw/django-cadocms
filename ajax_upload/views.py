@@ -5,12 +5,17 @@ from django.views.decorators.http import require_POST
 from ajax_upload.forms import UploadedFileForm
 import json
 
+import logging
+log = logging.getLogger('logfile')
 
 @csrf_exempt
 @require_POST
 def upload(request):
     #print 'XXXX'
-    
+    log.error("REQUEST: ")
+    log.error(request)
+    log.error("RESPONSE: ")
+
     content_type = "text/plain";
     if request.META.get('HTTP_ACCEPT'):
         if 'application/json' in request.META.get('HTTP_ACCEPT').split(","):
@@ -23,6 +28,8 @@ def upload(request):
             'path': uploaded_file.file.url,
         }
         #print simplejson.dumps(data)
+        log.error(HttpResponse(json.dumps(data), content_type=content_type))
         return HttpResponse(json.dumps(data), content_type=content_type)
     else:
+        log.error(HttpResponseBadRequest(json.dumps({'errors': form.errors}), content_type=content_type))
         return HttpResponseBadRequest(json.dumps({'errors': form.errors}), content_type=content_type)

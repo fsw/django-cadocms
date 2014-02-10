@@ -359,29 +359,42 @@ class Settings(BaseSettings):
 
     COMPRESS_DEBUG_TOGGLE = None
     
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
-            }
-        },
-        'handlers': {
-            'mail_admins': {
-                'level': 'ERROR',
-                'filters': [],#'require_debug_false'],
-                'class': 'django.utils.log.AdminEmailHandler'
-            }
-        },
-        'loggers': {
-            'django.request': {
-                'handlers': ['mail_admins'],
-                'level': 'ERROR',
-                'propagate': True,
+    @property
+    def LOGGING(self):
+        return {
+            'version': 1,
+            'disable_existing_loggers': False,
+            'filters': {
+                'require_debug_false': {
+                    '()': 'django.utils.log.RequireDebugFalse'
+                }
             },
+            'handlers': {
+                'mail_admins': {
+                    'level': 'ERROR',
+                    'filters': [],#'require_debug_false'],
+                    'class': 'django.utils.log.AdminEmailHandler'
+                },
+                'logfile': {
+                    'level':'DEBUG',
+                    'class':'logging.handlers.RotatingFileHandler',
+                    'filename': "/tmp/" + self.CADO_PROJECT + self.HOST.CLASS + ".log",
+                    'maxBytes': 50000,
+                    'backupCount': 2,
+                },
+            },
+            'loggers': {
+                'django.request': {
+                    'handlers': ['mail_admins'],
+                    'level': 'ERROR',
+                    'propagate': True,
+                },
+                'logfile': {
+                    'handlers': ['logfile'],
+                    'level': 'DEBUG',
+                },
+            }
         }
-    }
     
     @property
     def DEBUG_TOOLBAR_CONFIG(self):
