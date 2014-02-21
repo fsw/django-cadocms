@@ -527,7 +527,15 @@ class ExtraFieldsProvider(models.Model):
                             for k, v in args['choices'].items():
                                 new_options.append((k,v))
                             args['choices'] = new_options
-                        
+                            
+                        if ('choices' in args) and (isinstance(args['choices'], list)):
+                            new_options = []
+                            for v in args['choices']:
+                                if isinstance(v, basestring):
+                                    new_options.append((v,v))
+                                else:
+                                    new_options.append(v)
+                            args['choices'] = new_options
                         
                         #print 'XXX EXTRA:', className, args
                         
