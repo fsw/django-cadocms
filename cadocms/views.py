@@ -132,7 +132,10 @@ def admin_clearcache(request):
     from StringIO import StringIO
     from django.core import management
     output = StringIO()
-    management.call_command('clear_cache', stdout=output)
+    try:
+        management.call_command('clear_cache', stdout=output)
+    except NotImplementedError:
+        print 'clear_cache not implemented'
     context['output'] = output.getvalue()
     r = render_to_response('admin/clearcache.html', context, RequestContext(request))
     return HttpResponse(r)
