@@ -24,23 +24,31 @@ def get_current_request():
 class Middleware():
     def process_request(self, request):
         
-        if len(settings.LANGUAGES) > 1:
+        if len(settings.CADO_LANGUAGES) > 0:
             #this is a multilanguage site
             url_lang = None
             chunks = request.path_info.split('/')
             chunk0 = chunks.pop(1)
-            for code, name in settings.LANGUAGES:
+            for code, name in settings.CADO_LANGUAGES:
+                #print code, name, chunk0
                 if chunk0 == code:
                     url_lang = code
                     translation.activate(url_lang)
                     request.LANGUAGE_CODE = translation.get_language()
             
+            
             #TODO: read those from settings:
-            if url_lang is None and chunk0 not in ['dev', 'admin', 'media', 'static', 'captcha']:
+            if url_lang is None and chunk0 not in ['dev', 'admin', 'media', 'static', 'captcha', 'robots.txt', '__debug__']:
                 #redirect
                 preffered_language = translation.get_language_from_request(request)
+                if(preffered_language not in dict(settings.CADO_LANGUAGES)):
+                    preffered_language = settings.CADO_LANGUAGES[0][0]
                 return HttpResponseRedirect("/" + preffered_language + request.path_info)
-        
+        #elif len(settings.CADO_LANGUAGES) == 1:
+        #    translation.activate(settings.CADO_LANGUAGES[0][0])
+        #    request.LANGUAGE_CODE = translation.get_language()
+            
+            
         request.flavour = None
         if request.is_ajax():
             request.flavour = 'ajax'

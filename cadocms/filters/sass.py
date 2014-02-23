@@ -16,13 +16,14 @@ class SassFilter(CompilerFilter):
         images = re.findall(image_pattern, content)
         for file in images:
             path = file.replace("'", "").replace("\"", "")
-            if path.startswith('/'):
-                new_path = path[1:]
-            else:
-                new_path = csspath.replace(os.path.basename(csspath), '') + path
-            new_path = settings.STATIC_URL + os.path.normpath(new_path)
-            #print csspath, new_path
-            content = content.replace("url(%s)" % file, "url(%s)" % new_path); 
+            if not path.startswith('//'):
+                if path.startswith('/'):
+                    new_path = path[1:]
+                else:
+                    new_path = csspath.replace(os.path.basename(csspath), '') + path
+                new_path = settings.STATIC_URL + os.path.normpath(new_path)
+                #print csspath, new_path
+                content = content.replace("url(%s)" % file, "url(%s)" % new_path); 
 
         return content
     

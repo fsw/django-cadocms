@@ -31,7 +31,10 @@ urlpatterns = patterns('',
     url(r'^admin/filebrowser/', include(filebrowserSite.urls)),
 
     url(r'^captcha/', include('captcha.urls')),
-    url(r'^grappelli/', include('grappelli.urls')),                      
+    url(r'^grappelli/', include('grappelli.urls')),   
+    
+    url(r'^robots.txt$', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')), 
+    url(r'^', include('grappelli.urls')),                      
 )
 
 if settings.HOST.CLASS == 'DEV':

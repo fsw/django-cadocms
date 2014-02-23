@@ -1,0 +1,7 @@
+User-agent: *
+
+Disallow: /admin/
+Disallow: /ajax-upload/
+Disallow: /api/
+Disallow: /captcha/
+Disallow: /grappelli/
