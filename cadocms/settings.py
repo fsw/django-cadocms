@@ -143,6 +143,7 @@ class Settings(BaseSettings):
     CADO_LANGUAGES = (
         ('en', 'English'),
     )
+    CADO_L10NURLS = False
     
     @property
     def LANGUAGE_CODE(self):

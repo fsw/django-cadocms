@@ -24,7 +24,7 @@ def get_current_request():
 class Middleware():
     def process_request(self, request):
         
-        if len(settings.CADO_LANGUAGES) > 0:
+        if settings.CADO_L10NURLS and len(settings.CADO_LANGUAGES) > 0:
             #this is a multilanguage site
             url_lang = None
             chunks = request.path_info.split('/')
