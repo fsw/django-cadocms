@@ -126,7 +126,11 @@ class Settings(BaseSettings):
     @property
     def DEBUG(self):
         return self.HOST.DEBUG
-        
+    
+    @property
+    def CAPTCHA_TEST_MODE(self):
+        return self.DEBUG
+    
     @property
     def TEMPLATE_DEBUG(self):
         return self.DEBUG
