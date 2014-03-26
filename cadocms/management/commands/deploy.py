@@ -86,7 +86,10 @@ class Command(BaseCommand):
             if host.CLASS == 'PROD' and not options['nobackup']:
                 print colors.red("PROD BACKUP:", bold=True)
                 run("%spython manage.py backup" % (virtpath,))
-        
+            
+            print colors.red("REVERTING SETTINGS:", bold=True)
+            run("git checkout -- %s/settings.py" % (django_settings.CADO_PROJECT))
+
             print colors.red("UPDATING CODEBASE:", bold=True)
             run("git pull origin %s" % options['branch'])
             run("git checkout %s" % options['branch'])
@@ -95,7 +98,9 @@ class Command(BaseCommand):
             run("%spip install -q -r requirements.txt" % virtpath)
             
             print colors.red("INSERTING HASH:", bold=True)
-            run("sed 's/XXAUTODEPLOYHASHXX/%s/' %s/settings.py > %s/settings.py" % (deploy_hash, django_settings.CADO_PROJECT, django_settings.CADO_PROJECT))
+            run("sed 's/XXAUTODEPLOYHASHXX/%s/' %s/settings.py > %s/settings.tmp.py" % (deploy_hash, django_settings.CADO_PROJECT, django_settings.CADO_PROJECT))
+            run("mv %s/settings.tmp.py %s/settings.py" % (django_settings.CADO_PROJECT, django_settings.CADO_PROJECT))
+            
             #sed 's/foo/bar/' mydump.sql > fixeddump.sql
         
             print colors.red("REGENERATIN CONFIG FILES:", bold=True)

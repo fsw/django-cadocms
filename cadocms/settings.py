@@ -21,8 +21,6 @@ class Settings(BaseSettings):
     
     CADO_NAME = 'Cado CMS'
     SECRET_KEY = 'OVERWRITE ME'
-    #this should be overwritten durring deploy to random string.copy this to project settings!
-    DEPLOY_HASH = "XXAUTODEPLOYHASHXX";
     
     SPAM_EMAIL = '' 
     SITE_ID = 1
@@ -515,7 +513,10 @@ def get_management_command(settings, command):
 class HostSettings(object):
     def __init__(self, parent):
         self.SETTINGS = parent
-        
+    
+    #this should be overwritten durring deploy to random string.copy this to project settings!
+    DEPLOY_HASH = "XXAUTODEPLOYHASHXX";
+
     PYTHON_PREFIX = "~/virtualenv/bin/"
     SOLR_URL = 'http://127.0.0.1:8080/solr/'
     SOLR_PATH = '/opt/solr/'
