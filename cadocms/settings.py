@@ -112,7 +112,7 @@ class Settings(BaseSettings):
             'default': {
                 'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
                 'LOCATION': 'unix:/tmp/memcached.sock',
-                'PREFIX': self.HOST.DATABASE['NAME'],
+                'PREFIX': self.HOST.DEPLOY_HASH + self.HOST.DATABASE['NAME'],
             }
         }
     
