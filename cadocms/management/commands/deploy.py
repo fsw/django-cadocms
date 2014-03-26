@@ -95,7 +95,7 @@ class Command(BaseCommand):
             run("%spip install -q -r requirements.txt" % virtpath)
             
             print colors.red("INSERTING HASH:", bold=True)
-            run("sed 's/XXAUTODEPLOYHASHXX/%s/' %s/settings.py > %s/settings.py" % deploy_hash, django_settings.CADO_PROJECT, django_settings.CADO_PROJECT)
+            run("sed 's/XXAUTODEPLOYHASHXX/%s/' %s/settings.py > %s/settings.py" % (deploy_hash, django_settings.CADO_PROJECT, django_settings.CADO_PROJECT))
             #sed 's/foo/bar/' mydump.sql > fixeddump.sql
         
             print colors.red("REGENERATIN CONFIG FILES:", bold=True)
