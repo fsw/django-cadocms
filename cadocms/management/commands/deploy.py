@@ -35,7 +35,9 @@ class Command(BaseCommand):
         )
     
     def handle(self, *args, **options):
-        
+
+        import os, random, string
+        deploy_hash = ''.join(random.choice(string.lowercase) for x in range(32))
         host = None
         hostname = 'unknown'
         hosts = []
@@ -51,6 +53,10 @@ class Command(BaseCommand):
         if host is None:
             print 'host should be one of:', hosts
             raise Exception("Unknown host %s" % (hostname,))
+        
+        print colors.red("DEPLOYING TO: %s" % hostname, bold=True)
+        print colors.red("DEPLOY HASH = %s" % deploy_hash, bold=True)
+        
         #if 
         env.host_string = host.HOST_STRING
         print colors.red("TEST COMMAND:", bold=True)
@@ -87,6 +93,10 @@ class Command(BaseCommand):
 
             print colors.red("INSTALLING REQUIREMENTS:", bold=True)
             run("%spip install -q -r requirements.txt" % virtpath)
+            
+            print colors.red("INSERTING HASH:", bold=True)
+            run("sed 's/XXAUTODEPLOYHASHXX/%s/' %s/settings.py > %s/settings.py" % deploy_hash, django_settings.CADO_PROJECT, django_settings.CADO_PROJECT)
+            #sed 's/foo/bar/' mydump.sql > fixeddump.sql
         
             print colors.red("REGENERATIN CONFIG FILES:", bold=True)
             run("%spython manage.py regenerate_config" % virtpath)
@@ -173,8 +183,8 @@ class Command(BaseCommand):
                     
                 run("%spython manage.py runfcgi %s method=threaded maxchildren=%d socket=%s/%s.sock pidfile=%s/%s.pid" % (virtpath, site.CADO_PROJECT, maxchildren, host.APPROOT, site.CADO_PROJECT, host.APPROOT, site.CADO_PROJECT) )
                 #run("sleep 3")
-                print colors.yellow("CLEARING CACHE:", bold=True)
-                run("%spython manage.py clear_cache" % (virtpath,))
+                print colors.yellow("NOT CLEARING CACHE:)", bold=True)
+                #run("%spython manage.py clear_cache" % (virtpath,))
                 run("chmod 766 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
                 run("%spython manage.py warmup %s" % (virtpath, arguments))
                 print colors.green("DONE!", bold=True)

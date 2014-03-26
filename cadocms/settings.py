@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     
     CADO_NAME = 'Cado CMS'
     SECRET_KEY = 'OVERWRITE ME'
+    #this should be overwritten durring deploy to random string.copy this to project settings!
+    DEPLOY_HASH = "XXAUTODEPLOYHASHXX";
+    
     SPAM_EMAIL = '' 
     SITE_ID = 1
     MULTISITE = False
@@ -105,7 +108,6 @@ class Settings(BaseSettings):
         }
     }
     """
-    
     @property
     def CACHES(self):
         return {
