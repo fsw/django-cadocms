@@ -28,6 +28,7 @@ if (jQuery != undefined) {
 		}
 		
 		function loadExtra(extraDiv){
+			//console.log('load');
 			var extra = JSON.parse(extraDiv.parent().find('textarea').first().val());
 			//console.log(extra);
 			for (key in extra)
@@ -145,6 +146,9 @@ if (jQuery != undefined) {
 					{
 						extraDiv.find(".extraFloatField").tooltip({'trigger':'focus', 'title': 'Decimal number (eg. 1234.50)', 'placement': 'bottom'});
 					}
+					
+					//to force extra fields beeing valid
+					saveExtra(extraDiv);
 					
 				}, 'html');
 			});
