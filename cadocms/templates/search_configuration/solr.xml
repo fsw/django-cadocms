@@ -46,6 +46,10 @@
 
     <fieldType name="point" class="solr.PointType" dimension="2" subFieldSuffix="_d"/>
     <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
+    
+    <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType"
+        geo="true" distErrPct="0.025" maxDistErr="0.000009" units="degrees" />
+
     <fieldtype name="geohash" class="solr.GeoHashField"/>
 
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
