@@ -364,6 +364,8 @@ class Settings(BaseSettings):
 
     COMPRESS_DEBUG_TOGGLE = None
     
+    COMPRESS_CACHE_KEY_FUNCTION = 'cadocms.compressor.cado_cachekey'
+    
     @property
     def LOGGING(self):
         return {
