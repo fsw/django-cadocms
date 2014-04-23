@@ -22,3 +22,6 @@ body.grp-change-list table {
 	padding: 3px;
 }
 	
+.grp-tabular .grp-table .grp-tbody .grp-th.grp-tools-container, .grp-tabular .grp-table .grp-tbody .grp-td.grp-tools-container {
+	padding-right: 15px;
+}
