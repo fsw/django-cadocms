@@ -482,6 +482,60 @@ class MyDateTimeField(models.DateTimeField):
         super(MyDateTimeField, self).__init__(*args, **kwargs)
         
         
+from django import forms
+from django.forms import widgets 
+from django.utils.datastructures import MultiValueDict, MergeDict 
+
+class TextCheckboxSelectMultiple(widgets.SelectMultiple):
+
+    def render(self, name, value, **kwargs):
+        #print 'RENDER', value
+        if isinstance(value, basestring):
+            value = value.split(",")
+        return super(TextCheckboxSelectMultiple, self).render(name, value, **kwargs)
+    
+    def value_from_datadict(self, data, files, name):
+        #print 'VVV', data, name
+        if isinstance(data, (MultiValueDict, MergeDict)):
+            return data.getlist(name)
+        return data.get(name, None)
+
+class TextMultiField(forms.TypedMultipleChoiceField):
+    
+    widget = TextCheckboxSelectMultiple
+    
+    def __init__(self, *args, **kwargs):
+        #self.coerce = kwargs.pop('coerce', lambda val: val)
+        super(TextMultiField, self).__init__(*args, **kwargs)
+        self.empty_value = None
+        
+    def to_python(self, value):
+        #print 'VAVAVA0', value
+        return super(TextMultiField, self).to_python(value)
+
+    def clean(self, value):
+        #print 'VAVAVA1', value
+        val = super(TextMultiField, self).clean(value)
+        return ",".join(val)
+    
+    def validate(self, value):
+        #print 'VAVAVA2', value
+        return super(TextMultiField, self).validate(value)
+        
+
+class MyTextMultiField(models.CharField):
+    
+    def __init__(self, *args, **kwargs):
+        super(MyTextMultiField, self).__init__(*args, **kwargs)
+        self.empty_label='ASDASD'
+        self.default=''
+        #print 'INIT'
+    
+    def formfield(self, **kwargs):
+        #print self.empty_label
+        #print 'KWARGS', kwargs
+        return super(MyTextMultiField, self).formfield(choices_form_class = TextMultiField, **kwargs)
+
 class ExtraFieldsProvider(models.Model):
 
     extra_fields = ExtraFieldsDefinition(null=True, blank=True)
@@ -490,6 +544,7 @@ class ExtraFieldsProvider(models.Model):
         abstract = True
         
     def get_extra_fields(self):
+        #print 'LOL'
         all_cats = self.get_ancestors(include_self=True)
         #ret = {}
         ret = []
@@ -515,6 +570,8 @@ class ExtraFieldsProvider(models.Model):
                             methodToCall = MyTimeField
                         elif className == 'DateTimeField':
                             methodToCall = MyDateTimeField
+                        elif className == 'TextMultiField':
+                            methodToCall = MyTextMultiField
                         else:
                             methodToCall = getattr(models, className, models.CharField)
                         

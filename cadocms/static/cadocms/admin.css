@@ -25,3 +25,7 @@ body.grp-change-list table {
 .grp-tabular .grp-table .grp-tbody .grp-th.grp-tools-container, .grp-tabular .grp-table .grp-tbody .grp-td.grp-tools-container {
 	padding-right: 15px;
 }
+
+.extraFieldsTable ul li {
+	float: left;
+}

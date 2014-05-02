@@ -109,10 +109,14 @@ if (jQuery != undefined) {
 						$elem.parents('.exTd').prepend($ul);
 					}
 					errorLists = {};
-					
 					extraDiv.find("[name^=extra]").change(function(){
 						saveExtra(extraDiv);
 					});
+					extraDiv.find(".extraMyTextMultiField").click(function(){
+						//additional fire for multiple select widget!
+						saveExtra(extraDiv);
+					});
+
 					loadExtra(extraDiv);
 					extraDiv.find(".extraMyDateField").attr("autocomplete", "off");
 					extraDiv.find(".extraMyTimeField").attr("autocomplete", "off");
@@ -148,12 +152,20 @@ if (jQuery != undefined) {
 					}
 					
 					//to force extra fields beeing valid
-					saveExtra(extraDiv);
+					//EDIT: with this when changing category information was lost.
+					//will try to do this on submit
+					//saveExtra(extraDiv);
 					
 				}, 'html');
 			});
 			
 			provider.change();
+			
+			//see above comment
+			provider.parents('form').submit(function(){
+				saveExtra(extraDiv);
+			});
+
     	}
     	
     	document.registerExtraFieldsQueue = function() {
