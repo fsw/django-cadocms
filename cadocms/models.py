@@ -611,7 +611,7 @@ class ExtraFieldsProvider(models.Model):
                         elif h_field == indexes.BooleanField:
                             solr_key = '%s_b' % key
                         elif h_field == indexes.MultiValueField:
-                            solr_key = '%s_s' % key
+                            solr_key = '%s_ms' % key
                         elif h_field == indexes.FloatField:
                             solr_key = '%s_f' % key
                         elif h_field == indexes.IntegerField:
