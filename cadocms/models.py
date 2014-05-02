@@ -618,13 +618,17 @@ class ExtraFieldsProvider(models.Model):
                             solr_key = '%s_i' % key
                         else:
                             raise Exception('unknown type')
-    
+                        
+                        if className == 'TextMultiField':
+                            solr_key = '%s_ms' % key
+
                         #ret[key] = {'field' : f, 'solr_key' : solr_key}
                         #TODO option to override fields in child categories here!
                         ret.append((key, {'field' : f, 'solr_key' : solr_key, 'params' : field.get('params', {}).copy()}))
-                    
+                        
             except Exception, err:
                 print err
+        #print 'RETTT', ret
         return ret
     
 import time
