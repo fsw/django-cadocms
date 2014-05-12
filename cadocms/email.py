@@ -6,8 +6,10 @@ from django.conf import settings
 def StandardEmail(template, subject, from_email, to_email, variables, request = None, headers = {}, attachments=[]):
         
     html_content = loader.render_to_string(template, variables, None if request is None else RequestContext(request))
-    text_content = html2text.html2text(html_content)
+    #https://jugger0.atlassian.net/browse/EDL-43
+    text_content = html2text.html2text(html_content).replace("](", "]\n(");
     
+      
     msg = EmailMultiAlternatives(subject, text_content, from_email, to_email, headers = headers)
     msg.attach_alternative(html_content, "text/html")
     for a in attachments:
