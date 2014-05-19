@@ -190,7 +190,8 @@ class Command(BaseCommand):
                 #run("sleep 3")
                 print colors.yellow("NOT CLEARING CACHE:)", bold=True)
                 #run("%spython manage.py clear_cache" % (virtpath,))
-                run("chmod 766 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
+                #run("chmod 766 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
+                run("chmod 777 %s/%s.sock" % (host.APPROOT, site.CADO_PROJECT))
                 run("%spython manage.py warmup %s" % (virtpath, arguments))
                 print colors.green("DONE!", bold=True)
                 
