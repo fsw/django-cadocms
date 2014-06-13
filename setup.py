@@ -23,7 +23,7 @@ setup(
         'pilkit==1.1.4',
         'pysolr',
         'simplejson==2.3.2',
-        'six==1.2.0',
+        'six==1.7.2',
         'python-dateutil==2.1',
         'flup',
         'pdfdocument==1.4',
