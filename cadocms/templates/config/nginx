@@ -24,9 +24,13 @@ server {
     auth_basic            "Restricted Test Area";
   	auth_basic_user_file  /etc/nginx/htpasswd;
   	
+  	location /pplnotify/ {
+        auth_basic off;
+       	allow all;
+    }
+    
   	{% endif %}
-    
-    
+  	
     {% if HOST.HTTPS_ON %}
     location /admin {
         rewrite (.*) https://{{SITE.CADO_FULL_DOMAIN}}$1 permanent;
