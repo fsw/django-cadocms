@@ -24,9 +24,10 @@ server {
     auth_basic            "Restricted Test Area";
   	auth_basic_user_file  /etc/nginx/htpasswd;
   	
-  	location /pplnotify/ {
+	location /pplnotify/ {
         auth_basic off;
-       	allow all;
+        include fastcgi_params;
+        fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
     }
     
   	{% endif %}
