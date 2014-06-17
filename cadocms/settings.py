@@ -110,13 +110,21 @@ class Settings(BaseSettings):
     """
     @property
     def CACHES(self):
-        return {
-            'default': {
-                'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-                'LOCATION': 'unix:/tmp/memcached.sock',
-                'PREFIX': self.HOST.DEPLOY_HASH + self.HOST.DATABASE['NAME'],
+        if self.DEBUG:
+            return {
+                'default': {
+                    'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+                    'LOCATION': '/tmp/django_cache',
+                }
             }
-        }
+        else:
+            return {
+                'default': {
+                    'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+                    'LOCATION': 'unix:/tmp/memcached.sock',
+                    'PREFIX': self.HOST.DEPLOY_HASH + self.HOST.DATABASE['NAME'],
+                }
+            }
     
     @property
     def CACHE_PREFIX(self):
