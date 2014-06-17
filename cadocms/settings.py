@@ -110,7 +110,7 @@ class Settings(BaseSettings):
     """
     @property
     def CACHES(self):
-        if self.DEBUG:
+        if (self.HOST.CLASS == 'DEV'):
             return {
                 'default': {
                     'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
