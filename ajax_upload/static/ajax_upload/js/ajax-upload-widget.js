@@ -13,6 +13,7 @@ if (jQuery != undefined) {
         this.options = {
             previewAreaClass: 'preview-area',
             previewFilenameLength: 20,
+            showProgress: false,
             onUpload: null, // right before uploading to the server
             onComplete: null,
             onError: null,
@@ -93,7 +94,16 @@ if (jQuery != undefined) {
         this.$element.parents('form').find('input[type=submit]').attr('disabled', 'disabled');
         //console.log('upload2');
         this.$loadingIndicator.show();
-        $.ajax(this.$element.data('upload-url'), {
+        
+        var url = this.$element.data('upload-url'); 
+        if(this.options.showProgress){
+        	uuid = "";
+        	for (i = 0; i < 32; i++) {
+        		uuid += Math.floor(Math.random() * 16).toString(16);
+        	}
+        	url = url + '?X-Progress-ID=' + uuid;
+        }
+        $.ajax(url, {
             iframe: true,
             files: this.$element,
             processData: false,
