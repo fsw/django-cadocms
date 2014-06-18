@@ -118,6 +118,7 @@ if (jQuery != undefined) {
     };
     
     AjaxUploadWidget.prototype.updateProgress = function() {
+         var self = this;
          req = new XMLHttpRequest();
          req.open("GET", "/uploadprogress", 1);
          req.setRequestHeader("X-Progress-ID", this.uuid);
@@ -134,11 +135,11 @@ if (jQuery != undefined) {
               var p = Math.round(10000 * upload.received / upload.size) / 100;
               txt = txt + ' (' + p + '%)';
             }
-            this.$loadingIndicator.text(txt);
+            self.$loadingIndicator.text(txt);
             
             /* we are done, stop the interval */
             if (upload.state == 'done') {
-             window.clearTimeout(this.uploadMonitor);
+             window.clearTimeout(self.uploadMonitor);
             }
            }
           }
