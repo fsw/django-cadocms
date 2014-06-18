@@ -97,11 +97,12 @@ if (jQuery != undefined) {
         
         var url = this.$element.data('upload-url'); 
         if(this.options.showProgress){
-        	uuid = "";
+        	this.uuid = "";
         	for (i = 0; i < 32; i++) {
-        		uuid += Math.floor(Math.random() * 16).toString(16);
+        		this.uuid += Math.floor(Math.random() * 16).toString(16);
         	}
-        	url = url + '?X-Progress-ID=' + uuid;
+        	url = url + '?X-Progress-ID=' + this.uuid;
+        	this.uploadMonitor = window.setInterval(function () {self.updateProgress();}, 2000);	
         }
         $.ajax(url, {
             iframe: true,
@@ -112,9 +113,42 @@ if (jQuery != undefined) {
             success: function(data) { self.postUpload(); self.uploadDone(data); },
             error: function(xhr, ajaxOptions, thrownError) { self.postUpload(); self.uploadFail(xhr, ajaxOptions, thrownError); }
         });
+        
     };
     
+    AjaxUploadWidget.prototype.updateProgress = function() {
+         req = new XMLHttpRequest();
+         req.open("GET", "/uploadprogress", 1);
+         req.setRequestHeader("X-Progress-ID", this.uuid);
+         req.onreadystatechange = function () {
+          if (req.readyState == 4) {
+           if (req.status == 200) {
+            /* poor-man JSON parser */
+            var upload = eval(req.responseText);
+
+            var txt = upload.state;
+
+            /* change the width if the inner progress-bar */
+            if (upload.state == 'done' || upload.state == 'uploading') {
+              var p = 100 * upload.received / upload.size;             
+              txt = txt + ' ' + p + '%';
+            }
+            console.log(txt);
+            
+            /* we are done, stop the interval */
+            if (upload.state == 'done') {
+             window.clearTimeout(this.uploadMonitor);
+            }
+           }
+          }
+         }
+         req.send(null);
+    }
+    
     AjaxUploadWidget.prototype.postUpload = function() {
+        if(this.options.showProgress){
+           window.clearTimeout(this.uploadMonitor);
+        }
     	//console.log('postUpload');
         this.$loadingIndicator.fadeOut();
     	//console.log(this.$hiddenElement.parents('form').find('input[type=submit]').length);
