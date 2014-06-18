@@ -92,6 +92,7 @@ if (jQuery != undefined) {
         }
         this.$element.attr('name', 'file');
         this.$element.parents('form').find('input[type=submit]').attr('disabled', 'disabled');
+        this.$element.parents('form').find('button[type=submit]').attr('disabled', 'disabled');
         //console.log('upload2');
         this.$loadingIndicator.show();
         
@@ -102,7 +103,7 @@ if (jQuery != undefined) {
         		this.uuid += Math.floor(Math.random() * 16).toString(16);
         	}
         	url = url + '?X-Progress-ID=' + this.uuid;
-        	this.uploadMonitor = window.setInterval(function () {self.updateProgress();}, 2000);	
+        	this.uploadMonitor = window.setInterval(function () {self.updateProgress();}, 1800);	
         }
         $.ajax(url, {
             iframe: true,
@@ -130,10 +131,10 @@ if (jQuery != undefined) {
 
             /* change the width if the inner progress-bar */
             if (upload.state == 'done' || upload.state == 'uploading') {
-              var p = 100 * upload.received / upload.size;             
-              txt = txt + ' ' + p + '%';
+              var p = Math.round(10000 * upload.received / upload.size) / 100;
+              txt = txt + ' (' + p + '%)';
             }
-            console.log(txt);
+            this.$loadingIndicator.text(txt);
             
             /* we are done, stop the interval */
             if (upload.state == 'done') {
@@ -153,6 +154,7 @@ if (jQuery != undefined) {
         this.$loadingIndicator.fadeOut();
     	//console.log(this.$hiddenElement.parents('form').find('input[type=submit]').length);
         this.$hiddenElement.parents('form').find('input[type=submit]').removeAttr('disabled');
+        this.$hiddenElement.parents('form').find('button[type=submit]').removeAttr('disabled');
     }
 
     AjaxUploadWidget.prototype.uploadDone = function(data) {
