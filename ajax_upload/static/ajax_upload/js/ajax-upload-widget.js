@@ -53,6 +53,8 @@ if (jQuery != undefined) {
         this.$previewArea = $('<div class="'+this.options.previewAreaClass+'"></div>');
         this.$element.before(this.$previewArea);
 
+        jQuery.data( document.body, "pararellUploadsCount", 0 );
+        
         // Listen for when a file is selected, and perform upload
         this.$element.on('change', function(evt) {
         	//console.log('change');
@@ -93,6 +95,11 @@ if (jQuery != undefined) {
         this.$element.attr('name', 'file');
         this.$element.parents('form').find('input[type=submit]').attr('disabled', 'disabled');
         this.$element.parents('form').find('button[type=submit]').attr('disabled', 'disabled');
+        
+        var pararellUploadsCount = jQuery.data( document.body, "pararellUploadsCount");
+        pararellUploadsCount = pararellUploadsCount + 1;
+        jQuery.data( document.body, "pararellUploadsCount", pararellUploadsCount);
+                
         //console.log('upload2');
         this.$loadingIndicator.show();
         
@@ -154,8 +161,14 @@ if (jQuery != undefined) {
     	//console.log('postUpload');
         this.$loadingIndicator.fadeOut();
     	//console.log(this.$hiddenElement.parents('form').find('input[type=submit]').length);
-        this.$hiddenElement.parents('form').find('input[type=submit]').removeAttr('disabled');
-        this.$hiddenElement.parents('form').find('button[type=submit]').removeAttr('disabled');
+    	
+    	var pararellUploadsCount = jQuery.data( document.body, "pararellUploadsCount");
+        pararellUploadsCount = pararellUploadsCount - 1;
+        jQuery.data( document.body, "pararellUploadsCount", pararellUploadsCount);
+        if (pararellUploadsCount == 0) {
+                this.$hiddenElement.parents('form').find('input[type=submit]').removeAttr('disabled');
+                this.$hiddenElement.parents('form').find('button[type=submit]').removeAttr('disabled');
+        }
     }
 
     AjaxUploadWidget.prototype.uploadDone = function(data) {
