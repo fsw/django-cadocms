@@ -97,21 +97,30 @@ server {
     location /admin {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+        track_uploads proxied 60s;
     }
     
     location /accounts {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+        track_uploads proxied 60s;
     }
     
     location /captcha {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+        track_uploads proxied 60s;
     }
     
     location /ajax-upload {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+        track_uploads proxied 60s;
+    }
+    
+    location ^~ /uploadprogress {
+        #report uploads tracked in the 'proxied' zone
+        report_uploads proxied;
     }
     
     location / {
