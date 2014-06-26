@@ -11,9 +11,9 @@ if (jQuery != undefined) {
     
     var AjaxUploadWidget = global.AjaxUploadWidget = function(element, options) {
         
-        if( $.browser.msie ){
+        /*if( $.browser.msie ){
             alert( $.browser.version );
-        }
+        }*/
         
         this.options = {
             previewAreaClass: 'preview-area',
