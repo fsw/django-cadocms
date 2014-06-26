@@ -212,6 +212,7 @@ if (jQuery != undefined) {
 
     AjaxUploadWidget.prototype.uploadFail = function(xhr, status, error) {
     	alert('File uploading failed. Please make sure this is a valid file.');
+        this.displaySelection();
         //console.log(xhr);
         //console.log(xhr.responseText);
         //console.log(status);
