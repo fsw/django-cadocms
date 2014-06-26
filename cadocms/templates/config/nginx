@@ -56,12 +56,16 @@ server {
         expires max;
     }
 
-    location / {
+	location / {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
+        track_uploads proxied 60s;
     }
     
-	
+	location ^~ /uploadprogress {
+        #report uploads tracked in the 'proxied' zone
+        report_uploads proxied;
+    }
 }
 
 {% if HOST.HTTPS_ON %}
