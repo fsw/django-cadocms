@@ -47,7 +47,7 @@ if (jQuery != undefined) {
         this.$hiddenElement = $('<input type="hidden"/>')
             .attr('name', this.name)
             .val(this.$element.data('filename'));
-        this.$element.attr('name', ''); // because we don't want to conflict with our hidden field
+        this.$element.attr('name', 'file'); // because we don't want to conflict with our hidden field
         this.$element.after(this.$hiddenElement);
 
         this.$loadingIndicator = $('<div class="loading"></div>');
@@ -61,11 +61,9 @@ if (jQuery != undefined) {
         jQuery.data( document.body, "pararellUploadsCount", 0 );
         
         // Listen for when a file is selected, and perform upload
-        //this.$element.on('change', function(evt) {
-        	//console.log('change');
-        	//console.log($(this).val());
-            //self.upload();
-        //});
+        this.inputId = this.$element.attr('id');
+        this.$element.one('change', function(evt) {self.upload();});
+                	
         //this.$changeButton = $('<label class="btn-change" for="' + this.$element.attr('id') + '" title="Upload New Image"></label>');
         //this.$element.after(this.$changeButton);
 
@@ -76,18 +74,33 @@ if (jQuery != undefined) {
                     if(result === false) return;
                 }
                 self.$hiddenElement.val('');
+                //from reasons unknown, file input was unaccessible whatever method used after using jquery iframe transport once
+                // ... so here we are creating a brand new element and ignoring the old one.
+                self.newRandomId();
+                self.$element = $('<input data-upload-url="/ajax-upload/" id="' + self.inputId + '" name="file" type="file"/>');
+                self.$elementParent.html(self.$element);
+                self.$element.one('change', function(evt) {self.upload();});
+                //newElement.click();
+        
                 self.displaySelection();
             });
         this.$element.after(this.$removeButton);
-
         this.$element.wrap('<div class="hiddenCheat"></div>');
+        this.$elementParent = this.$element.parent();
         this.displaySelection();
     };
     
     AjaxUploadWidget.prototype.getElement = function() {
     	return this.$element;
     };
-
+    
+    AjaxUploadWidget.prototype.newRandomId = function() {
+        this.inputId = "";
+        for (i = 0; i < 32; i++) {
+                this.inputId += Math.floor(Math.random() * 16).toString(16);
+        }
+    }
+    
     AjaxUploadWidget.prototype.upload = function() {
     	//console.log('upload1');
     	//console.log(this.$element.val());
@@ -174,12 +187,14 @@ if (jQuery != undefined) {
                 this.$hiddenElement.parents('form').find('input[type=submit]').removeAttr('disabled');
                 this.$hiddenElement.parents('form').find('button[type=submit]').removeAttr('disabled');
         }
+    
     }
 
     AjaxUploadWidget.prototype.uploadDone = function(data) {
     	//console.log('DONE');
         // This handles errors as well because iframe transport does not
         // distinguish between 200 response and other errors
+        
         if(data.errors) {
             this.uploadFail({}, {}, data.errors);
         } else {
@@ -212,19 +227,9 @@ if (jQuery != undefined) {
         var self = this;
         this.$previewArea.empty();
         this.$previewArea.append(this.generateFilePreview(filename));
-        this.$previewArea.find('.add-image-label').click(function(){
-        	//from reasons unknown, jquery was n ot firing change event when the input was changed... 
-        	// ... for the second time so we will recreate it on label click
-        	var newElement = $('<input data-upload-url="/ajax-upload/" id="' + self.$element.attr('id') + '" name="" type="file"/>');
-        	self.$element.replaceWith(newElement);
-        	self.$element = newElement;
-        	newElement.one('change', function(evt) {
-        	    //alert('KAKAKAKAKA');
-        	    self.upload();
-                });
-        	newElement.click();
-        	return false;
-        });
+        //this.$previewArea.find('.add-image-label').click(function(){
+        //	return false;
+        //});
         //this.$previewArea.show();
         if(filename !== '') {
         	this.$removeButton.show();
@@ -237,7 +242,7 @@ if (jQuery != undefined) {
         // Returns the html output for displaying the given uploaded filename to the user.
     	var output = '';
     	if (filename == '') {
-    		output = '<label for="' + this.$element.attr('id') + '" class="add-image-label">add image</label>';
+    		output = '<label for="' + this.inputId + '" class="add-image-label">add image</label>';
     	} else {
 	        var prettyFilename = this.prettifyFilename(filename);
 	        output = $('<a href="'+filename+'" target="_blank"></a>');
