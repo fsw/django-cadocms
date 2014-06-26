@@ -76,10 +76,6 @@ if (jQuery != undefined) {
                 self.$hiddenElement.val('');
                 //from reasons unknown, file input was unaccessible whatever method used after using jquery iframe transport once
                 // ... so here we are creating a brand new element and ignoring the old one.
-                self.newRandomId();
-                self.$element = $('<input data-upload-url="/ajax-upload/" id="' + self.inputId + '" name="file" type="file"/>');
-                self.$elementParent.html(self.$element);
-                self.$element.one('change', function(evt) {self.upload();});
                 //newElement.click();
         
                 self.displaySelection();
@@ -187,6 +183,12 @@ if (jQuery != undefined) {
                 this.$hiddenElement.parents('form').find('input[type=submit]').removeAttr('disabled');
                 this.$hiddenElement.parents('form').find('button[type=submit]').removeAttr('disabled');
         }
+        
+        var self = this;
+        self.newRandomId();
+        self.$element = $('<input data-upload-url="/ajax-upload/" id="' + self.inputId + '" name="file" type="file"/>');
+        self.$elementParent.html(self.$element);
+        self.$element.one('change', function(evt) {self.upload();});
     
     }
 
