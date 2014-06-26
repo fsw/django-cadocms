@@ -56,11 +56,11 @@ if (jQuery != undefined) {
         jQuery.data( document.body, "pararellUploadsCount", 0 );
         
         // Listen for when a file is selected, and perform upload
-        this.$element.on('change', function(evt) {
+        //this.$element.on('change', function(evt) {
         	//console.log('change');
         	//console.log($(this).val());
-            self.upload();
-        });
+            //self.upload();
+        //});
         //this.$changeButton = $('<label class="btn-change" for="' + this.$element.attr('id') + '" title="Upload New Image"></label>');
         //this.$element.after(this.$changeButton);
 
@@ -180,9 +180,9 @@ if (jQuery != undefined) {
         } else {
             this.$hiddenElement.val(data.path);
             //this.$element.val('');
-            var tmp = this.$element;
-            this.$element = this.$element.clone(true).val('');
-            tmp.replaceWith(this.$element);
+            //var tmp = this.$element;
+            //this.$element = this.$element.clone(true).val('');
+            //tmp.replaceWith(this.$element);
             this.displaySelection();
             if(this.options.onComplete) this.options.onComplete.call(this, data.path);
         }
@@ -204,28 +204,27 @@ if (jQuery != undefined) {
 
     AjaxUploadWidget.prototype.displaySelection = function() {
         var filename = this.$hiddenElement.val();
+        var self = this;
+        this.$previewArea.empty();
+        this.$previewArea.append(this.generateFilePreview(filename));
+        this.$previewArea.find('.add-image-label').click(function(){
+        	//from reasons unknown, jquery was n ot firing change event when the input was changed... 
+        	// ... for the second time so we will recreate it on label click
+        	var newElement = $('<input data-upload-url="/ajax-upload/" id="' + self.$element.attr('id') + '" name="" type="file"/>');
+        	self.$element.replaceWith(newElement);
+        	self.$element = newElement;
+        	newElement.one('change', function(evt) {
+        	    //alert('KAKAKAKAKA');
+        	    self.upload();
+                });
+        	newElement.click();
+        	return false;
+        });
+        //this.$previewArea.show();
         if(filename !== '') {
-            this.$previewArea.empty();
-            this.$previewArea.append(this.generateFilePreview(filename));
-
-            this.$previewArea.show();
-            //this.$changeButton.show();
-            //if(this.$element.data('required') === 'True') {
-            //    this.$removeButton.hide();
-            //} else {
-            	//removed change button so show this every time
-                this.$removeButton.show();
-            //}
-            //this.$element.hide();
+        	this.$removeButton.show();
         } else {
-            this.$previewArea.empty();
-            this.$previewArea.append(this.generateFilePreview(filename));
-            //this.$previewArea.slideUp();
-            //this.$changeButton.show();
             this.$removeButton.hide();
-            //this.$element.hide();
-            //this.$changeButton.hide();
-            //this.$element.show();
         }
     };
 
