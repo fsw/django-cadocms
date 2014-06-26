@@ -10,6 +10,11 @@ if (jQuery != undefined) {
     var console = global.console || {log: function() {}};
     
     var AjaxUploadWidget = global.AjaxUploadWidget = function(element, options) {
+        
+        if( $.browser.msie ){
+            alert( $.browser.version );
+        }
+        
         this.options = {
             previewAreaClass: 'preview-area',
             previewFilenameLength: 20,
