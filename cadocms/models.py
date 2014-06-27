@@ -438,7 +438,7 @@ def hits_inc(key, request = None, interval = 'day'):
         for botname in BotNames:
             if botname in user_agent:
                 #this is a bot
-                return 0;
+                return False;
     
     
     if request is None:
@@ -471,7 +471,7 @@ def hits_inc(key, request = None, interval = 'day'):
         counter.value = counter.value + 1
         counter.save()
         
-    return counter.value
+    return hit_created
 
 
 class MyDateField(models.DateField):
