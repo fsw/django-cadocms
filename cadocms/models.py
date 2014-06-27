@@ -459,7 +459,7 @@ def hits_inc(key, request = None, interval = 'day'):
                       ip = ip, 
                       session = request.session.session_key,
                       user_agent = request.META.get('HTTP_USER_AGENT'),
-                      user = request.user
+                      user = request.user if request.user.is_authenticated() else None
                       )
             hit.save()
             hit_created = True;
