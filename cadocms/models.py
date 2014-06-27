@@ -457,7 +457,7 @@ def hits_inc(key, request = None, interval = 'day'):
         except Hit.DoesNotExist:
             hit = Hit(counter = counter, 
                       ip = ip, 
-                      session = request.session.session_key,
+                      session = request.session.session_key if request.session.session_key else '',
                       user_agent = request.META.get('HTTP_USER_AGENT'),
                       user = request.user if request.user.is_authenticated() else None
                       )
