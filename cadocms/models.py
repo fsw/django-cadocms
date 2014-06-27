@@ -429,7 +429,17 @@ def hits_get(key):
 # if request is passed key will increment only if it is unique
 def hits_inc(key, request = None, interval = 'day'):
     
+    
     counter, created_created = HitCounter.objects.get_or_create(key=key)
+    
+    if request is not None:
+        BotNames = ['Googlebot','Slurp','Twiceler','msnbot','KaloogaBot','YodaoBot','"Baiduspider','googlebot','Speedy Spider','DotBot']
+        user_agent = request.META.get('HTTP_USER_AGENT',None)
+        for botname in BotNames:
+            if botname in user_agent:
+                #this is a bot
+                return 0;
+    
     
     if request is None:
         hit_created = True;
@@ -449,8 +459,9 @@ def hits_inc(key, request = None, interval = 'day'):
                       ip = ip, 
                       session = request.session.session_key,
                       user_agent = request.META.get('HTTP_USER_AGENT'),
-                      #user = request.user
+                      user = request.user
                       )
+            hit.save()
             hit_created = True;
         
         
