@@ -28,6 +28,9 @@
 			
 			<meta name="revisit-after" content="7 days">
 			
+			{% block og_properties %}
+			{% endblock %}
+			
 			{% load compress %}
 			{% compress css %}
 				{% block html_styles %}
