@@ -161,7 +161,20 @@ class CaptureasNode(template.Node):
         context[self.varname] = output  
         return ''  
 
+from datetime import timedelta
 
+@register.filter
+def hmsfrom(date):
+    now = datetime.now().replace(tzinfo=None)
+    delta = now - date.replace(tzinfo=None)
+    delta2 = timedelta(days=delta.days, seconds=delta.seconds)
+    return delta2
+
+@register.filter
+def secondsfrom(date):
+    now = datetime.now().replace(tzinfo=None)
+    delta = now - date.replace(tzinfo=None)
+    return (delta.days * 60 * 60 * 24) + delta.seconds
 
 @register.filter
 def get_range( value ):
