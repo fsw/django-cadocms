@@ -10,6 +10,8 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         cache.clear()
+        from cadocms.templatetags.cadocms_tags import SETTINGS_CACHE
+        SETTINGS_CACHE = {}
         
         #clearing extra fields cache
         for ExtraFieldsUserClass in all_subclasses(ExtraFieldsUser):

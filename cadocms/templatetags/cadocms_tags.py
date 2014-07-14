@@ -44,14 +44,18 @@ def smart_ul(list, attrs=''):
         ret = ret + '</ul>'
         return mark_safe(ret);
         
+SETTINGS_CACHE = {}
 
 @register.simple_tag(name="setting")
 def get_setting(key):
-    try: 
-        row = Setting.objects.get(key=key)
-        return row.value;
-    except Setting.DoesNotExist:
-        return getattr(settings, key)
+    if not SETTINGS_CACHE.has_key(key):
+        try: 
+            row = Setting.objects.get(key=key)
+            SETTINGS_CACHE[key] = row.value;
+        except Setting.DoesNotExist:
+            SETTINGS_CACHE[key] = getattr(settings, key)
+        
+    return SETTINGS_CACHE[key]
 
 @register.filter(name="setting")
 def filter_setting(key):
