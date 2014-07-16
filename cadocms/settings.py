@@ -233,18 +233,20 @@ class Settings(BaseSettings):
 
     @property   
     def MIDDLEWARE_CLASSES(self):
-        return (
+        ret = (
                 'django.middleware.common.CommonMiddleware',
                 'django.contrib.sessions.middleware.SessionMiddleware',
                 'django.middleware.csrf.CsrfViewMiddleware',
                 'django.contrib.auth.middleware.AuthenticationMiddleware',
                 'django.contrib.messages.middleware.MessageMiddleware',
-                'debug_toolbar.middleware.DebugToolbarMiddleware',
                 'cadocms.middleware.Middleware',
                 'cadocms.middleware.StaticPagesFallback',
                 #'cadocms.middleware.Profiler',
                 #'versioning.middleware.VersioningMiddleware',
                 )
+        if (self.HOST.CLASS != 'PROD'):
+            ret = ret + ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+        return ret;
     
     #@property
     #def ROOT_URLCONF(self):
@@ -257,7 +259,7 @@ class Settings(BaseSettings):
     @property
     def INSTALLED_APPS(self):
         #print 'INSTALLED_APPS cadocms'
-        return (
+        ret = (
             #'cadocms.db_prefix',
             self.CADO_PROJECT,
             'cadocms',
@@ -277,7 +279,6 @@ class Settings(BaseSettings):
             'south',
             'compressor',
             'mptt',
-            'debug_toolbar',
             #'versioning',
             'captcha',
             'geoposition',
@@ -290,6 +291,10 @@ class Settings(BaseSettings):
             'ajax_upload',
             #'kombu.transport.django', ## DEV ONLY
         )
+        if (self.HOST.CLASS != 'PROD'):
+            ret = ret + ('debug_toolbar',)
+            
+        return ret;
         
     #BROKER_URL = 'django://'
     BROKER_URL = 'amqp://guest:guest@localhost:5672//'

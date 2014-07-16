@@ -54,7 +54,7 @@ setup(
         'cssselect',
         'django-cache-machine',
         'python-memcached',
-        'django-extensions',
+        'django-extensions==1.3.8',
         'bleach',
     ],
     dependency_links = [
