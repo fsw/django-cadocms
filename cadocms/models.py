@@ -435,10 +435,11 @@ def hits_inc(key, request = None, interval = 'day'):
     if request is not None:
         BotNames = ['Googlebot','Slurp','Twiceler','msnbot','KaloogaBot','YodaoBot','"Baiduspider','googlebot','Speedy Spider','DotBot']
         user_agent = request.META.get('HTTP_USER_AGENT',None)
-        for botname in BotNames:
-            if botname in user_agent:
-                #this is a bot
-                return False;
+        if user_agent:
+            for botname in BotNames:
+                if botname in user_agent:
+                    #this is a bot
+                    return False;
     
     
     if request is None:
