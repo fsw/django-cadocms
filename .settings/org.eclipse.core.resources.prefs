@@ -1,3 +1,4 @@
 eclipse.preferences.version=1
+encoding//cadocms/migrations/0003_auto__del_chunk__del_staticpage__add_moderationreason.py=utf-8
 encoding//cadocms/migrations/0004_auto__add_hitcounter__add_hit.py=utf-8
 encoding/setup.py=utf-8
