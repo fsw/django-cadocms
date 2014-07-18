@@ -30,7 +30,7 @@ setup(
         'reportlab==2.5',
         'openpyxl==1.6.1',
         'lxml==3.0',
-        'django-debug-toolbar==1.0.1',
+        'django-debug-toolbar==1.2.1',
         #'django-versioning==0.7.3',
         'hamlpy==0.82.2',
         'html2text',
