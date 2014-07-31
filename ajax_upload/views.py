@@ -12,9 +12,9 @@ log = logging.getLogger('logfile')
 @require_POST
 def upload(request):
     #print 'XXXX'
-    log.error("REQUEST: ")
-    log.error(request)
-    log.error("RESPONSE: ")
+    #log.error("REQUEST: ")
+    #log.error(request)
+    #log.error("RESPONSE: ")
 
     content_type = "text/plain";
     if request.META.get('HTTP_ACCEPT'):
@@ -28,8 +28,8 @@ def upload(request):
             'path': uploaded_file.file.url,
         }
         #print simplejson.dumps(data)
-        log.error(HttpResponse(json.dumps(data), content_type=content_type))
+        #log.error(HttpResponse(json.dumps(data), content_type=content_type))
         return HttpResponse(json.dumps(data), content_type=content_type)
     else:
-        log.error(HttpResponseBadRequest(json.dumps({'errors': form.errors}), content_type=content_type))
+        #log.error(HttpResponseBadRequest(json.dumps({'errors': form.errors}), content_type=content_type))
         return HttpResponseBadRequest(json.dumps({'errors': form.errors}), content_type=content_type)

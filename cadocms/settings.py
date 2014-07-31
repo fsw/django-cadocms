@@ -386,6 +386,14 @@ class Settings(BaseSettings):
         return {
             'version': 1,
             'disable_existing_loggers': False,
+            'formatters': {
+                'verbose': {
+                    'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+                },
+                'simple': {
+                    'format': '%(levelname)s %(message)s'
+                },
+            },
             'filters': {
                 'require_debug_false': {
                     '()': 'django.utils.log.RequireDebugFalse'
@@ -400,9 +408,10 @@ class Settings(BaseSettings):
                 'logfile': {
                     'level':'DEBUG',
                     'class':'logging.handlers.RotatingFileHandler',
-                    'filename': "/tmp/" + self.CADO_PROJECT + self.HOST.CLASS + ".log",
+                    'filename': self.HOST.APPROOT + "django.log",
                     'maxBytes': 50000,
-                    'backupCount': 2,
+                    'backupCount': 5,
+                    'formatter': 'verbose'
                 },
             },
             'loggers': {
@@ -412,6 +421,10 @@ class Settings(BaseSettings):
                     'propagate': True,
                 },
                 'logfile': {
+                    'handlers': ['logfile'],
+                    'level': 'DEBUG',
+                },
+                'pysolr': {
                     'handlers': ['logfile'],
                     'level': 'DEBUG',
                 },
