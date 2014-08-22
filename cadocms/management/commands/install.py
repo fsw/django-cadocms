@@ -35,6 +35,10 @@ class Command(BaseCommand):
                 os.makedirs(site_settings.STATIC_ROOT)
                         
             print colors.green("creating database");
+            
+            local(get_management_command(site_settings, 'sql auth') + ' | ' + get_management_command(site_settings, 'dbshell'))
+            local(get_management_command(site_settings, 'sql admin') + ' | ' + get_management_command(site_settings, 'dbshell'))
+            
             local(get_management_command(site_settings, 'syncdb') + ' --noinput')
             local(get_management_command(site_settings, 'migrate'))
             print colors.green("installing install_* fixtures");
