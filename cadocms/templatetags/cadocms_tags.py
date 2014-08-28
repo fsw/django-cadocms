@@ -53,7 +53,12 @@ def get_setting(key):
             row = Setting.objects.get(key=key)
             SETTINGS_CACHE[key] = row.value;
         except Setting.DoesNotExist:
-            SETTINGS_CACHE[key] = getattr(settings, key)
+            try:
+                SETTINGS_CACHE[key] = getattr(settings, key)
+            except:
+                new = Setting(key=key)
+                new.save();
+                SETTINGS_CACHE[key] = new.value;
         
     return SETTINGS_CACHE[key]
 
