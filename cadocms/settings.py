@@ -582,6 +582,11 @@ class DevHostSettings(HostSettings):
     APPROOT = os.getcwd() + '/data/'
     @property
     def DATABASE(self):
+        if 'django.contrib.gis' in self.SETTINGS.INSTALLED_APPS:
+            return {
+                    'ENGINE': 'django.contrib.gis.db.backends.spatialite',
+                    'NAME' : self.APPROOT + 'local.db3'
+                    }
         return {
                 'ENGINE': 'django.db.backends.sqlite3',
                 'NAME' : self.APPROOT + 'local.db3'
