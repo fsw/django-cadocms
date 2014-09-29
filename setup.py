@@ -56,6 +56,7 @@ setup(
         'python-memcached',
         'django-extensions==1.3.8',
         'bleach',
+        'markdown==2.4.1',
     ],
     dependency_links = [
         #'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=fsw-django-versioning-0.7.3',
