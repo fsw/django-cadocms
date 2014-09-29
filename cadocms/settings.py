@@ -566,6 +566,10 @@ class HostSettings(object):
     @property
     def DEBUG(self):
         return (self.CLASS == 'DEV') or (self.CLASS == 'TEST')
+      
+    @property
+    def HAS_HTTP_PASS(self):
+        return (self.CLASS == "TEST")
 
 class DevHostSettings(HostSettings):
     """
