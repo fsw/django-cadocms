@@ -14,7 +14,7 @@ setup(
     install_requires=[
         #'PIL==1.1.7',
         'Pillow >=2.1.0',
-        'South==0.7.6',
+        'South==1.0',
         'Django==1.6.1',
         'django-configurations==0.8',
         'django-compressor==1.3',
