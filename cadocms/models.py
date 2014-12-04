@@ -12,7 +12,7 @@ from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from haystack import indexes
-from mptt.fields import TreeForeignKey
+from mptt.fields import TreeForeignKey, TreeManyToManyField
 from mptt.models import MPTTModel
 import reversion
 from reversion.models import Version
