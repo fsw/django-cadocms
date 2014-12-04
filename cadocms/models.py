@@ -95,7 +95,10 @@ class Moderated(models.Model):
         self.on_moderate_accept()
         self.moderation_status = MODERATION_STATUS['OK']
         self.moderation_user = user
-        self.moderation_last_ok_revision = reversion.get_for_object(self)[0]
+        if reversion.get_for_object(self).count():
+            self.moderation_last_ok_revision = reversion.get_for_object(self)[0]
+        else:
+            self.moderation_last_ok_revision = 0
         super(Moderated, self).save()
         content_type = ContentType.objects.get_for_model(self)  # get(app_label="unravelling", model="item")
         LogEntry.objects.log_action(user.id, content_type.id, self.id, unicode(self), CHANGE, "MODERATION ACCEPT")
