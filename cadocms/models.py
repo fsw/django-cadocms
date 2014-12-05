@@ -422,6 +422,9 @@ def hits_inc(key, request=None, interval='day'):
             now = datetime.now() - timedelta(1, 0)
             hit = Hit.objects.get(counter=counter, ip=ip, created__gt=now)
             hit_created = False
+        except Hit.MultipleObjectsReturned:
+            #some concurrency issue.
+            hit_created = False
         except Hit.DoesNotExist:
             hit = Hit(counter=counter,
                       ip=ip,
