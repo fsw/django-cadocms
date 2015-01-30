@@ -22,11 +22,16 @@ class Command(BaseCommand):
             dest='nobackup',
             default=False,
             help='Do not BACKUP'),
-        make_option('--initial',
+        make_option('--initial1',
             action='store_true',
-            dest='initial',
+            dest='initial1',
             default=False,
-            help='Initial deploy'),
+            help='Initial deploy - step 1'),
+        make_option('--initial2',
+            action='store_true',
+            dest='initial2',
+            default=False,
+            help='Initial deploy - step 2'),
         make_option('--branch',
             action='store',
             dest='branch',
@@ -63,9 +68,16 @@ class Command(BaseCommand):
         run("ls")
         #run("source virtualenv/bin/activate");
         virtpath = host.PYTHON_PREFIX
+        if options['initial1'] and not files.exists(host.SRCROOT) and not files.exists(host.APPROOT):
+            sql = "CREATE DATABASE %s; GRANT ALL ON %s.* TO %s@localhost IDENTIFIED BY '%s';" % (host.DATABASE['NAME'], host.DATABASE['NAME'], host.DATABASE['USER'], host.DATABASE['PASSWORD'])
+            print colors.red("RUN THIS:")
+            print colors.red(sql)
+            #print sql
+            #run('echo "%s" | mysql --batch -u %s -p' % (sql, 'root'))
+            return
 
-        if options['initial'] and not files.exists(host.SRCROOT) and not files.exists(host.APPROOT):
-            print colors.red("initial=true and SRCROOT/APPROOT does not exist. will install now");
+        if options['initial2'] and not files.exists(host.SRCROOT) and not files.exists(host.APPROOT):
+            print colors.red("initial2=true and SRCROOT/APPROOT does not exist. will install now");
             run('mkdir %s' % host.SRCROOT)
             run('mkdir %s' % host.APPROOT)
             run('mkdir %s/logs' % host.APPROOT)
@@ -75,10 +87,6 @@ class Command(BaseCommand):
                 run("git pull origin master")
                 run(host.PYTHON_INSTALL)
                 run("%spip install -r requirements.txt" % virtpath)
-                sql = "CREATE DATABASE %s; GRANT ALL ON %s.* TO %s@localhost IDENTIFIED BY '%s';" % (host.DATABASE['NAME'], host.DATABASE['NAME'], host.DATABASE['USER'], host.DATABASE['PASSWORD'])
-                print colors.red(sql)
-                #print sql
-                run('echo "%s" | mysql --batch -u %s -p' % (sql, 'root'))
                 run("%spython manage.py install" % virtpath)
             #return
         
