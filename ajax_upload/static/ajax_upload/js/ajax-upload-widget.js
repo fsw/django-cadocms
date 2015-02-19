@@ -235,8 +235,12 @@ if (jQuery != undefined) {
         //});
         //this.$previewArea.show();
         if(filename !== '') {
+        	this.$element.closest('.ajax-uploader').addClass('full');
+        	this.$element.closest('.ajax-uploader').removeClass('empty');
         	this.$removeButton.show();
         } else {
+        	this.$element.closest('.ajax-uploader').addClass('empty');
+        	this.$element.closest('.ajax-uploader').removeClass('full');
             this.$removeButton.hide();
         }
     };
