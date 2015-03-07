@@ -62,7 +62,7 @@ setup(
         'markdown==2.4.1',
     ],
     dependency_links = [
-        "git://github.com/jbalogh/django-cache-machine.git#egg=django-cache-machine-0.9.0",
+        "http://github.com/jbalogh/django-cache-machine/tarball/master#egg=django-cache-machine-0.9.0",
         #'https://bitbucket.org/fsw_/django-versioning/get/master.tar.gz#egg=fsw-django-versioning-0.7.3',
         #'http://github.com/SeanHayes/django-config-gen/tarball/master#egg=django-config-gen-1.0.0',
         #'http://github.com/fsw/django-haystack/tarball/null-field#egg=django-haystack-2.1.1-dev',
