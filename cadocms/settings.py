@@ -276,7 +276,7 @@ class Settings(BaseSettings):
             'django.contrib.humanize',
             'reversion',
             'haystack',
-            #'south',
+            'south',
             'compressor',
             'mptt',
             #'versioning',
