@@ -12,8 +12,8 @@ setup(
     download_url='git://github.com/fsw/django-cadocms.git',
     packages=['cadocms'],
     install_requires=[
-        'Django == 1.7.5',
-        'MySQL-python == 1.2.5',
+        #'Django == 1.7.5',
+        #'MySQL-python == 1.2.5',
         'South == 1.0.2',
         
         #'PIL==1.1.7',
