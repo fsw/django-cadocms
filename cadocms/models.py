@@ -426,10 +426,11 @@ def hits_inc(key, request=None, interval='day'):
             #some concurrency issue.
             hit_created = False
         except Hit.DoesNotExist:
+            agent = request.META.get('HTTP_USER_AGENT') if request.META.get('HTTP_USER_AGENT') else 'UNKNOWN'
             hit = Hit(counter=counter,
                       ip=ip,
                       session=request.session.session_key if request.session.session_key else '',
-                      user_agent=request.META.get('HTTP_USER_AGENT'),
+                      user_agent=agent,
                       user=request.user if request.user.is_authenticated() else None
             )
             hit.save()
