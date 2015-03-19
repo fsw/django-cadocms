@@ -14,8 +14,8 @@ server {
     listen 80;
     server_name .{{SITE.CADO_FULL_DOMAIN}};
 
-    # access_log {{HOST.APPROOT}}logs/nginx.access.log;
-    access_log off;
+    access_log {{HOST.APPROOT}}logs/nginx.access.log;
+    # access_log off;
     error_log {{HOST.APPROOT}}logs/nginx.error.log;
     
     client_max_body_size 10M;
