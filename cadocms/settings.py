@@ -1,7 +1,7 @@
 import socket, sys, pkgutil, os, inspect
 from configurations import Settings as BaseSettings
 from cadocms.management import commands_requiring_site
-
+import random
 import djcelery
 djcelery.setup_loader()
 
@@ -22,8 +22,11 @@ class Settings(BaseSettings):
     CADO_NAME = 'Cado CMS'
     SECRET_KEY = 'OVERWRITE ME'
     
-    REBOOT_TIME = '10 3' 
-    
+    @property
+    def REBOOT_TIME(self):
+        random.seed(self.CADO_PROJECT);
+        return '%d %d' % (random.randint(0, 23), random.randint(0, 59))
+
     SPAM_EMAIL = '' 
     SITE_ID = 1
     MULTISITE = False
