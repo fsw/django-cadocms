@@ -25,7 +25,8 @@ class Settings(BaseSettings):
     @property
     def REBOOT_TIME(self):
         random.seed(self.CADO_PROJECT);
-        return '%d %d' % (random.randint(0, 23), random.randint(0, 59))
+         #australian time is +10 ahead of utc
+        return '%d %d' % (random.randint(0, 59), random.randint(14, 20))
 
     SPAM_EMAIL = '' 
     SITE_ID = 1
