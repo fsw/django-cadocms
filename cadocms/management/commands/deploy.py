@@ -183,7 +183,7 @@ class Command(BaseCommand):
                 run("%spython manage.py collectstatic %s --noinput" % (virtpath, arguments))
                 run("%spython manage.py restyle_tinymce %s" % (virtpath, arguments))
                 print colors.yellow("FORCING STYLES REBUILD:", bold=True)
-                run("%spython manage.py compress %s" % (virtpath, arguments))
+                run("%spython manage.py compress %s --force" % (virtpath, arguments))
                 
                 print colors.yellow("RESTARTING FASTCGI:", bold=True)
                 
