@@ -79,8 +79,14 @@ def filter_host_setting(key):
     return getattr(settings.HOST, key)
 
 @register.filter
-def keyvalue(dict, key, default=None):    
-    return dict.get(key, default)
+def keyvalue(o, key, default=None):
+    if isinstance(o, dict):
+        return o.get(key, default)
+    else:
+        print o.__dict__
+        print key
+        return o.__dict__.get(key, default)
+        
 
 @register.simple_tag(name="chunk")
 def get_chunk(key, raw=False):
