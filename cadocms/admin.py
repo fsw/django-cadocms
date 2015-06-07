@@ -14,6 +14,7 @@ from django.contrib.admin.util import unquote, quote
 from django.core.urlresolvers import reverse
 
 import reversion
+from cadocms.templatetags import cadocms_tags
 
 class ModeratedAdmin(reversion.VersionAdmin):
     object_history_template = "admin/moderated_history.html"
@@ -118,6 +119,11 @@ class SettingAdmin(reversion.VersionAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+    
+    def save_model(self, request, obj, form, change):
+        obj.save()
+        print 'clearing cache';
+        cadocms_tags.SETTINGS_CACHE = {}
 
 class ChunkAdmin(reversion.VersionAdmin):#, TranslationAdmin):
     list_display = ('__str__',)
