@@ -42,6 +42,9 @@ tinyMCE.init({
     plugins: 'advimage,advlink,fullscreen,paste,media,searchreplace,grappelli,template',
     // directionality : "rtl",
     
+    //this is used for styles selector and image dialog
+    theme_advanced_styles : "Header 1=header1;Header 2=header2;Header 3=header3;Pull Left=pull-left;Pull Right=pull-right",
+
     // Callbacks
     file_browser_callback: 'CustomFileBrowser',
     
