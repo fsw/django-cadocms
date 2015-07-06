@@ -14,9 +14,14 @@ from django.template.defaultfilters import stringfilter
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 import re
+from django.forms.fields import CheckboxInput
 
 register = template.Library()
 
+
+@register.filter(name='is_checkbox')
+def is_checkbox(value):
+    return isinstance(value, CheckboxInput)
 
 #http://stackoverflow.com/questions/721035/django-templates-stripping-spaces
 @stringfilter
