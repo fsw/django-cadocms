@@ -221,9 +221,10 @@ class StaticPage(caching.base.CachingMixin, models.Model):
 
     def __unicode__(self):
         return u"%s -- %s" % (self.url, self.title)
-
+    
+    @models.permalink
     def get_absolute_url(self):
-        return self.url
+        return ('cadocms.views.staticpage', [self.url])
 
 
 class Chunk(caching.base.CachingMixin, models.Model):
@@ -321,7 +322,6 @@ class Sluggable(models.Model):
         return super(Sluggable, self).full_clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        # print 'CHUJ'
         if self.slug is None or self.slug == '':
             self.slug = self._generate_slug()
 
