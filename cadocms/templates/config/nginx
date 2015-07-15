@@ -141,16 +141,6 @@ server {
     }
     {% else %}
     
-    location {{SITE.STATIC_URL}} {
-        alias {{SITE.STATIC_ROOT}};
-        expires max;
-    }
-
-    location {{SITE.MEDIA_URL}} {
-        alias {{SITE.MEDIA_ROOT}};
-        expires max;
-    }
-    
     location / {
         include fastcgi_params;
         fastcgi_pass unix:{{HOST.APPROOT}}{{SITE.CADO_PROJECT}}.sock;
