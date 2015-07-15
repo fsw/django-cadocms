@@ -559,6 +559,7 @@ class HostSettings(object):
     APPROOT = None
     
     HTTPS_ON = False
+    HTTPS_FULL = False
     
     @property
     def SOLR_CORE_NAME(self):
