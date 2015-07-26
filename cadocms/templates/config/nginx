@@ -81,7 +81,7 @@ server {
 {% if HOST.HTTPS_ON %}
 
 server {
-    listen              443 ssl;
+    listen              {% if HOST.LISTEN_IP %}{{HOST.LISTEN_IP}}:{% endif %}443 ssl;
     server_name			.{{SITE.CADO_FULL_DOMAIN}};
     ssl_certificate     {{HOST.APPROOT}}server.crt;
     ssl_certificate_key {{HOST.APPROOT}}server.key;
