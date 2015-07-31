@@ -8,6 +8,9 @@ from django.utils.translation import ugettext as _
 import urllib2
 
 from ajax_upload.models import UploadedFile
+from imagekit.cachefiles import namers
+from encodings.rot_13 import rot13
+from django.test.testcases import nop
 
 
 class AjaxUploadException(Exception):
@@ -46,6 +49,15 @@ class AjaxClearableFileInput(forms.ClearableFileInput):
                 # Strip and media url to determine the path relative to media root
                 relative_path = file_path[len(settings.MEDIA_URL):]
                 relative_path = urllib2.unquote(relative_path.encode('utf8')).decode('utf8')
+                rot = int(data.get(name + '_rotation', 0))
+                if rot > 0:
+                    from PIL import Image
+                    #print 'ROTTTT',  rot, settings.MEDIA_ROOT + relative_path
+                    im = Image.open(settings.MEDIA_ROOT + relative_path)
+                    im.rotate(rot).save(settings.MEDIA_ROOT + relative_path)
+                #data[name] = settings.MEDIA_URL + relative_path + '.rot.jpeg'
+                data[name + '_rotation'] = 0;
+                
                 try:
                     uploaded_file = UploadedFile.objects.get(file=relative_path)
                 except UploadedFile.DoesNotExist:

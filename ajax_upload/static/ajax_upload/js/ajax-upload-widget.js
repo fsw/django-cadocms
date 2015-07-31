@@ -49,6 +49,9 @@ if (jQuery != undefined) {
             .val(this.$element.data('filename'));
         this.$element.attr('name', 'file'); // because we don't want to conflict with our hidden field
         this.$element.after(this.$hiddenElement);
+        
+        this.$hiddenRotationElement = $('<input type="hidden"/>').attr('name', this.name + '_rotation').val('0');
+        this.$element.after(this.$hiddenRotationElement);
 
         this.$loadingIndicator = $('<div class="loading"></div>');
         this.$loadingIndicator.hide();
@@ -81,6 +84,16 @@ if (jQuery != undefined) {
                 self.displaySelection();
             });
         this.$element.after(this.$removeButton);
+
+        this.$rotateButton = $('<button type="button" class="btn-rotate" title="Rotate Image Right"></button>').on('click', function(evt) {
+        	var c = parseInt(self.$hiddenRotationElement.val());
+        	c += 90;
+        	if (c >= 360) c = 0;
+        	self.$hiddenRotationElement.val(c);
+            self.displaySelection();
+        });
+        this.$element.after(this.$rotateButton);
+        
         this.$element.wrap('<div class="hiddenCheat"></div>');
         this.$elementParent = this.$element.parent();
         this.displaySelection();
@@ -238,16 +251,19 @@ if (jQuery != undefined) {
         	this.$element.closest('.ajax-uploader').addClass('full');
         	this.$element.closest('.ajax-uploader').removeClass('empty');
         	this.$removeButton.show();
+        	this.$rotateButton.show();
         } else {
         	this.$element.closest('.ajax-uploader').addClass('empty');
         	this.$element.closest('.ajax-uploader').removeClass('full');
             this.$removeButton.hide();
+        	this.$rotateButton.hide();
         }
     };
 
     AjaxUploadWidget.prototype.generateFilePreview = function(filename) {
         // Returns the html output for displaying the given uploaded filename to the user.
     	var output = '';
+    	var self = this;
     	if (filename == '') {
     		output = '<label for="' + this.inputId + '" class="add-image-label">add image</label>';
     	} else {
@@ -261,6 +277,12 @@ if (jQuery != undefined) {
 	            		var mrg = (130 - $(this).height()) / 2;
 	            		$(this).css('margin-top', (mrg + 5) + 'px');
 	            		$(this).css('margin-bottom', mrg + 'px');
+	            		$(this).css('margin-bottom', mrg + 'px');
+	            		
+	            		var tr = 'rotate(' + self.$hiddenRotationElement.val() + 'deg)';
+	            		$(this).css('-ms-transform', tr);
+	            		$(this).css('-webkit-transform', tr);
+	            		$(this).css('transform', tr);
 	            	});
 	                output.append($img);
 	    	        image = true;

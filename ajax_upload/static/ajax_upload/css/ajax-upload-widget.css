@@ -87,11 +87,26 @@
 	opacity: 0.3;
 }
 
+.ajax-uploader button.btn-rotate {
+	position: absolute;
+	right: 36px;
+	top: -2px;
+	background: url(/static/ajax_upload/icons/rotate.png);
+	width: 32px;
+	height: 32px;
+	border: none;
+	opacity: 0.3;
+}
+
 .ajax-uploader:hover label.btn-change {
 	opacity: 1;
 }
 
 .ajax-uploader:hover button.btn-remove {
+	opacity: 1;	
+}
+
+.ajax-uploader:hover button.btn-rotate {
 	opacity: 1;	
 }
 
