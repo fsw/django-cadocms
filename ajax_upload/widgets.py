@@ -51,10 +51,14 @@ class AjaxClearableFileInput(forms.ClearableFileInput):
                 relative_path = urllib2.unquote(relative_path.encode('utf8')).decode('utf8')
                 rot = int(data.get(name + '_rotation', 0))
                 if rot > 0:
-                    from PIL import Image
-                    #print 'ROTTTT',  rot, settings.MEDIA_ROOT + relative_path
-                    im = Image.open(settings.MEDIA_ROOT + relative_path)
-                    im.rotate(rot).save(settings.MEDIA_ROOT + relative_path)
+                    try:
+                        from PIL import Image
+                        #print 'ROTTTT',  rot, settings.MEDIA_ROOT + relative_path
+                        im = Image.open(settings.MEDIA_ROOT + relative_path)
+                        im.rotate(rot).save(settings.MEDIA_ROOT + relative_path)
+                    except IOError:
+                        print 'This is not an image file, ignoring'
+                        
                 #data[name] = settings.MEDIA_URL + relative_path + '.rot.jpeg'
                 data[name + '_rotation'] = 0;
                 
