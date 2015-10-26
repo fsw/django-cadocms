@@ -3,7 +3,7 @@ from html2text import HTML2Text
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 
-def StandardEmail(template, subject, from_email, to_email, variables, request = None, headers = {}, attachments=[], bcc=[]):
+def StandardEmail(template, subject, from_email, to_email, variables, request = None, headers = {}, attachments=[], bcc=[], connection = None):
         
     html_content = loader.render_to_string(template, variables, None if request is None else RequestContext(request))
     #https://jugger0.atlassian.net/browse/EDL-43
@@ -11,8 +11,7 @@ def StandardEmail(template, subject, from_email, to_email, variables, request = 
     h = HTML2Text(baseurl='');
     h.inline_links = False;
     text_content = h.handle(html_content)
-      
-    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email, bcc, headers = headers)
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email, bcc, headers = headers, connection = connection)
     msg.attach_alternative(html_content, "text/html")
     for a in attachments:
         msg.attach_file(a)
